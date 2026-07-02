@@ -1,209 +1,1142 @@
 import { useEffect, useMemo, useState } from "react";
 import "./App.css";
 
+type Page =
+  | "home"
+  | "products"
+  | "services"
+  | "markets"
+  | "cases"
+  | "insights"
+  | "contact";
+type Lang = "en" | "zh";
+type I18n = { en: string; zh: string };
 type Product = {
-  name: string;
+  name: I18n;
   cas: string;
   un: string;
   purity: string;
-  packing: string;
-  category: string;
-  application: string;
+  packing: I18n;
+  category: I18n;
+  application: I18n;
+  icon: string;
+};
+type Service = { title: I18n; text: I18n; icon: string };
+type Market = { region: I18n; countries: I18n; ports: string; demand: I18n };
+type CaseItem = {
+  product: I18n;
+  volume: string;
+  packing: I18n;
+  port: string;
+  country: I18n;
+  route: I18n;
+  timeline: string;
+  scope: I18n;
+  result: I18n;
 };
 
-type Page = "home" | "products" | "services" | "markets" | "insights" | "contact";
+const tx = (v: I18n, lang: Lang) => v[lang];
+const t = (en: string, zh: string): I18n => ({ en, zh });
 
-const nav: { label: string; page: Page }[] = [
-  { label: "Home", page: "home" },
-  { label: "Products", page: "products" },
-  { label: "Services", page: "services" },
-  { label: "Markets", page: "markets" },
-  { label: "Insights", page: "insights" },
-  { label: "Contact", page: "contact" },
+const nav: { label: I18n; page: Page }[] = [
+  { label: t("Home", "首页"), page: "home" },
+  { label: t("Products", "产品"), page: "products" },
+  { label: t("Services", "服务"), page: "services" },
+  { label: t("Markets", "市场"), page: "markets" },
+  { label: t("Cases", "案例"), page: "cases" },
+  { label: t("Insights", "知识"), page: "insights" },
+  { label: t("Contact", "联系"), page: "contact" },
 ];
 
 const products: Product[] = [
-  { name: "Toluene", cas: "108-88-3", un: "1294", purity: "99.9% Min", packing: "Drums / ISO Tank", category: "Aromatic Solvent", application: "Coatings, adhesives, inks and chemical intermediates." },
-  { name: "Mixed Xylene", cas: "1330-20-7", un: "1307", purity: "99.5% Min", packing: "Drums / ISO Tank", category: "Aromatic Solvent", application: "Paints, resins, pesticides and industrial solvents." },
-  { name: "Benzene", cas: "71-43-2", un: "1114", purity: "99.9% Min", packing: "ISO Tank", category: "Feedstock", application: "Styrene, phenol, cyclohexane and chemical synthesis." },
-  { name: "Methanol", cas: "67-56-1", un: "1230", purity: "99.9% Min", packing: "Drums / ISO Tank", category: "Alcohol", application: "Formaldehyde, fuel blending, solvents and antifreeze." },
-  { name: "IPA", cas: "67-63-0", un: "1219", purity: "99.5% Min", packing: "Drums / ISO Tank", category: "Alcohol", application: "Cleaning, pharmaceutical, electronics and coatings." },
-  { name: "Ethyl Acetate", cas: "141-78-6", un: "1173", purity: "99.5% Min", packing: "Drums / ISO Tank", category: "Ester", application: "Printing inks, adhesives, coatings and packaging." },
-  { name: "MEK", cas: "78-93-3", un: "1193", purity: "99.5% Min", packing: "Drums / ISO Tank", category: "Ketone", application: "PU resin, coatings, adhesives and synthetic leather." },
-  { name: "Acetone", cas: "67-64-1", un: "1090", purity: "99.5% Min", packing: "Drums / ISO Tank", category: "Ketone", application: "Cleaning, pharma, plastics and laboratory solvents." },
-  { name: "Butyl Acetate", cas: "123-86-4", un: "1123", purity: "99.5% Min", packing: "Drums / ISO Tank", category: "Ester", application: "Automotive paint, wood coatings, ink and adhesives." },
+  {
+    name: t("Toluene", "甲苯"),
+    cas: "108-88-3",
+    un: "1294",
+    purity: "99.9%",
+    packing: t("Drums / ISO Tank / IBC", "桶装 / ISO罐 / IBC"),
+    category: t("Aromatic Solvents", "芳烃溶剂"),
+    application: t(
+      "Coatings, adhesives, inks and chemical intermediates.",
+      "用于涂料、胶黏剂、油墨及化工中间体。",
+    ),
+    icon: "⬡",
+  },
+  {
+    name: t("Mixed Xylene", "混合二甲苯"),
+    cas: "1330-20-7",
+    un: "1307",
+    purity: "99.0%",
+    packing: t("Drums / ISO Tank / IBC", "桶装 / ISO罐 / IBC"),
+    category: t("Aromatic Solvents", "芳烃溶剂"),
+    application: t(
+      "Paints, resins, pesticides and industrial solvents.",
+      "用于油漆、树脂、农化及工业溶剂。",
+    ),
+    icon: "⬢",
+  },
+  {
+    name: t("Benzene", "苯"),
+    cas: "71-43-2",
+    un: "1114",
+    purity: "99.9%",
+    packing: t("ISO Tank", "ISO罐"),
+    category: t("Feedstocks", "基础原料"),
+    application: t(
+      "Styrene, phenol, cyclohexane and chemical synthesis.",
+      "用于苯乙烯、苯酚、环己烷及化工合成。",
+    ),
+    icon: "⌬",
+  },
+  {
+    name: t("Methanol", "甲醇"),
+    cas: "67-56-1",
+    un: "1230",
+    purity: "99.5%",
+    packing: t("Drums / ISO Tank / IBC", "桶装 / ISO罐 / IBC"),
+    category: t("Alcohols", "醇类"),
+    application: t(
+      "Formaldehyde, fuel blending, solvents and antifreeze.",
+      "用于甲醛、燃料调和、溶剂及防冻液。",
+    ),
+    icon: "◊",
+  },
+  {
+    name: t("IPA", "异丙醇"),
+    cas: "67-63-0",
+    un: "1219",
+    purity: "99.5%",
+    packing: t("Drums / ISO Tank / IBC", "桶装 / ISO罐 / IBC"),
+    category: t("Alcohols", "醇类"),
+    application: t(
+      "Cleaning, pharmaceutical, electronics and coatings.",
+      "用于清洗、医药、电子及涂料行业。",
+    ),
+    icon: "♙",
+  },
+  {
+    name: t("Ethyl Acetate", "乙酸乙酯"),
+    cas: "141-78-6",
+    un: "1173",
+    purity: "99.0%",
+    packing: t("Drums / ISO Tank / IBC", "桶装 / ISO罐 / IBC"),
+    category: t("Esters", "酯类"),
+    application: t(
+      "Printing inks, adhesives, coatings and packaging.",
+      "用于印刷油墨、胶黏剂、涂料及包装。",
+    ),
+    icon: "♧",
+  },
+  {
+    name: t("MEK", "丁酮"),
+    cas: "78-93-3",
+    un: "1193",
+    purity: "99.0%",
+    packing: t("Drums / ISO Tank / IBC", "桶装 / ISO罐 / IBC"),
+    category: t("Ketones", "酮类"),
+    application: t(
+      "PU resin, coatings, adhesives and synthetic leather.",
+      "用于PU树脂、涂料、胶黏剂及合成革。",
+    ),
+    icon: "▣",
+  },
+  {
+    name: t("Acetone", "丙酮"),
+    cas: "67-64-1",
+    un: "1090",
+    purity: "99.5%",
+    packing: t("Drums / ISO Tank / IBC", "桶装 / ISO罐 / IBC"),
+    category: t("Ketones", "酮类"),
+    application: t(
+      "Cleaning, pharma, plastics and laboratory solvents.",
+      "用于清洗、医药、塑料及实验室溶剂。",
+    ),
+    icon: "◊",
+  },
+  {
+    name: t("Butyl Acetate", "乙酸丁酯"),
+    cas: "123-86-4",
+    un: "1123",
+    purity: "99.5%",
+    packing: t("Drums / ISO Tank", "桶装 / ISO罐"),
+    category: t("Esters", "酯类"),
+    application: t(
+      "Automotive paint, wood coatings, ink and adhesives.",
+      "用于汽车漆、木器漆、油墨及胶黏剂。",
+    ),
+    icon: "♧",
+  },
+  {
+    name: t("Cyclohexanone", "环己酮"),
+    cas: "108-94-1",
+    un: "1915",
+    purity: "99.5%",
+    packing: t("Drums / ISO Tank", "桶装 / ISO罐"),
+    category: t("Ketones", "酮类"),
+    application: t(
+      "Nylon, caprolactam, paints and industrial solvents.",
+      "用于尼龙、己内酰胺、涂料及工业溶剂。",
+    ),
+    icon: "⬡",
+  },
+  {
+    name: t("Styrene Monomer", "苯乙烯"),
+    cas: "100-42-5",
+    un: "2055",
+    purity: "99.8%",
+    packing: t("ISO Tank", "ISO罐"),
+    category: t("Feedstocks", "基础原料"),
+    application: t(
+      "PS, ABS, SBR and resin production.",
+      "用于PS、ABS、SBR及树脂生产。",
+    ),
+    icon: "⬢",
+  },
+  {
+    name: t("DMF", "二甲基甲酰胺"),
+    cas: "68-12-2",
+    un: "2265",
+    purity: "99.9%",
+    packing: t("Drums / ISO Tank", "桶装 / ISO罐"),
+    category: t("Amides", "酰胺类"),
+    application: t(
+      "PU leather, electronics, pharma intermediates and solvents.",
+      "用于PU革、电子、医药中间体及溶剂。",
+    ),
+    icon: "▤",
+  },
 ];
 
-const services = [
-  { title: "Chemical Supply", text: "Factory sourcing, product matching, quotation and export-ready supply coordination.", icon: "◎" },
-  { title: "DG Warehousing", text: "Licensed hazardous chemical storage, batch separation and controlled outbound loading.", icon: "⌂" },
-  { title: "UN Packaging", text: "UN drums, IBC, ISO tank options, DG labels, marks and packing photo records.", icon: "◇" },
-  { title: "Customs", text: "Export documents, HS code check, DG declaration and customs clearance workflow.", icon: "▤" },
-  { title: "Port Coordination", text: "Port cut-off control, delivery plan, loading supervision and shipment status update.", icon: "⚓" },
-  { title: "Ocean Freight", text: "DG space checking, carrier booking and ocean freight plan for major global routes.", icon: "▣" },
+const services: Service[] = [
+  {
+    title: t("Chemical Supply", "化工品供应"),
+    text: t(
+      "Factory sourcing, product matching and export-ready coordination.",
+      "工厂寻源、产品匹配及出口准备协调。",
+    ),
+    icon: "◎",
+  },
+  {
+    title: t("DG Warehousing", "危化品仓储"),
+    text: t(
+      "Licensed hazardous storage, batch separation and controlled handling.",
+      "合规危化仓储、批次分离及受控操作。",
+    ),
+    icon: "⌂",
+  },
+  {
+    title: t("UN Packaging", "UN包装"),
+    text: t(
+      "UN drums, IBC, ISO tank options, labels and packaging solutions.",
+      "UN桶、IBC、ISO罐、标签及包装方案。",
+    ),
+    icon: "◇",
+  },
+  {
+    title: t("Customs", "报关单证"),
+    text: t(
+      "Export documents, HS code check, DG declaration and customs clearance.",
+      "出口单证、HS编码核对、危申报及报关。",
+    ),
+    icon: "▤",
+  },
+  {
+    title: t("Port Coordination", "港口协调"),
+    text: t(
+      "Port cut-off control, delivery plan and shipment status updates.",
+      "截港节点控制、送货计划及出运状态更新。",
+    ),
+    icon: "⚓",
+  },
+  {
+    title: t("Ocean Freight", "海运订舱"),
+    text: t(
+      "DG space checking, carrier booking and global ocean freight plans.",
+      "危品舱位确认、船司订舱及全球海运方案。",
+    ),
+    icon: "▣",
+  },
 ];
 
-const markets = [
-  { region: "Middle East", countries: "UAE, Saudi Arabia, Qatar, Oman, Kuwait", ports: "Jebel Ali / Dammam / Jeddah", demand: "Solvents, alcohols, esters and bulk liquid chemicals." },
-  { region: "South Asia", countries: "India, Pakistan, Bangladesh, Sri Lanka", ports: "Mundra / Nhava Sheva / Chennai", demand: "Coatings, inks, adhesive and resin production chemicals." },
-  { region: "Southeast Asia", countries: "Vietnam, Indonesia, Thailand, Malaysia", ports: "Ho Chi Minh / Hai Phong / Jakarta", demand: "Regional manufacturing solvents and packaging chemicals." },
-  { region: "Africa", countries: "South Africa, Nigeria, Kenya, Ghana", ports: "Durban / Lagos / Mombasa", demand: "Industrial solvent supply and dangerous goods export support." },
-  { region: "Europe", countries: "Turkey, Netherlands, Spain", ports: "Istanbul / Rotterdam / Valencia", demand: "Document-controlled chemical supply and container shipments." },
-  { region: "South America", countries: "Brazil, Chile, Peru, Colombia", ports: "Santos / San Antonio / Callao", demand: "Bulk chemical sourcing and long-distance freight coordination." },
+const markets: Market[] = [
+  {
+    region: t("Middle East", "中东"),
+    countries: t(
+      "UAE, Saudi Arabia, Qatar, Oman, Kuwait",
+      "阿联酋、沙特、卡塔尔、阿曼、科威特",
+    ),
+    ports: "Jebel Ali / Dammam / Jeddah",
+    demand: t(
+      "Solvents, alcohols, esters and bulk liquid chemicals.",
+      "溶剂、醇类、酯类及大宗液体化工品。",
+    ),
+  },
+  {
+    region: t("South Asia", "南亚"),
+    countries: t(
+      "India, Pakistan, Bangladesh, Sri Lanka",
+      "印度、巴基斯坦、孟加拉、斯里兰卡",
+    ),
+    ports: "Mundra / Nhava Sheva / Chennai",
+    demand: t(
+      "Coatings, inks, adhesive and resin production chemicals.",
+      "涂料、油墨、胶黏剂及树脂生产化学品。",
+    ),
+  },
+  {
+    region: t("Southeast Asia", "东南亚"),
+    countries: t(
+      "Vietnam, Indonesia, Thailand, Malaysia",
+      "越南、印尼、泰国、马来西亚",
+    ),
+    ports: "Ho Chi Minh / Hai Phong / Jakarta",
+    demand: t(
+      "Regional manufacturing solvents and packaging chemicals.",
+      "区域制造业溶剂及包装相关化工品。",
+    ),
+  },
+  {
+    region: t("Africa", "非洲"),
+    countries: t(
+      "South Africa, Nigeria, Kenya, Ghana",
+      "南非、尼日利亚、肯尼亚、加纳",
+    ),
+    ports: "Durban / Lagos / Mombasa",
+    demand: t(
+      "Industrial solvent supply and dangerous goods export support.",
+      "工业溶剂供应及危险品出口支持。",
+    ),
+  },
+  {
+    region: t("Europe", "欧洲"),
+    countries: t("Turkey, Netherlands, Spain", "土耳其、荷兰、西班牙"),
+    ports: "Istanbul / Rotterdam / Valencia",
+    demand: t(
+      "Document-controlled chemical supply and container shipments.",
+      "单证受控的化工品供应及集装箱运输。",
+    ),
+  },
+  {
+    region: t("South America", "南美"),
+    countries: t("Brazil, Chile, Peru, Colombia", "巴西、智利、秘鲁、哥伦比亚"),
+    ports: "Santos / San Antonio / Callao",
+    demand: t(
+      "Bulk chemical sourcing and long-distance freight coordination.",
+      "大宗化工寻源及远洋运输协调。",
+    ),
+  },
 ];
 
-const cases = [
-  { product: "Methanol Export To UAE", volume: "80 MT", packing: "ISO Tank", port: "Jebel Ali", scope: "Supply + Tank + DG Declaration + Ocean Freight" },
-  { product: "Toluene Export To India", volume: "120 MT", packing: "Drums", port: "Mundra", scope: "UN Packing + Customs + Port Coordination" },
-  { product: "MEK Export To Saudi Arabia", volume: "64 MT", packing: "Drums", port: "Dammam", scope: "MSDS / COA / DG Labels / Shipment Execution" },
-];
-
-const faqs = [
-  "Can you provide MSDS and COA before shipment?",
-  "Can you arrange dangerous goods declaration?",
-  "Can you export Class 3 liquid chemicals?",
-  "Can you supply ISO tank and UN drum packing?",
-  "Can you support OEM labels and customer marks?",
-  "Can you quote CFR / CIF ocean freight together with product price?",
+const cases: CaseItem[] = [
+  {
+    product: t("Methanol Export To UAE", "甲醇出口阿联酋"),
+    volume: "80 MT",
+    packing: t("ISO Tank", "ISO罐"),
+    port: "Jebel Ali",
+    country: t("United Arab Emirates", "阿联酋"),
+    route: t("China Port → Jebel Ali", "中国港口 → 杰贝阿里"),
+    timeline: "18–24 Days",
+    scope: t(
+      "Supply + ISO Tank + DG Declaration + Ocean Freight",
+      "供应 + ISO罐 + 危申报 + 海运",
+    ),
+    result: t(
+      "Delivered with export-ready MSDS, COA and DG declaration support for a repeat industrial buyer.",
+      "为复购工业客户完成MSDS、COA及危申报支持并顺利交付。",
+    ),
+  },
+  {
+    product: t("Toluene Export To India", "甲苯出口印度"),
+    volume: "120 MT",
+    packing: t("UN Drums", "UN桶装"),
+    port: "Mundra",
+    country: t("India", "印度"),
+    route: t("China Port → Mundra", "中国港口 → 蒙德拉"),
+    timeline: "14–20 Days",
+    scope: t(
+      "UN Packing + Customs + Port Coordination",
+      "UN包装 + 报关 + 港口协调",
+    ),
+    result: t(
+      "Coordinated Class 3 product packing, label checking and port cut-off control before vessel departure.",
+      "完成3类危险品包装、标签核对及截港节点控制。",
+    ),
+  },
+  {
+    product: t("MEK Export To Saudi Arabia", "丁酮出口沙特"),
+    volume: "64 MT",
+    packing: t("UN Drums", "UN桶装"),
+    port: "Dammam",
+    country: t("Saudi Arabia", "沙特阿拉伯"),
+    route: t("China Port → Dammam", "中国港口 → 达曼"),
+    timeline: "20–28 Days",
+    scope: t(
+      "MSDS / COA / DG Labels / Shipment Execution",
+      "MSDS / COA / 危品标签 / 出运执行",
+    ),
+    result: t(
+      "Prepared product documents and dangerous goods shipment workflow for coating industry use.",
+      "为涂料行业客户准备产品文件及危险品出运流程。",
+    ),
+  },
+  {
+    product: t("Ethyl Acetate Export To Vietnam", "乙酸乙酯出口越南"),
+    volume: "48 MT",
+    packing: t("IBC", "IBC"),
+    port: "Ho Chi Minh",
+    country: t("Vietnam", "越南"),
+    route: t("China Port → Ho Chi Minh", "中国港口 → 胡志明"),
+    timeline: "7–12 Days",
+    scope: t(
+      "Product Supply + IBC Packing + Customs",
+      "产品供应 + IBC包装 + 报关",
+    ),
+    result: t(
+      "Matched packing method for regional distributor warehouse handling and fast replenishment.",
+      "匹配区域分销商仓储操作与快速补货需求。",
+    ),
+  },
+  {
+    product: t("Mixed Xylene Export To Turkey", "混合二甲苯出口土耳其"),
+    volume: "96 MT",
+    packing: t("Drums", "桶装"),
+    port: "Istanbul",
+    country: t("Turkey", "土耳其"),
+    route: t("China Port → Istanbul", "中国港口 → 伊斯坦布尔"),
+    timeline: "28–35 Days",
+    scope: t(
+      "Supplier Coordination + DG Booking + Export Docs",
+      "供应商协调 + 危品订舱 + 出口单证",
+    ),
+    result: t(
+      "Combined product sourcing, document checking and booking coordination for long-distance export.",
+      "为远洋出口整合产品寻源、单证核对及订舱协调。",
+    ),
+  },
+  {
+    product: t("Acetone Export To Brazil", "丙酮出口巴西"),
+    volume: "72 MT",
+    packing: t("ISO Tank", "ISO罐"),
+    port: "Santos",
+    country: t("Brazil", "巴西"),
+    route: t("China Port → Santos", "中国港口 → 桑托斯"),
+    timeline: "35–45 Days",
+    scope: t(
+      "Bulk Liquid Supply + ISO Tank + Ocean Freight",
+      "大宗液体供应 + ISO罐 + 海运",
+    ),
+    result: t(
+      "Structured quotation and shipment plan for a bulk liquid chemical buyer in South America.",
+      "为南美大宗液体化工买家制定结构化报价与出运方案。",
+    ),
+  },
 ];
 
 const articles = [
-  { title: "How To Export Class 3 Chemicals From China", tag: "DG Export Guide", text: "A practical checklist for product confirmation, MSDS, UN packing, DG declaration and port execution." },
-  { title: "ISO Tank vs Drum Packing For Liquid Chemicals", tag: "Packing", text: "How buyers choose between drums, IBC and ISO tank based on quantity, port and handling conditions." },
-  { title: "Documents Needed For Dangerous Chemical Shipment", tag: "Documentation", text: "MSDS, COA, DG declaration, packing list, commercial invoice and booking information." },
+  {
+    title: t(
+      "How To Export Class 3 Chemicals From China",
+      "如何从中国出口3类危险化学品",
+    ),
+    tag: t("DG Export Guide", "危品出口指南"),
+    text: t(
+      "A practical checklist for product confirmation, MSDS, UN packing, DG declaration and port execution.",
+      "涵盖产品确认、MSDS、UN包装、危申报及港口执行的实用清单。",
+    ),
+  },
+  {
+    title: t(
+      "ISO Tank vs Drum Packing For Liquid Chemicals",
+      "液体化工品：ISO罐与桶装如何选择",
+    ),
+    tag: t("Packing", "包装"),
+    text: t(
+      "How buyers choose between drums, IBC and ISO tank based on quantity, port and handling conditions.",
+      "根据数量、港口与操作条件选择桶装、IBC或ISO罐。",
+    ),
+  },
+  {
+    title: t(
+      "Documents Needed For Dangerous Chemical Shipment",
+      "危险化学品出运所需单证",
+    ),
+    tag: t("Documentation", "单证"),
+    text: t(
+      "MSDS, COA, DG declaration, packing list, commercial invoice and booking information.",
+      "MSDS、COA、危申报、装箱单、商业发票及订舱信息。",
+    ),
+  },
+];
+
+const faqs: I18n[] = [
+  t(
+    "Can you provide MSDS and COA before shipment?",
+    "出货前可以提供MSDS和COA吗？",
+  ),
+  t("Can you arrange dangerous goods declaration?", "可以安排危险品申报吗？"),
+  t("Can you export Class 3 liquid chemicals?", "可以出口3类液体危险品吗？"),
+  t(
+    "Can you supply ISO tank and UN drum packing?",
+    "可以提供ISO罐和UN桶包装吗？",
+  ),
+  t(
+    "Can you support OEM labels and customer marks?",
+    "可以支持客户标签和唛头吗？",
+  ),
+  t(
+    "Can you quote CFR / CIF ocean freight together with product price?",
+    "可以连同货价一起报CFR/CIF海运价吗？",
+  ),
 ];
 
 function pathToPage(pathname: string): Page {
   const key = pathname.replace(/^\//, "") as Page;
-  return ["products", "services", "markets", "insights", "contact"].includes(key) ? key : "home";
+  return [
+    "products",
+    "services",
+    "markets",
+    "cases",
+    "insights",
+    "contact",
+  ].includes(key)
+    ? key
+    : "home";
 }
-
 function pageToPath(page: Page) {
   return page === "home" ? "/" : `/${page}`;
 }
 
 export default function App() {
-  const [page, setPage] = useState<Page>(() => pathToPage(window.location.pathname));
-  const [selectedProduct, setSelectedProduct] = useState(products[0]);
-
+  const [page, setPage] = useState<Page>(() =>
+    pathToPage(window.location.pathname),
+  );
+  const [lang, setLang] = useState<Lang>(
+    () => (localStorage.getItem("chinadg-lang") as Lang) || "en",
+  );
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   useEffect(() => {
     const onPop = () => setPage(pathToPage(window.location.pathname));
     window.addEventListener("popstate", onPop);
     return () => window.removeEventListener("popstate", onPop);
   }, []);
-
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
-    document.title = page === "home" ? "ChinaDGExport | Dangerous Chemical Export Platform" : `${page[0].toUpperCase() + page.slice(1)} | ChinaDGExport`;
-  }, [page]);
-
+    document.title =
+      page === "home"
+        ? tx(
+            t(
+              "ChinaDGExport | Dangerous Chemical Export Platform",
+              "ChinaDGExport | 危险化学品出口平台",
+            ),
+            lang,
+          )
+        : `${tx(nav.find((n) => n.page === page)?.label || t(page, page), lang)} | ChinaDGExport`;
+  }, [page, lang]);
+  useEffect(() => {
+    localStorage.setItem("chinadg-lang", lang);
+    setMobileMenuOpen(false);
+  }, [lang]);
   function go(next: Page) {
     window.history.pushState({}, "", pageToPath(next));
     setPage(next);
+    setMobileMenuOpen(false);
   }
-
   const content = useMemo(() => {
-    if (page === "products") return <ProductsPage selected={selectedProduct} setSelected={setSelectedProduct} go={go} />;
-    if (page === "services") return <ServicesPage go={go} />;
-    if (page === "markets") return <MarketsPage go={go} />;
-    if (page === "insights") return <InsightsPage go={go} />;
-    if (page === "contact") return <ContactPage />;
-    return <HomePage go={go} />;
-  }, [page, selectedProduct]);
-
+    if (page === "products") return <ProductsPage go={go} lang={lang} />;
+    if (page === "services") return <ServicesPage go={go} lang={lang} />;
+    if (page === "markets") return <MarketsPage go={go} lang={lang} />;
+    if (page === "cases") return <CasesPage go={go} lang={lang} />;
+    if (page === "insights") return <InsightsPage go={go} lang={lang} />;
+    if (page === "contact") return <ContactPage lang={lang} />;
+    return <HomePage go={go} lang={lang} />;
+  }, [page, lang]);
   return (
     <>
       <header className="header">
         <button className="brand" onClick={() => go("home")}>
           <span className="brand-mark">DG</span>
-          <span><b>ChinaDGExport</b><small>Dangerous Chemical Export Platform</small></span>
+          <span>
+            <b>ChinaDGExport</b>
+            <small>
+              {tx(
+                t("Dangerous Chemical Export Platform", "危险化学品出口平台"),
+                lang,
+              )}
+            </small>
+          </span>
         </button>
-        <nav>
-          {nav.map((item) => <button key={item.page} className={page === item.page ? "active" : ""} onClick={() => go(item.page)}>{item.label}</button>)}
+        <nav className="main-nav">
+          {nav.map((item) => (
+            <button
+              key={item.page}
+              className={page === item.page ? "active" : ""}
+              onClick={() => go(item.page)}
+            >
+              {tx(item.label, lang)}
+            </button>
+          ))}
         </nav>
-        <button className="header-cta" onClick={() => go("contact")}>Get Quote</button>
+        <div className="header-right">
+          <button
+            className="lang-switch"
+            aria-label="language switch"
+            onClick={() => setLang(lang === "en" ? "zh" : "en")}
+          >
+            <span>◉</span>
+            {lang === "en" ? "EN | 中文" : "中文 | EN"}
+          </button>
+          <button className="header-cta" onClick={() => go("contact")}>
+            {tx(t("Get Quote", "获取报价"), lang)}
+          </button>
+          <button
+            className={`mobile-menu-toggle ${mobileMenuOpen ? "open" : ""}`}
+            type="button"
+            aria-label={mobileMenuOpen ? "Close navigation" : "Open navigation"}
+            aria-expanded={mobileMenuOpen}
+            onClick={() => setMobileMenuOpen((open) => !open)}
+          >
+            <span />
+            <span />
+            <span />
+          </button>
+        </div>
+        <div className={`mobile-menu ${mobileMenuOpen ? "open" : ""}`}>
+          <div className="mobile-menu-panel">
+            <div className="mobile-menu-head">
+              <b>ChinaDGExport</b>
+              <button type="button" onClick={() => setMobileMenuOpen(false)}>
+                ×
+              </button>
+            </div>
+            <div className="mobile-menu-links">
+              {nav.map((item) => (
+                <button
+                  key={item.page}
+                  className={page === item.page ? "active" : ""}
+                  onClick={() => go(item.page)}
+                >
+                  {tx(item.label, lang)}
+                </button>
+              ))}
+            </div>
+            <div className="mobile-menu-actions">
+              <button
+                type="button"
+                className="mobile-lang-switch"
+                onClick={() => setLang(lang === "en" ? "zh" : "en")}
+              >
+                {lang === "en" ? "EN | 中文" : "中文 | EN"}
+              </button>
+              <button className="blue-btn" onClick={() => go("contact")}>
+                {tx(t("Get Quote", "获取报价"), lang)}
+              </button>
+            </div>
+          </div>
+        </div>
       </header>
       {content}
-      <Footer go={go} />
+      <Footer go={go} lang={lang} />
     </>
   );
 }
 
-function HomePage({ go }: { go: (page: Page) => void }) {
+function HomePage({ go, lang }: { go: (page: Page) => void; lang: Lang }) {
   return (
     <main>
       <section className="hero">
         <div className="hero-bg" />
         <div className="container hero-grid">
           <div>
-            <p className="eyebrow">China-Origin Petrochemical Export Solutions</p>
-            <h1>Dangerous Chemical Export Platform From China</h1>
-            <p className="lead">Integrated support for chemical supply, DG warehousing, UN packaging, customs, port coordination and ocean freight.</p>
+            <p className="eyebrow green">
+              {tx(
+                t(
+                  "China-Origin Petrochemical Export Solutions",
+                  "中国来源石化品出口解决方案",
+                ),
+                lang,
+              )}
+            </p>
+            <h1>
+              {tx(
+                t(
+                  "Dangerous Chemical Export Platform From China",
+                  "中国危险化学品出口平台",
+                ),
+                lang,
+              )}
+            </h1>
+            <p className="lead">
+              {tx(
+                t(
+                  "Integrated support for chemical supply, DG warehousing, UN packaging, customs, port coordination and ocean freight.",
+                  "整合化工品供应、危化仓储、UN包装、报关、港口协调与海运支持。",
+                ),
+                lang,
+              )}
+            </p>
             <div className="hero-actions">
-              <button className="blue-btn" onClick={() => go("contact")}>Request Quotation</button>
-              <button className="light-btn" onClick={() => go("services")}>View Export Services</button>
+              <button className="blue-btn" onClick={() => go("contact")}>
+                {tx(t("Request Quotation", "提交询价"), lang)}
+              </button>
+              <button className="ghost-btn" onClick={() => go("services")}>
+                {tx(t("View Export Services", "查看出口服务"), lang)}
+              </button>
             </div>
-            <div className="hero-tags"><span>Class 3 Chemicals</span><span>ISO Tank</span><span>UN Drums</span><span>MSDS / COA</span></div>
+            <div className="hero-tags">
+              <button type="button" onClick={() => go("products")}>
+                {tx(t("Class 3 Chemicals", "3类危险品"), lang)}
+              </button>
+              <button type="button" onClick={() => go("services")}>
+                ISO Tank
+              </button>
+              <button type="button" onClick={() => go("services")}>
+                UN Drums
+              </button>
+              <button type="button" onClick={() => go("services")}>
+                MSDS / COA
+              </button>
+            </div>
           </div>
           <div className="hero-card">
-            <b>Platform Scope</b>
-            {services.map((s) => <div key={s.title}><span>{s.icon}</span>{s.title}</div>)}
+            <b>{tx(t("Platform Scope", "平台服务范围"), lang)}</b>
+            {services.map((s) => (
+              <button
+                key={tx(s.title, "en")}
+                type="button"
+                onClick={() => go("services")}
+              >
+                <span>{s.icon}</span>
+                {tx(s.title, lang)}
+              </button>
+            ))}
           </div>
         </div>
       </section>
-
-      <section className="section about-home">
-        <div className="container split">
-          <div>
-            <p className="eyebrow">About Platform</p>
-            <h2>Not a simple trader. Not a freight forwarder.</h2>
+      <section className="home-overview">
+        <div className="container overview-grid">
+          <div className="overview-block">
+            <p className="eyebrow">
+              {tx(t("About Platform", "平台定位"), lang)}
+            </p>
+            <h2>
+              {tx(
+                t(
+                  "Not a simple trader.\nNot a freight forwarder.",
+                  "不只是贸易商。\n也不只是货代。",
+                ),
+                lang,
+              )
+                .split("\n")
+                .map((x, i) => (
+                  <span key={x}>
+                    {x}
+                    {i === 0 && <br />}
+                  </span>
+                ))}
+            </h2>
+            <p>
+              {tx(
+                t(
+                  "ChinaDGExport is built as a dangerous chemical export execution platform. We connect upstream supply, compliant packing, hazardous warehouse resources, customs documentation and port shipment coordination into one export workflow.",
+                  "ChinaDGExport 定位为危险化学品出口执行平台，将上游供应、合规包装、危化仓储资源、报关单证与港口出运协调整合为一套出口流程。",
+                ),
+                lang,
+              )}
+            </p>
+            <button className="outline-btn" onClick={() => go("services")}>
+              {tx(t("Learn More About Us", "了解更多"), lang)}
+            </button>
           </div>
-          <p>ChinaDGExport is built as a dangerous chemical export execution platform. We connect upstream supply, compliant packing, hazardous warehouse resources, customs documentation and port shipment coordination into one export workflow.</p>
+          <div className="overview-block ecosystem-block">
+            <p className="eyebrow">
+              {tx(t("Export Ecosystem", "出口生态"), lang)}
+            </p>
+            <h2>
+              {tx(
+                t(
+                  "One workflow from product to shipment.",
+                  "从产品到出运的一体化流程。",
+                ),
+                lang,
+              )}
+            </h2>
+            <div className="mini-service-grid">
+              {services.map((s) => (
+                <ServiceMini
+                  key={tx(s.title, "en")}
+                  service={s}
+                  lang={lang}
+                  onClick={() => go("services")}
+                />
+              ))}
+            </div>
+          </div>
+          <div className="overview-block products-block">
+            <div className="block-head">
+              <div>
+                <p className="eyebrow">
+                  {tx(t("Featured Products", "核心产品"), lang)}
+                </p>
+                <h2>
+                  {tx(
+                    t(
+                      "Core petrochemical products for export.",
+                      "适合出口的核心石化产品。",
+                    ),
+                    lang,
+                  )}
+                </h2>
+              </div>
+              <button onClick={() => go("products")}>
+                {tx(t("View All Products", "查看全部产品"), lang)}
+              </button>
+            </div>
+            <div className="mini-product-list">
+              {products.slice(0, 6).map((p) => (
+                <button key={p.cas} onClick={() => go("products")}>
+                  <span className="product-icon">{p.icon}</span>
+                  <b>{tx(p.name, lang)}</b>
+                  <small>CAS {p.cas}</small>
+                  <i>→</i>
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
-
-      <section className="section muted">
-        <div className="container">
-          <SectionTop kicker="Export Ecosystem" title="One workflow from product to shipment." action="View Services" onClick={() => go("services")} />
-          <div className="service-grid">{services.map((s) => <ServiceCard key={s.title} {...s} />)}</div>
+      <section className="market-cta-row">
+        <div className="container market-cta-grid">
+          <div className="market-panel">
+            <p className="eyebrow green">{tx(t("Markets", "市场"), lang)}</p>
+            <h2>
+              {tx(
+                t(
+                  "Serving chemical buyers across major import markets.",
+                  "服务主要进口市场的化工品买家。",
+                ),
+                lang,
+              )}
+            </h2>
+          </div>
+          <div className="market-mini-grid">
+            {markets.slice(0, 4).map((m) => (
+              <button key={tx(m.region, "en")} onClick={() => go("markets")}>
+                <b>{tx(m.region, lang)}</b>
+                <span>{tx(m.countries, lang)}</span>
+              </button>
+            ))}
+          </div>
+          <div className="blue-cta-box">
+            <h2>
+              {tx(
+                t(
+                  "Need chemical supply with DG export execution?",
+                  "需要化工品供应与危品出口执行？",
+                ),
+                lang,
+              )}
+            </h2>
+            <p>
+              {tx(
+                t(
+                  "Send product, quantity and destination port. We will check supply, packing, documents and freight plan.",
+                  "发送产品、数量和目的港，我们将核对供应、包装、单证和运费方案。",
+                ),
+                lang,
+              )}
+            </p>
+            <button onClick={() => go("contact")}>
+              {tx(t("Start Inquiry", "开始询价"), lang)}
+            </button>
+          </div>
         </div>
       </section>
-
-      <section className="section">
-        <div className="container">
-          <SectionTop kicker="Featured Products" title="Core petrochemical products for export." action="All Products" onClick={() => go("products")} />
-          <div className="product-grid compact">{products.slice(0, 6).map((p) => <ProductCard key={p.name} product={p} onClick={() => go("products")} />)}</div>
-        </div>
-      </section>
-
-      <section className="section dark">
-        <div className="container split light-split">
-          <div><p className="eyebrow">Markets</p><h2>Serving chemical buyers across major import markets.</h2></div>
-          <div className="mini-market">{markets.slice(0, 4).map((m) => <button key={m.region} onClick={() => go("markets")}>{m.region}<span>{m.countries}</span></button>)}</div>
-        </div>
-      </section>
-
-      <CTA go={go} />
     </main>
   );
 }
 
-function ProductsPage({ selected, setSelected, go }: { selected: Product; setSelected: (p: Product) => void; go: (page: Page) => void }) {
+function ProductsPage({ go, lang }: { go: (page: Page) => void; lang: Lang }) {
+  const [category, setCategory] = useState("All Products");
+  const [query, setQuery] = useState("");
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const categories = [
+    "All Products",
+    ...Array.from(new Set(products.map((p) => tx(p.category, "en")))),
+  ];
+  const filtered = products.filter(
+    (p) =>
+      (category === "All Products" || tx(p.category, "en") === category) &&
+      (!query.trim() ||
+        [
+          tx(p.name, "en"),
+          tx(p.name, "zh"),
+          p.cas,
+          p.un,
+          tx(p.category, "en"),
+          tx(p.category, "zh"),
+        ]
+          .join(" ")
+          .toLowerCase()
+          .includes(query.trim().toLowerCase())),
+  );
+  function requestQuote(product?: Product) {
+    setSelectedProduct(null);
+    go("contact");
+    setTimeout(() => {
+      const firstInput = document.querySelector<HTMLInputElement>(
+        ".contact-card input",
+      );
+      if (firstInput && product)
+        firstInput.value = `${tx(product.name, lang)} / CAS ${product.cas} / UN ${product.un}`;
+    }, 120);
+  }
   return (
     <main className="page">
-      <PageHero kicker="Products" title="Petrochemical products with export execution support." text="Core solvent and chemical products supplied with MSDS, COA, DG declaration, packing options and shipment coordination." />
-      <section className="section">
-        <div className="container product-page-layout">
-          <aside className="product-tabs">
-            <b>Product List</b>
-            {products.map((p) => <button key={p.name} className={selected.name === p.name ? "active" : ""} onClick={() => setSelected(p)}>{p.name}<span>UN {p.un}</span></button>)}
+      <PageHero
+        kicker={tx(t("Products", "产品中心"), lang)}
+        title={tx(t("Products", "产品中心"), lang)}
+        text={tx(
+          t(
+            "We supply a wide range of petrochemical solvents and intermediates with stable quality and compliant export packaging.",
+            "供应多种石化溶剂和中间体，质量稳定，并提供合规出口包装。",
+          ),
+          lang,
+        )}
+      />
+      <section className="section catalog-section">
+        <div className="container catalog-layout">
+          <aside className="catalog-sidebar">
+            <div className="filter-box">
+              <h3>{tx(t("Product Categories", "产品分类"), lang)}</h3>
+              {categories.map((c) => (
+                <button
+                  key={c}
+                  className={category === c ? "active" : ""}
+                  onClick={() => setCategory(c)}
+                >
+                  <span>
+                    {c === "All Products"
+                      ? tx(t("All Products", "全部产品"), lang)
+                      : tx(
+                          products.find((p) => tx(p.category, "en") === c)
+                            ?.category || t(c, c),
+                          lang,
+                        )}
+                  </span>
+                  <b>
+                    {c === "All Products"
+                      ? products.length
+                      : products.filter((p) => tx(p.category, "en") === c)
+                          .length}
+                  </b>
+                </button>
+              ))}
+            </div>
+            <div className="filter-box packaging-box">
+              <h3>{tx(t("Packaging Options", "包装方式"), lang)}</h3>
+              {[
+                tx(t("Drums (200L)", "200L桶装"), lang),
+                "ISO Tank",
+                "IBC Tank",
+                "Flexitank",
+              ].map((x) => (
+                <label key={x}>
+                  <input type="checkbox" /> {x}
+                </label>
+              ))}
+            </div>
           </aside>
-          <div className="product-detail">
-            <div className="detail-head"><p className="eyebrow">{selected.category}</p><h2>{selected.name}</h2><button className="blue-btn" onClick={() => go("contact")}>Inquiry This Product</button></div>
-            <div className="spec-grid"><Info label="CAS" value={selected.cas} /><Info label="UN No." value={selected.un} /><Info label="Purity" value={selected.purity} /><Info label="Packing" value={selected.packing} /></div>
-            <div className="detail-box"><h3>Application</h3><p>{selected.application}</p></div>
-            <div className="detail-box"><h3>Export Documents</h3><div className="chip-row"><span>MSDS</span><span>COA</span><span>DG Declaration</span><span>Packing List</span><span>Commercial Invoice</span><span>B/L</span></div></div>
-            <div className="detail-box"><h3>Export Support</h3><p>We can coordinate product sourcing, UN packaging, DG warehousing, customs clearance, port cut-off and ocean freight according to your destination port and cargo class.</p></div>
+          <div className="catalog-main">
+            <div className="catalog-toolbar">
+              <label className="search-box">
+                <span>⌕</span>
+                <input
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder={tx(
+                    t(
+                      "Search products, e.g. Toluene, Methanol...",
+                      "搜索产品，如甲苯、甲醇...",
+                    ),
+                    lang,
+                  )}
+                />
+              </label>
+              <select defaultValue="default">
+                <option value="default">
+                  {tx(t("Sort by: Default", "排序：默认"), lang)}
+                </option>
+                <option>{tx(t("Name A-Z", "名称A-Z"), lang)}</option>
+                <option>UN Number</option>
+              </select>
+            </div>
+            <div className="catalog-grid">
+              {filtered.map((p) => (
+                <CatalogCard
+                  key={p.cas}
+                  product={p}
+                  lang={lang}
+                  onView={() => setSelectedProduct(p)}
+                />
+              ))}
+            </div>
+            <div className="pagination">
+              <button className="active">1</button>
+              <button>2</button>
+              <button>›</button>
+            </div>
+          </div>
+        </div>
+      </section>
+      {selectedProduct && (
+        <ProductDetailModal
+          product={selectedProduct}
+          lang={lang}
+          onClose={() => setSelectedProduct(null)}
+          onQuote={() => requestQuote(selectedProduct)}
+        />
+      )}
+    </main>
+  );
+}
+
+function ServicesPage({ go, lang }: { go: (page: Page) => void; lang: Lang }) {
+  const flow = [
+    t("Inquiry", "询盘"),
+    t("Product Match", "产品匹配"),
+    t("Quote", "报价"),
+    t("Order", "订单"),
+    t("Documents", "单证"),
+    t("DG Warehouse", "危化仓储"),
+    t("Customs", "报关"),
+    t("Ocean Freight", "海运"),
+  ];
+  return (
+    <main className="page">
+      <PageHero
+        kicker={tx(t("Services", "服务"), lang)}
+        title={tx(
+          t(
+            "Integrated dangerous chemical export execution.",
+            "一体化危险化学品出口执行服务。",
+          ),
+          lang,
+        )}
+        text={tx(
+          t(
+            "From product confirmation to port departure, the service page explains how ChinaDGExport organizes the export workflow.",
+            "从产品确认到港口离港，展示 ChinaDGExport 如何组织完整出口流程。",
+          ),
+          lang,
+        )}
+      />
+      <section className="section muted">
+        <div className="container service-grid large">
+          {services.map((s) => (
+            <ServiceCard key={tx(s.title, "en")} service={s} lang={lang} />
+          ))}
+        </div>
+      </section>
+      <section className="section">
+        <div className="container">
+          <SectionTop
+            kicker={tx(t("Execution Flow", "执行流程"), lang)}
+            title={tx(
+              t(
+                "A clear process for every shipment.",
+                "每一票货都有清晰流程。",
+              ),
+              lang,
+            )}
+          />
+          <div className="flow">
+            {flow.map((x, i) => (
+              <div key={tx(x, "en")}>
+                <b>{String(i + 1).padStart(2, "0")}</b>
+                <span>{tx(x, lang)}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+      <CTA go={go} lang={lang} />
+    </main>
+  );
+}
+
+function MarketsPage({ go, lang }: { go: (page: Page) => void; lang: Lang }) {
+  const featuredCase = cases[0];
+  return (
+    <main className="page">
+      <PageHero
+        kicker={tx(t("Markets", "市场"), lang)}
+        title={tx(
+          t(
+            "Export chemicals to major global markets.",
+            "面向全球主要市场出口化工品。",
+          ),
+          lang,
+        )}
+        text={tx(
+          t(
+            "Destination-focused chemical export support for importers, distributors and industrial users.",
+            "为进口商、分销商和工业用户提供目的港导向的化工品出口支持。",
+          ),
+          lang,
+        )}
+      />
+      <section className="section">
+        <div className="container">
+          <SectionTop
+            kicker={tx(t("Destination Markets", "目的地市场"), lang)}
+            title={tx(
+              t(
+                "Route planning by region, port and product demand.",
+                "按区域、港口和产品需求规划路线。",
+              ),
+              lang,
+            )}
+          />
+          <div className="market-grid">
+            {markets.map((m) => (
+              <div className="market-card" key={tx(m.region, "en")}>
+                <p>{tx(m.region, lang)}</p>
+                <h3>{tx(m.countries, lang)}</h3>
+                <Info
+                  label={tx(t("Common Ports", "常见港口"), lang)}
+                  value={m.ports}
+                />
+                <Info
+                  label={tx(t("Demand", "需求"), lang)}
+                  value={tx(m.demand, lang)}
+                />
+                <button onClick={() => go("contact")}>
+                  {tx(t("Ask Route Quote →", "咨询路线报价 →"), lang)}
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+      <section className="section muted case-center-section">
+        <div className="container">
+          <SectionTop
+            kicker={tx(t("Case Study Center", "案例中心"), lang)}
+            title={tx(
+              t(
+                "Export execution cases for chemical buyers.",
+                "面向化工买家的出口执行案例。",
+              ),
+              lang,
+            )}
+            action={tx(t("Request Similar Case", "咨询类似案例"), lang)}
+            onClick={() => go("contact")}
+          />
+          <CaseFeature c={featuredCase} lang={lang} />
+          <div className="case-study-grid">
+            {cases.slice(1).map((c) => (
+              <CaseCard key={tx(c.product, "en")} c={c} lang={lang} />
+            ))}
           </div>
         </div>
       </section>
@@ -211,70 +1144,601 @@ function ProductsPage({ selected, setSelected, go }: { selected: Product; setSel
   );
 }
 
-function ServicesPage({ go }: { go: (page: Page) => void }) {
+function CasesPage({ go, lang }: { go: (page: Page) => void; lang: Lang }) {
+  const [selectedCase, setSelectedCase] = useState(cases[0]);
   return (
-    <main className="page">
-      <PageHero kicker="Services" title="Integrated dangerous chemical export execution." text="From product confirmation to port departure, the service page explains how ChinaDGExport organizes the export workflow." />
-      <section className="section muted"><div className="container service-grid large">{services.map((s) => <ServiceCard key={s.title} {...s} />)}</div></section>
-      <section className="section"><div className="container"><SectionTop kicker="Execution Flow" title="A clear process for every shipment." /><div className="flow">{["Inquiry", "Product Match", "Quote", "Order", "Documents", "DG Warehouse", "Customs", "Ocean Freight"].map((x, i) => <div key={x}><b>{String(i + 1).padStart(2, "0")}</b><span>{x}</span></div>)}</div></div></section>
-      <CTA go={go} />
+    <main className="page cases-page">
+      <PageHero
+        kicker={tx(t("Case Studies", "出口案例"), lang)}
+        title={tx(t("Case Study Center", "案例中心"), lang)}
+        text={tx(
+          t(
+            "Realistic export execution examples for petrochemical buyers, covering product supply, packing, DG documents, port coordination and ocean freight.",
+            "面向石化买家的真实出口执行案例，覆盖产品供应、包装、危品单证、港口协调与海运。",
+          ),
+          lang,
+        )}
+      />
+      <section className="section muted case-center-section standalone-cases">
+        <div className="container">
+          <SectionTop
+            kicker={tx(t("Export Cases", "出口案例"), lang)}
+            title={tx(
+              t(
+                "Chemical shipment execution references by product, packing and destination.",
+                "按产品、包装与目的地展示化工品出运执行参考。",
+              ),
+              lang,
+            )}
+            action={tx(t("Request Similar Case", "咨询类似案例"), lang)}
+            onClick={() => go("contact")}
+          />
+          <div className="case-tabs">
+            {cases.map((c) => (
+              <button
+                key={tx(c.product, "en")}
+                className={
+                  tx(selectedCase.product, "en") === tx(c.product, "en")
+                    ? "active"
+                    : ""
+                }
+                onClick={() => setSelectedCase(c)}
+              >
+                <span>{tx(c.country, lang)}</span>
+                <b>{tx(c.product, lang)}</b>
+              </button>
+            ))}
+          </div>
+          <CaseFeature c={selectedCase} lang={lang} selected />
+          <div className="case-study-grid">
+            {cases.map((c) => (
+              <CaseCard key={tx(c.product, "en")} c={c} lang={lang} />
+            ))}
+          </div>
+        </div>
+      </section>
     </main>
   );
 }
 
-function MarketsPage({ go }: { go: (page: Page) => void }) {
+function InsightsPage({ go, lang }: { go: (page: Page) => void; lang: Lang }) {
   return (
     <main className="page">
-      <PageHero kicker="Markets" title="Export chemicals to major global markets." text="Destination-focused chemical export support for importers, distributors and industrial users." />
-      <section className="section"><div className="container"><div className="market-grid">{markets.map((m) => <div className="market-card" key={m.region}><p>{m.region}</p><h3>{m.countries}</h3><Info label="Common Ports" value={m.ports} /><Info label="Demand" value={m.demand} /><button onClick={() => go("contact")}>Ask Route Quote →</button></div>)}</div></div></section>
-      <section className="section muted"><div className="container"><SectionTop kicker="Case Studies" title="Sample export execution cases." /><div className="case-grid">{cases.map((c) => <div className="case-card" key={c.product}><p>{c.product}</p><h3>{c.volume}</h3><span>{c.packing}</span><span>{c.port}</span><b>{c.scope}</b></div>)}</div></div></section>
+      <PageHero
+        kicker={tx(t("Insights", "知识中心"), lang)}
+        title={tx(
+          t("Chemical export knowledge center.", "化工品出口知识中心。"),
+          lang,
+        )}
+        text={tx(
+          t(
+            "Practical information for buyers who need product supply, DG documents, packing and shipment execution from China.",
+            "为需要中国化工品供应、危品单证、包装和出运执行的买家提供实用信息。",
+          ),
+          lang,
+        )}
+      />
+      <section className="section">
+        <div className="container">
+          <div className="article-grid">
+            {articles.map((a) => (
+              <article key={tx(a.title, "en")}>
+                <span>{tx(a.tag, lang)}</span>
+                <h3>{tx(a.title, lang)}</h3>
+                <p>{tx(a.text, lang)}</p>
+                <button onClick={() => go("contact")}>
+                  {tx(t("Ask Our Team →", "咨询团队 →"), lang)}
+                </button>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+      <section className="section muted">
+        <div className="container faq">
+          <SectionTop
+            kicker="FAQ"
+            title={tx(
+              t(
+                "Questions buyers ask before shipment.",
+                "买家出运前常问的问题。",
+              ),
+              lang,
+            )}
+          />
+          {faqs.map((q) => (
+            <details key={tx(q, "en")}>
+              <summary>{tx(q, lang)}</summary>
+              <p>
+                {tx(
+                  t(
+                    "Yes. Our team will check the product class, packing method, destination port and documents required before quotation and shipment arrangement.",
+                    "可以。我们会在报价和出运安排前核对产品类别、包装方式、目的港和所需单证。",
+                  ),
+                  lang,
+                )}
+              </p>
+            </details>
+          ))}
+        </div>
+      </section>
     </main>
   );
 }
 
-function InsightsPage({ go }: { go: (page: Page) => void }) {
+function ContactPage({ lang }: { lang: Lang }) {
   return (
     <main className="page">
-      <PageHero kicker="Insights" title="Chemical export knowledge center." text="Practical information for buyers who need product supply, DG documents, packing and shipment execution from China." />
-      <section className="section"><div className="container"><div className="article-grid">{articles.map((a) => <article key={a.title}><span>{a.tag}</span><h3>{a.title}</h3><p>{a.text}</p><button onClick={() => go("contact")}>Ask Our Team →</button></article>)}</div></div></section>
-      <section className="section muted"><div className="container faq"><SectionTop kicker="FAQ" title="Questions buyers ask before shipment." />{faqs.map((q) => <details key={q}><summary>{q}</summary><p>Yes. Our team will check the product class, packing method, destination port and documents required before quotation and shipment arrangement.</p></details>)}</div></section>
+      <PageHero
+        kicker={tx(t("Contact", "联系"), lang)}
+        title={tx(
+          t(
+            "Request product, packing and freight quotation.",
+            "获取产品、包装与运费报价。",
+          ),
+          lang,
+        )}
+        text={tx(
+          t(
+            "Send product name, quantity, destination port and packing preference. We will prepare a structured export quotation.",
+            "发送产品名称、数量、目的港和包装偏好，我们将准备结构化出口报价。",
+          ),
+          lang,
+        )}
+      />
+      <section className="section">
+        <div className="container contact-layout">
+          <div className="contact-card">
+            <h2>{tx(t("Inquiry Information", "询盘信息"), lang)}</h2>
+            <input
+              placeholder={tx(
+                t("Product name / CAS / UN No.", "产品名称 / CAS / UN编号"),
+                lang,
+              )}
+            />
+            <input
+              placeholder={tx(
+                t("Quantity, e.g. 1 FCL / 80 MT", "数量，例如 1柜 / 80吨"),
+                lang,
+              )}
+            />
+            <input
+              placeholder={tx(
+                t("Destination port / country", "目的港 / 国家"),
+                lang,
+              )}
+            />
+            <select>
+              <option>{tx(t("Packing preference", "包装偏好"), lang)}</option>
+              <option>ISO Tank</option>
+              <option>UN Drums</option>
+              <option>IBC</option>
+              <option>{tx(t("Need recommendation", "需要推荐"), lang)}</option>
+            </select>
+            <textarea
+              placeholder={tx(
+                t(
+                  "Additional requirements: purity, documents, label, Incoterms...",
+                  "其他要求：纯度、单证、标签、贸易术语...",
+                ),
+                lang,
+              )}
+            />
+            <button className="blue-btn">
+              {tx(t("Submit Inquiry", "提交询盘"), lang)}
+            </button>
+          </div>
+          <div className="contact-side">
+            <p className="eyebrow">
+              {tx(t("Fast Quote Checklist", "快速报价清单"), lang)}
+            </p>
+            <h2>{tx(t("What to prepare?", "需要准备什么？"), lang)}</h2>
+            <ul>
+              <li>
+                {tx(
+                  t(
+                    "Product name and target specification",
+                    "产品名称和目标规格",
+                  ),
+                  lang,
+                )}
+              </li>
+              <li>
+                {tx(t("Quantity and packing method", "数量和包装方式"), lang)}
+              </li>
+              <li>
+                {tx(
+                  t("Destination port and Incoterms", "目的港和贸易术语"),
+                  lang,
+                )}
+              </li>
+              <li>
+                {tx(t("Required documents and labels", "所需单证和标签"), lang)}
+              </li>
+              <li>
+                {tx(
+                  t(
+                    "Delivery schedule and repeat order plan",
+                    "交付计划和复购计划",
+                  ),
+                  lang,
+                )}
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
     </main>
   );
 }
 
-function ContactPage() {
+function CaseFeature({
+  c,
+  lang,
+  selected,
+}: {
+  c: CaseItem;
+  lang: Lang;
+  selected?: boolean;
+}) {
   return (
-    <main className="page">
-      <PageHero kicker="Contact" title="Request product, packing and freight quotation." text="Send product name, quantity, destination port and packing preference. We will prepare a structured export quotation." />
-      <section className="section"><div className="container contact-layout"><div className="contact-card"><h2>Inquiry Information</h2><input placeholder="Product name / CAS / UN No." /><input placeholder="Quantity, e.g. 1 FCL / 80 MT" /><input placeholder="Destination port / country" /><select><option>Packing preference</option><option>ISO Tank</option><option>UN Drums</option><option>IBC</option><option>Need recommendation</option></select><textarea placeholder="Additional requirements: purity, documents, label, Incoterms..." /><button className="blue-btn">Submit Inquiry</button></div><div className="contact-side"><p className="eyebrow">Fast Quote Checklist</p><h2>What to prepare?</h2><ul><li>Product name and target specification</li><li>Quantity and packing method</li><li>Destination port and Incoterms</li><li>Required documents and labels</li><li>Delivery schedule and repeat order plan</li></ul></div></div></section>
-    </main>
+    <div className="case-feature case-detail-feature">
+      <div className="case-feature-main">
+        <div>
+          <p className="eyebrow green">
+            {selected
+              ? tx(t("Selected Case", "当前案例"), lang)
+              : tx(t("Featured Case", "精选案例"), lang)}
+          </p>
+          <h2>{tx(c.product, lang)}</h2>
+          <p>{tx(c.result, lang)}</p>
+        </div>
+        <div className="case-feature-stats">
+          <div>
+            <small>{tx(t("Volume", "数量"), lang)}</small>
+            <b>{c.volume}</b>
+          </div>
+          <div>
+            <small>{tx(t("Packing", "包装"), lang)}</small>
+            <b>{tx(c.packing, lang)}</b>
+          </div>
+          <div>
+            <small>{tx(t("Destination Port", "目的港"), lang)}</small>
+            <b>{c.port}</b>
+          </div>
+        </div>
+      </div>
+      <div className="case-feature-side route-panel">
+        <p className="eyebrow">{tx(t("Export Route", "出口路线"), lang)}</p>
+        <div className="route-line">
+          <span>{tx(t("China Port", "中国港口"), lang)}</span>
+          <i />
+          <span>{c.port}</span>
+        </div>
+        <Info
+          label={tx(t("Country", "国家"), lang)}
+          value={tx(c.country, lang)}
+        />
+        <Info label={tx(t("Route", "路线"), lang)} value={tx(c.route, lang)} />
+        <Info label={tx(t("Timeline", "周期"), lang)} value={c.timeline} />
+        <Info
+          label={tx(t("Execution Scope", "执行范围"), lang)}
+          value={tx(c.scope, lang)}
+        />
+      </div>
+    </div>
   );
 }
-
-function SectionTop({ kicker, title, action, onClick }: { kicker: string; title: string; action?: string; onClick?: () => void }) {
-  return <div className="section-top"><div><p className="eyebrow">{kicker}</p><h2>{title}</h2></div>{action && <button className="outline-btn" onClick={onClick}>{action}</button>}</div>;
+function CaseCard({ c, lang }: { c: CaseItem; lang: Lang }) {
+  return (
+    <article className="case-study-card">
+      <div className="case-study-head">
+        <span>{tx(c.country, lang)}</span>
+        <b>{c.timeline}</b>
+      </div>
+      <h3>{tx(c.product, lang)}</h3>
+      <div className="case-meta">
+        <div>
+          <small>{tx(t("Volume", "数量"), lang)}</small>
+          <b>{c.volume}</b>
+        </div>
+        <div>
+          <small>{tx(t("Packing", "包装"), lang)}</small>
+          <b>{tx(c.packing, lang)}</b>
+        </div>
+        <div>
+          <small>{tx(t("Port", "港口"), lang)}</small>
+          <b>{c.port}</b>
+        </div>
+      </div>
+      <p>{tx(c.result, lang)}</p>
+      <strong>{tx(c.scope, lang)}</strong>
+    </article>
+  );
 }
-
-function PageHero({ kicker, title, text }: { kicker: string; title: string; text: string }) {
-  return <section className="page-hero"><div className="container"><p className="eyebrow">{kicker}</p><h1>{title}</h1><p>{text}</p></div></section>;
+function SectionTop({
+  kicker,
+  title,
+  action,
+  onClick,
+}: {
+  kicker: string;
+  title: string;
+  action?: string;
+  onClick?: () => void;
+}) {
+  return (
+    <div className="section-top">
+      <div>
+        <p className="eyebrow">{kicker}</p>
+        <h2>{title}</h2>
+      </div>
+      {action && (
+        <button className="outline-btn" onClick={onClick}>
+          {action}
+        </button>
+      )}
+    </div>
+  );
 }
-
-function ServiceCard({ title, text, icon }: { title: string; text: string; icon: string }) {
-  return <div className="service-card"><span>{icon}</span><h3>{title}</h3><p>{text}</p></div>;
+function PageHero({
+  kicker,
+  title,
+  text,
+}: {
+  kicker: string;
+  title: string;
+  text: string;
+}) {
+  return (
+    <section className="page-hero">
+      <div className="page-hero-bg" />
+      <div className="container">
+        <p className="eyebrow green">{kicker}</p>
+        <h1>{title}</h1>
+        <p>{text}</p>
+      </div>
+    </section>
+  );
 }
-
-function ProductCard({ product, onClick }: { product: Product; onClick: () => void }) {
-  return <button className="product-card" onClick={onClick}><p>{product.category}</p><h3>{product.name}</h3><div><span>CAS {product.cas}</span><span>UN {product.un}</span></div><b>{product.packing}</b></button>;
+function ServiceMini({
+  service,
+  lang,
+  onClick,
+}: {
+  service: Service;
+  lang: Lang;
+  onClick?: () => void;
+}) {
+  return (
+    <button type="button" className="service-mini" onClick={onClick}>
+      <span>{service.icon}</span>
+      <b>{tx(service.title, lang)}</b>
+      <small>{tx(service.text, lang)}</small>
+    </button>
+  );
 }
-
+function ServiceCard({ service, lang }: { service: Service; lang: Lang }) {
+  return (
+    <div className="service-card">
+      <span>{service.icon}</span>
+      <h3>{tx(service.title, lang)}</h3>
+      <p>{tx(service.text, lang)}</p>
+    </div>
+  );
+}
+function CatalogCard({
+  product,
+  lang,
+  onView,
+}: {
+  product: Product;
+  lang: Lang;
+  onView: () => void;
+}) {
+  return (
+    <article className="catalog-card">
+      <div className="catalog-icon">{product.icon}</div>
+      <h3>{tx(product.name, lang)}</h3>
+      <div className="chip-row">
+        <span>CAS {product.cas}</span>
+        <span>UN {product.un}</span>
+      </div>
+      <p>{tx(t("Appearance: Colorless liquid", "外观：无色液体"), lang)}</p>
+      <p>
+        {tx(t("Purity:", "纯度："), lang)} ≥ {product.purity}
+      </p>
+      <p>
+        {tx(t("Packing:", "包装："), lang)} {tx(product.packing, lang)}
+      </p>
+      <button onClick={onView}>
+        {tx(t("View Details →", "查看详情 →"), lang)}
+      </button>
+    </article>
+  );
+}
+function ProductDetailModal({
+  product,
+  lang,
+  onClose,
+  onQuote,
+}: {
+  product: Product;
+  lang: Lang;
+  onClose: () => void;
+  onQuote: () => void;
+}) {
+  const sheet = productDataSheet(product, lang);
+  return (
+    <div
+      className="modal-backdrop"
+      role="dialog"
+      aria-modal="true"
+      aria-label={`${tx(product.name, lang)} product details`}
+    >
+      <div className="product-modal">
+        <button
+          className="modal-close"
+          onClick={onClose}
+          aria-label="Close product details"
+        >
+          ×
+        </button>
+        <div className="modal-head">
+          <div className="catalog-icon">{product.icon}</div>
+          <div>
+            <p className="eyebrow">
+              {tx(t("Product Detail", "产品详情"), lang)}
+            </p>
+            <h2>{tx(product.name, lang)}</h2>
+            <div className="chip-row">
+              <span>CAS {product.cas}</span>
+              <span>UN {product.un}</span>
+              <span>{tx(product.category, lang)}</span>
+            </div>
+          </div>
+        </div>
+        <div className="modal-grid">
+          <div className="detail-panel">
+            <h3>{tx(t("Product Information", "产品信息"), lang)}</h3>
+            {sheet.map((item) => (
+              <Info key={item.label} label={item.label} value={item.value} />
+            ))}
+          </div>
+          <div className="detail-panel dark-panel">
+            <h3>{tx(t("Export Support", "出口支持"), lang)}</h3>
+            <p>{tx(product.application, lang)}</p>
+            <div className="document-list">
+              {[
+                "MSDS",
+                "COA",
+                "TDS",
+                tx(t("DG Declaration Support", "危申报支持"), lang),
+              ].map((doc) => (
+                <div key={doc}>
+                  <b>{doc}</b>
+                  <span>
+                    {tx(t("Available Upon Request", "可按需提供"), lang)}
+                  </span>
+                </div>
+              ))}
+            </div>
+            <button className="blue-btn" onClick={onQuote}>
+              {tx(t("Request Quote For This Product", "获取该产品报价"), lang)}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+function productDataSheet(product: Product, lang: Lang) {
+  const hsByCategory: Record<string, string> = {
+    "Aromatic Solvents": "2902.30 / 2902.44",
+    Alcohols: "2905.11 / 2905.12",
+    Esters: "2915.31 / 2915.33",
+    Ketones: "2914.11 / 2914.12",
+    Feedstocks: "2902.20 / 2902.50",
+    Amides: "2924.19",
+  };
+  const tankOnly =
+    tx(product.packing, "en").includes("ISO Tank") &&
+    !tx(product.packing, "en").includes("Drums");
+  return [
+    { label: tx(t("CAS Number", "CAS号"), lang), value: product.cas },
+    { label: tx(t("UN Number", "UN编号"), lang), value: product.un },
+    {
+      label: tx(t("HS Code", "HS编码"), lang),
+      value:
+        hsByCategory[tx(product.category, "en")] ||
+        tx(t("To be confirmed", "待确认"), lang),
+    },
+    {
+      label: tx(t("Appearance", "外观"), lang),
+      value: tx(t("Colorless transparent liquid", "无色透明液体"), lang),
+    },
+    { label: tx(t("Purity", "纯度"), lang), value: `≥ ${product.purity}` },
+    { label: tx(t("Packing", "包装"), lang), value: tx(product.packing, lang) },
+    {
+      label: tx(t("Shelf Life", "保质期"), lang),
+      value: tx(
+        t("12 months under proper storage", "规范储存条件下12个月"),
+        lang,
+      ),
+    },
+    {
+      label: tx(t("Loading Qty", "装载量"), lang),
+      value: tankOnly
+        ? "20–24 MT / ISO Tank"
+        : tx(
+            t(
+              "16–22 MT / 20GP, subject to packing",
+              "16–22吨 / 20GP，视包装而定",
+            ),
+            lang,
+          ),
+    },
+  ];
+}
 function Info({ label, value }: { label: string; value: string }) {
-  return <div className="info"><small>{label}</small><strong>{value}</strong></div>;
+  return (
+    <div className="info">
+      <small>{label}</small>
+      <strong>{value}</strong>
+    </div>
+  );
 }
-
-function CTA({ go }: { go: (page: Page) => void }) {
-  return <section className="cta"><div className="container"><h2>Need chemical supply with DG export execution?</h2><p>Send product, quantity and destination port. We will check supply, packing, documents and freight plan.</p><button className="blue-btn" onClick={() => go("contact")}>Start Inquiry</button></div></section>;
+function CTA({ go, lang }: { go: (page: Page) => void; lang: Lang }) {
+  return (
+    <section className="cta">
+      <div className="container">
+        <h2>
+          {tx(
+            t(
+              "Need chemical supply with DG export execution?",
+              "需要化工品供应与危品出口执行？",
+            ),
+            lang,
+          )}
+        </h2>
+        <p>
+          {tx(
+            t(
+              "Send product, quantity and destination port. We will check supply, packing, documents and freight plan.",
+              "发送产品、数量和目的港，我们将核对供应、包装、单证和运费方案。",
+            ),
+            lang,
+          )}
+        </p>
+        <button className="blue-btn" onClick={() => go("contact")}>
+          {tx(t("Start Inquiry", "开始询价"), lang)}
+        </button>
+      </div>
+    </section>
+  );
 }
-
-function Footer({ go }: { go: (page: Page) => void }) {
-  return <footer><div className="container footer-grid"><div><b>ChinaDGExport</b><p>Dangerous Chemical Export Platform</p></div><div>{nav.map((n) => <button key={n.page} onClick={() => go(n.page)}>{n.label}</button>)}</div></div></footer>;
+function Footer({ go, lang }: { go: (page: Page) => void; lang: Lang }) {
+  return (
+    <footer>
+      <div className="container footer-grid">
+        <div>
+          <b>ChinaDGExport</b>
+          <p>
+            {tx(
+              t("Dangerous Chemical Export Platform", "危险化学品出口平台"),
+              lang,
+            )}
+          </p>
+        </div>
+        <div>
+          {nav.map((n) => (
+            <button key={n.page} onClick={() => go(n.page)}>
+              {tx(n.label, lang)}
+            </button>
+          ))}
+        </div>
+        <small>© 2025 ChinaDGExport. All rights reserved.</small>
+      </div>
+    </footer>
+  );
 }
