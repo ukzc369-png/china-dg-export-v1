@@ -1787,23 +1787,33 @@ footer small {
   }
 
   .hero-card button:nth-of-type(n + 4) {
-    display: none;
+    display: flex;
   }
 
   .hero-card::after {
-    content: "+ Customs, Port Coordination & Ocean Freight";
-    display: block;
-    margin-top: 10px;
-    padding-top: 12px;
-    border-top: 1px solid rgba(255, 255, 255, 0.13);
-    color: #b9c9dc;
-    font-size: 12px;
-    font-weight: 700;
-    line-height: 1.45;
+    content: none;
+    display: none;
   }
 
   .home-overview {
     border-top: 0;
+  }
+}
+
+/* Mobile hero scope refinement: show all service items cleanly instead of truncating the last line. */
+@media (max-width: 660px) {
+  .hero-card {
+    overflow: visible;
+  }
+
+  .hero-card button {
+    min-height: 46px;
+    line-height: 1.35;
+    white-space: normal;
+  }
+
+  .hero-card span {
+    flex: 0 0 25px;
   }
 }
 
