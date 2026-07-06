@@ -35,6 +35,41 @@ export async function onRequestPost(context: any) {
         <p>${body.message}</p>
       `,
     });
+        if (body.email) {
+      await resend.emails.send({
+        from: "ChinaDGExport <onboarding@resend.dev>",
+        to: [body.email],
+        subject: "Thank you for contacting ChinaDGExport",
+        html: `
+          <h2>Thank you for your inquiry</h2>
+
+          <p>Dear ${body.name || "Customer"},</p>
+
+          <p>
+            Thank you for contacting ChinaDGExport.
+            We have received your inquiry and our export team will review your request shortly.
+          </p>
+
+          <h3>Your Inquiry Summary</h3>
+          <p><b>Product:</b> ${body.product || "-"}</p>
+          <p><b>Quantity:</b> ${body.quantity || "-"}</p>
+          <p><b>Destination:</b> ${body.destination || "-"}</p>
+          <p><b>Packing:</b> ${body.packing || "-"}</p>
+
+          <p>
+            We will contact you within 24 hours by email or your preferred contact method.
+          </p>
+
+          <hr />
+
+          <p>
+            Best regards,<br/>
+            ChinaDGExport<br/>
+            Dangerous Chemical Export Platform
+          </p>
+        `,
+      });
+    }
 
     return Response.json({
       success: true,
