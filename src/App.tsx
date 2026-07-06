@@ -1301,12 +1301,44 @@ const [formData, setFormData] = useState({
       return;
     }
 
-    setIsSubmitting(true);
+setIsSubmitting(true);
+setSubmitSuccess(false);
 
-    setTimeout(() => {
-      setSubmitSuccess(true);
-      setIsSubmitting(false);
-    }, 1000);
+fetch("/api/inquiry", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify(formData),
+})
+  .then(async (res) => {
+    if (!res.ok) {
+      throw new Error("Submit failed");
+    }
+    return res.json();
+  })
+  .then(() => {
+    setSubmitSuccess(true);
+
+    setFormData({
+      name: "",
+      email: "",
+      company: "",
+      contact: "",
+      product: "",
+      quantity: "",
+      destination: "",
+      packing: "",
+      message: "",
+    });
+  })
+  .catch((err) => {
+    console.error(err);
+    alert("Submit failed");
+  })
+  .finally(() => {
+    setIsSubmitting(false);
+  });
   };
   return (
     <main className="page">
