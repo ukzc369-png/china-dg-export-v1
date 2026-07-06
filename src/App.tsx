@@ -1268,13 +1268,18 @@ function InsightsPage({ go, lang }: { go: (page: Page) => void; lang: Lang }) {
 
 function ContactPage({ lang }: { lang: Lang }) {
 
-  const [formData, setFormData] = useState({
-    product: "",
-    quantity: "",
-    destination: "",
-    packing: "",
-    message: "",
-  });
+const [formData, setFormData] = useState({
+  name: "",
+  email: "",
+  company: "",
+  contact: "",
+
+  product: "",
+  quantity: "",
+  destination: "",
+  packing: "",
+  message: "",
+});
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -1326,6 +1331,39 @@ function ContactPage({ lang }: { lang: Lang }) {
         <div className="container contact-layout">
           <div className="contact-card">
             <h2>{tx(t("Inquiry Information", "询盘信息"), lang)}</h2>
+ <input
+  name="name"
+  value={formData.name}
+  onChange={handleChange}
+  placeholder={tx(t("Your name", "您的姓名"), lang)}
+/>
+
+<input
+  name="email"
+  value={formData.email}
+  onChange={handleChange}
+  placeholder={tx(t("Email address", "邮箱地址"), lang)}
+/>
+
+<input
+  name="company"
+  value={formData.company}
+  onChange={handleChange}
+  placeholder={tx(t("Company name", "公司名称"), lang)}
+/>
+
+<input
+  name="contact"
+  value={formData.contact}
+  onChange={handleChange}
+  placeholder={tx(
+    t(
+      "WhatsApp / WeChat / Phone",
+      "WhatsApp / 微信 / 电话"
+    ),
+    lang
+  )}
+/>           
 <input
   name="product"
   value={formData.product}
