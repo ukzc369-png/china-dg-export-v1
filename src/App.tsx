@@ -1267,6 +1267,42 @@ function InsightsPage({ go, lang }: { go: (page: Page) => void; lang: Lang }) {
 }
 
 function ContactPage({ lang }: { lang: Lang }) {
+
+  const [formData, setFormData] = useState({
+    product: "",
+    quantity: "",
+    destination: "",
+    packing: "",
+    message: "",
+  });
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = () => {
+
+    if (!formData.product) {
+      alert("Please enter product information");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    setTimeout(() => {
+      setSubmitSuccess(true);
+      setIsSubmitting(false);
+    }, 1000);
+  };
   return (
     <main className="page">
       <PageHero
@@ -1290,33 +1326,49 @@ function ContactPage({ lang }: { lang: Lang }) {
         <div className="container contact-layout">
           <div className="contact-card">
             <h2>{tx(t("Inquiry Information", "询盘信息"), lang)}</h2>
-            <input
-              placeholder={tx(
-                t("Product name / CAS / UN No.", "产品名称 / CAS / UN编号"),
-                lang,
-              )}
-            />
-            <input
-              placeholder={tx(
+<input
+  name="product"
+  value={formData.product}
+  onChange={handleChange}
+  placeholder={tx(
+    t("Product name / CAS / UN No.", "产品名称 / CAS / UN编号"),
+    lang,
+  )}
+/>
+           <input
+  name="quantity"
+  value={formData.quantity}
+  onChange={handleChange}
+  placeholder={tx(
                 t("Quantity, e.g. 1 FCL / 80 MT", "数量，例如 1柜 / 80吨"),
                 lang,
               )}
             />
-            <input
-              placeholder={tx(
+<input
+  name="destination"
+  value={formData.destination}
+  onChange={handleChange}
+  placeholder={tx(
                 t("Destination port / country", "目的港 / 国家"),
                 lang,
               )}
             />
-            <select>
+<select
+  name="packing"
+  value={formData.packing}
+  onChange={handleChange}
+>
               <option>{tx(t("Packing preference", "包装偏好"), lang)}</option>
               <option>ISO Tank</option>
               <option>UN Drums</option>
               <option>IBC</option>
               <option>{tx(t("Need recommendation", "需要推荐"), lang)}</option>
             </select>
-            <textarea
-              placeholder={tx(
+ <textarea
+  name="message"
+  value={formData.message}
+  onChange={handleChange}
+  placeholder={tx(
                 t(
                   "Additional requirements: purity, documents, label, Incoterms...",
                   "其他要求：纯度、单证、标签、贸易术语...",
@@ -1324,9 +1376,22 @@ function ContactPage({ lang }: { lang: Lang }) {
                 lang,
               )}
             />
-            <button className="blue-btn">
-              {tx(t("Submit Inquiry", "提交询盘"), lang)}
-            </button>
+<button className="blue-btn" onClick={handleSubmit} disabled={isSubmitting}>
+  {isSubmitting
+    ? tx(t("Submitting...", "提交中..."), lang)
+    : tx(t("Submit Inquiry", "提交询盘"), lang)}
+</button>
+{submitSuccess && (
+  <p className="form-success">
+    {tx(
+      t(
+        "Inquiry submitted successfully. We will contact you shortly.",
+        "询盘已提交成功，我们会尽快联系您。"
+      ),
+      lang
+    )}
+  </p>
+)}
           </div>
           <div className="contact-side">
             <p className="eyebrow">
