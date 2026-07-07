@@ -1270,22 +1270,19 @@ function InsightsPage({ go, lang }: { go: (page: Page) => void; lang: Lang }) {
 }
 
 function ContactPage({ lang }: { lang: Lang }) {
-
-const [formData, setFormData] = useState({
-  name: "",
-  email: "",
-  company: "",
-  contact: "",
-
-  product: "",
-  quantity: "",
-  destination: "",
-  packing: "",
-  message: "",
-});
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    company: "",
+    contact: "",
+    product: "",
+    quantity: "",
+    destination: "",
+    packing: "",
+    message: "",
+  });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-
   const [submitSuccess, setSubmitSuccess] = useState(false);
 
   const handleChange = (
@@ -1298,228 +1295,244 @@ const [formData, setFormData] = useState({
   };
 
   const handleSubmit = () => {
-
     if (!formData.product) {
       alert("Please enter product information");
       return;
     }
 
-setIsSubmitting(true);
-setSubmitSuccess(false);
+    setIsSubmitting(true);
+    setSubmitSuccess(false);
 
-fetch("/api/inquiry", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify(formData),
-})
-  .then(async (res) => {
-    if (!res.ok) {
-      throw new Error("Submit failed");
-    }
-    return res.json();
-  })
-.then(() => {
-  setSubmitSuccess(true);
-setTimeout(() => {
-  setSubmitSuccess(false);
-}, 3000);
+    fetch("/api/inquiry", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    })
+      .then(async (res) => {
+        if (!res.ok) {
+          throw new Error("Submit failed");
+        }
+        return res.json();
+      })
+      .then(() => {
+        setSubmitSuccess(true);
 
+        setTimeout(() => {
+          setSubmitSuccess(false);
+        }, 3000);
 
-  setFormData({
-      name: "",
-      email: "",
-      company: "",
-      contact: "",
-      product: "",
-      quantity: "",
-      destination: "",
-      packing: "",
-      message: "",
-    });
-  })
-  .catch((err) => {
-    console.error(err);
-    alert("Submit failed");
-  })
-  .finally(() => {
-    setIsSubmitting(false);
-  });
+        setFormData({
+          name: "",
+          email: "",
+          company: "",
+          contact: "",
+          product: "",
+          quantity: "",
+          destination: "",
+          packing: "",
+          message: "",
+        });
+      })
+      .catch((err) => {
+        console.error(err);
+        alert("Submit failed");
+      })
+      .finally(() => {
+        setIsSubmitting(false);
+      });
   };
+
   return (
-    <main className="page">
-      <PageHero
-        kicker={tx(t("Contact", "联系"), lang)}
-        title={tx(
-          t(
-            "Request product, packing and freight quotation.",
-            "获取产品、包装与运费报价。",
-          ),
-          lang,
-        )}
-        text={tx(
-          t(
-            "Send product name, quantity, destination port and packing preference. We will prepare a structured export quotation.",
-            "发送产品名称、数量、目的港和包装偏好，我们将准备结构化出口报价。",
-          ),
-          lang,
-        )}
-      />
-      <section className="section">
-        <div className="container contact-layout">
-          <div className="contact-card">
-            <h2>{tx(t("Inquiry Information", "询盘信息"), lang)}</h2>
- <input
-  name="name"
-  value={formData.name}
-  onChange={handleChange}
-  placeholder={tx(t("Your name", "您的姓名"), lang)}
-/>
+    <>
+      <main className="page">
+        <PageHero
+          kicker={tx(t("Contact", "联系"), lang)}
+          title={tx(
+            t(
+              "Request product, packing and freight quotation.",
+              "获取产品、包装与运费报价。"
+            ),
+            lang
+          )}
+          text={tx(
+            t(
+              "Send product name, quantity, destination port and packing preference. We will prepare a structured export quotation.",
+              "发送产品名称、数量、目的港和包装偏好，我们将准备结构化出口报价。"
+            ),
+            lang
+          )}
+        />
 
-<input
-  name="email"
-  value={formData.email}
-  onChange={handleChange}
-  placeholder={tx(t("Email address", "邮箱地址"), lang)}
-/>
+        <section className="section">
+          <div className="container contact-layout">
+            <div className="contact-card">
+              <h2>{tx(t("Inquiry Information", "询盘信息"), lang)}</h2>
 
-<input
-  name="company"
-  value={formData.company}
-  onChange={handleChange}
-  placeholder={tx(t("Company name", "公司名称"), lang)}
-/>
+              <input
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                placeholder={tx(t("Your name", "您的姓名"), lang)}
+              />
 
-<input
-  name="contact"
-  value={formData.contact}
-  onChange={handleChange}
-  placeholder={tx(
-    t(
-      "WhatsApp / WeChat / Phone",
-      "WhatsApp / 微信 / 电话"
-    ),
-    lang
-  )}
-/>           
-<input
-  name="product"
-  value={formData.product}
-  onChange={handleChange}
-  placeholder={tx(
-    t("Product name / CAS / UN No.", "产品名称 / CAS / UN编号"),
-    lang,
-  )}
-/>
-           <input
-  name="quantity"
-  value={formData.quantity}
-  onChange={handleChange}
-  placeholder={tx(
-                t("Quantity, e.g. 1 FCL / 80 MT", "数量，例如 1柜 / 80吨"),
-                lang,
-              )}
-            />
-<input
-  name="destination"
-  value={formData.destination}
-  onChange={handleChange}
-  placeholder={tx(
-                t("Destination port / country", "目的港 / 国家"),
-                lang,
-              )}
-            />
-<select
-  name="packing"
-  value={formData.packing}
-  onChange={handleChange}
->
-              <option>{tx(t("Packing preference", "包装偏好"), lang)}</option>
-              <option>ISO Tank</option>
-              <option>UN Drums</option>
-              <option>IBC</option>
-              <option>{tx(t("Need recommendation", "需要推荐"), lang)}</option>
-            </select>
-<textarea
-  name="message"
-  value={formData.message}
-  onChange={handleChange}
-  placeholder={tx(
-    t(
-      "Additional requirements: purity, documents, label, Incoterms...",
-      "其他要求：纯度、单证、标签、贸易术语..."
-    ),
-    lang
-  )}
-></textarea>
-<button
-  className="blue-btn"
-  onClick={handleSubmit}
-  disabled={isSubmitting}
->
-  {isSubmitting
-    ? tx(t("Submitting...", "提交中..."), lang)
-    : tx(t("Submit Inquiry", "提交询盘"), lang)}
-</button>
+              <input
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder={tx(t("Email address", "邮箱地址"), lang)}
+              />
 
-{submitSuccess && (
-  <div className="success-modal-overlay">
-    <div className="success-modal">
-      <div className="success-icon">✓</div>
+              <input
+                name="company"
+                value={formData.company}
+                onChange={handleChange}
+                placeholder={tx(t("Company name", "公司名称"), lang)}
+              />
 
-      <h3>{lang === "zh" ? "提交成功" : "Inquiry Submitted"}</h3>
+              <input
+                name="contact"
+                value={formData.contact}
+                onChange={handleChange}
+                placeholder={tx(
+                  t("WhatsApp / WeChat / Phone", "WhatsApp / 微信 / 电话"),
+                  lang
+                )}
+              />
 
-      <p>
-        {lang === "zh"
-          ? "我们将在24小时内与您联系"
-          : "We will contact you within 24 hours"}
-      </p>
-    </div>
-  </div>
-)}
+              <input
+                name="product"
+                value={formData.product}
+                onChange={handleChange}
+                placeholder={tx(
+                  t("Product name / CAS / UN No.", "产品名称 / CAS / UN编号"),
+                  lang
+                )}
+              />
+
+              <input
+                name="quantity"
+                value={formData.quantity}
+                onChange={handleChange}
+                placeholder={tx(
+                  t("Quantity, e.g. 1 FCL / 80 MT", "数量，例如 1柜 / 80吨"),
+                  lang
+                )}
+              />
+
+              <input
+                name="destination"
+                value={formData.destination}
+                onChange={handleChange}
+                placeholder={tx(
+                  t("Destination port / country", "目的港 / 国家"),
+                  lang
+                )}
+              />
+
+              <select
+                name="packing"
+                value={formData.packing}
+                onChange={handleChange}
+              >
+                <option value="">
+                  {tx(t("Packing preference", "包装偏好"), lang)}
+                </option>
+                <option>ISO Tank</option>
+                <option>UN Drums</option>
+                <option>IBC</option>
+                <option>{tx(t("Need recommendation", "需要推荐"), lang)}</option>
+              </select>
+
+              <textarea
+                name="message"
+                value={formData.message}
+                onChange={handleChange}
+                placeholder={tx(
+                  t(
+                    "Additional requirements: purity, documents, label, Incoterms...",
+                    "其他要求：纯度、单证、标签、贸易术语..."
+                  ),
+                  lang
+                )}
+              ></textarea>
+
+              <button
+                className="blue-btn"
+                onClick={handleSubmit}
+                disabled={isSubmitting}
+              >
+                {isSubmitting
+                  ? tx(t("Submitting...", "提交中..."), lang)
+                  : tx(t("Submit Inquiry", "提交询盘"), lang)}
+              </button>
+            </div>
+
+            <div className="contact-side">
+              <p className="eyebrow">
+                {tx(t("Fast Quote Checklist", "快速报价清单"), lang)}
+              </p>
+
+              <h2>{tx(t("What to prepare?", "需要准备什么？"), lang)}</h2>
+
+              <ul>
+                <li>
+                  {tx(
+                    t(
+                      "Product name and target specification",
+                      "产品名称和目标规格"
+                    ),
+                    lang
+                  )}
+                </li>
+
+                <li>
+                  {tx(t("Quantity and packing method", "数量和包装方式"), lang)}
+                </li>
+
+                <li>
+                  {tx(
+                    t("Destination port and Incoterms", "目的港和贸易术语"),
+                    lang
+                  )}
+                </li>
+
+                <li>
+                  {tx(t("Required documents and labels", "所需单证和标签"), lang)}
+                </li>
+
+                <li>
+                  {tx(
+                    t(
+                      "Delivery schedule and repeat order plan",
+                      "交付计划和复购计划"
+                    ),
+                    lang
+                  )}
+                </li>
+              </ul>
+            </div>
           </div>
-          <div className="contact-side">
-            <p className="eyebrow">
-              {tx(t("Fast Quote Checklist", "快速报价清单"), lang)}
+        </section>
+      </main>
+
+      {submitSuccess && (
+        <div className="success-modal-overlay">
+          <div className="success-modal">
+            <div className="success-icon">✓</div>
+
+            <h3>{lang === "zh" ? "提交成功" : "Inquiry Submitted"}</h3>
+
+            <p>
+              {lang === "zh"
+                ? "我们将在24小时内与您联系"
+                : "We will contact you within 24 hours"}
             </p>
-            <h2>{tx(t("What to prepare?", "需要准备什么？"), lang)}</h2>
-            <ul>
-              <li>
-                {tx(
-                  t(
-                    "Product name and target specification",
-                    "产品名称和目标规格",
-                  ),
-                  lang,
-                )}
-              </li>
-              <li>
-                {tx(t("Quantity and packing method", "数量和包装方式"), lang)}
-              </li>
-              <li>
-                {tx(
-                  t("Destination port and Incoterms", "目的港和贸易术语"),
-                  lang,
-                )}
-              </li>
-              <li>
-                {tx(t("Required documents and labels", "所需单证和标签"), lang)}
-              </li>
-              <li>
-                {tx(
-                  t(
-                    "Delivery schedule and repeat order plan",
-                    "交付计划和复购计划",
-                  ),
-                  lang,
-                )}
-              </li>
-            </ul>
           </div>
         </div>
-      </section>
-    </main>
+      )}
+    </>
   );
 }
 
