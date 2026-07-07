@@ -1322,7 +1322,10 @@ fetch("/api/inquiry", {
   })
   .then(() => {
     setSubmitSuccess(true);
-
+window.scrollTo({
+  top: document.body.scrollHeight,
+  behavior: "smooth",
+});
     setFormData({
       name: "",
       email: "",
