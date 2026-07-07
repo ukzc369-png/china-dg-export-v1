@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import "./App.css";
-
+import AdminApp from "./admin/AdminApp";
 type Page =
   | "home"
   | "products"
@@ -507,6 +507,9 @@ function pageToPath(page: Page) {
 }
 
 export default function App() {
+if (window.location.pathname.startsWith("/admin")) {
+  return <AdminApp />;
+}
   const [page, setPage] = useState<Page>(() =>
     pathToPage(window.location.pathname),
   );
