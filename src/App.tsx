@@ -1455,15 +1455,27 @@ fetch("/api/inquiry", {
     : tx(t("Submit Inquiry", "提交询盘"), lang)}
 </button>
 {submitSuccess && (
-  <p className="form-success">
+  <div
+    style={{
+      marginTop: 20,
+      padding: 16,
+      background: "#f6ffed",
+      border: "1px solid #b7eb8f",
+      borderRadius: 8,
+      color: "#389e0d",
+      fontWeight: 600,
+      textAlign: "center",
+      lineHeight: 1.8,
+    }}
+  >
     {tx(
       t(
-        "Inquiry submitted successfully. We will contact you shortly.",
-        "询盘已提交成功，我们会尽快联系您。"
+        "✅ Inquiry submitted successfully! We will contact you within 24 hours.",
+        "✅ 询盘提交成功！我们将在24小时内与您联系。"
       ),
       lang
     )}
-  </p>
+  </div>
 )}
           </div>
           <div className="contact-side">
