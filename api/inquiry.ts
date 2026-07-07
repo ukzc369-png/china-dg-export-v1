@@ -28,7 +28,7 @@ export default async function handler(req: any, res: any) {
 
     const { error: dbError } = await supabase.from("inquiries").insert([
       {
-        name: body.name || "",
+        customer_name: body.name || "",
         email: body.email || "",
         company: body.company || "",
         contact: body.contact || "",
