@@ -1344,9 +1344,17 @@ function ContactPage({ lang }: { lang: Lang }) {
       });
   };
 
-  return (
-    <>
-      <main className="page">
+return (
+  <>
+{submitSuccess && (
+  <div className="success-toast">
+    <div className="success-icon">✓</div>
+    <div className="success-title">发送成功</div>
+    <div className="success-desc">我们会在24小时内联系您。</div>
+  </div>
+)}
+
+    <main className="page">
         <PageHero
           kicker={tx(t("Contact", "联系"), lang)}
           title={tx(
