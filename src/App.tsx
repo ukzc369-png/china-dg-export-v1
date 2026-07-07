@@ -1320,13 +1320,16 @@ fetch("/api/inquiry", {
     }
     return res.json();
   })
-  .then(() => {
-    setSubmitSuccess(true);
-window.scrollTo({
-  top: document.body.scrollHeight,
-  behavior: "smooth",
-});
-    setFormData({
+.then(() => {
+  setSubmitSuccess(true);
+
+  alert(
+    lang === "zh"
+      ? "询盘提交成功！我们将在24小时内与您联系。"
+      : "Inquiry submitted successfully! We will contact you within 24 hours."
+  );
+
+  setFormData({
       name: "",
       email: "",
       company: "",
