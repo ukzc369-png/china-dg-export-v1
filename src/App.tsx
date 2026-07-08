@@ -1572,6 +1572,9 @@ return (
     </div>
   </div>
 )}
+    </>
+  );
+}
 
 function CaseFeature({
   c,
