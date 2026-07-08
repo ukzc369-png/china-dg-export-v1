@@ -1346,63 +1346,7 @@ function ContactPage({ lang }: { lang: Lang }) {
 
 return (
   <>
-{submitSuccess && (
-  <div
-    style={{
-      position: "fixed",
-      top: "50%",
-      left: "50%",
-      transform: "translate(-50%, -50%)",
-      width: "420px",
-      maxWidth: "90vw",
-      background: "rgba(255,255,255,0.96)",
-      border: "2px solid #0b5ed7",
-      borderRadius: "12px",
-      padding: "28px 24px",
-      textAlign: "center",
-      boxShadow: "0 12px 40px rgba(0,0,0,0.15)",
-      zIndex: 9999,
-    }}
-  >
-    <div
-      style={{
-        width: "64px",
-        height: "64px",
-        margin: "0 auto 16px",
-        borderRadius: "50%",
-        border: "3px solid #22c55e",
-        color: "#22c55e",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        fontSize: "34px",
-        fontWeight: 700,
-      }}
-    >
-      ✓
-    </div>
 
-    <div
-      style={{
-        fontSize: "22px",
-        fontWeight: 700,
-        color: "#0b5ed7",
-      }}
-    >
-      发送成功
-    </div>
-
-    <div
-      style={{
-        marginTop: "10px",
-        color: "#6b7280",
-        fontSize: "14px",
-      }}
-    >
-      我们会在24小时内联系您。
-    </div>
-  </div>
-)}
 
     <main className="page">
         <PageHero
