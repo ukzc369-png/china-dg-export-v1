@@ -1347,7 +1347,6 @@ function ContactPage({ lang }: { lang: Lang }) {
 return (
   <>
 
-
     <main className="page">
         <PageHero
           kicker={tx(t("Contact", "联系"), lang)}
@@ -1519,24 +1518,60 @@ return (
         </section>
       </main>
 
-      {submitSuccess && (
-        <div className="success-modal-overlay">
-          <div className="success-modal">
-            <div className="success-icon">✓</div>
+{submitSuccess && (
+  <div
+    style={{
+      position: "fixed",
+      inset: 0,
+      background: "rgba(0,0,0,0.28)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      zIndex: 99999,
+    }}
+  >
+    <div
+      style={{
+        width: "420px",
+        maxWidth: "90vw",
+        background: "rgba(255,255,255,0.96)",
+        border: "2px solid #0b5ed7",
+        borderRadius: "16px",
+        padding: "36px 32px",
+        textAlign: "center",
+        boxShadow: "0 20px 50px rgba(0,0,0,0.18)",
+      }}
+    >
+      <div
+        style={{
+          width: "68px",
+          height: "68px",
+          margin: "0 auto 18px",
+          borderRadius: "50%",
+          border: "3px solid #16a34a",
+          color: "#16a34a",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: "36px",
+          fontWeight: 700,
+        }}
+      >
+        ✓
+      </div>
 
-            <h3>{lang === "zh" ? "提交成功" : "Inquiry Submitted"}</h3>
+      <h3 style={{ margin: 0, color: "#0b5ed7", fontSize: "26px" }}>
+        {lang === "zh" ? "发送成功" : "Inquiry Sent"}
+      </h3>
 
-            <p>
-              {lang === "zh"
-                ? "我们将在24小时内与您联系"
-                : "We will contact you within 24 hours"}
-            </p>
-          </div>
-        </div>
-      )}
-    </>
-  );
-}
+      <p style={{ marginTop: "12px", color: "#4b5563", fontSize: "15px" }}>
+        {lang === "zh"
+          ? "我们会在24小时内联系您。"
+          : "We will contact you within 24 hours."}
+      </p>
+    </div>
+  </div>
+)}
 
 function CaseFeature({
   c,
