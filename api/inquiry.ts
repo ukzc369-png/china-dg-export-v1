@@ -6,7 +6,7 @@ function escapeHtml(value: unknown) {
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
+    .replace(/\"/g, "&quot;")
     .replace(/'/g, "&#039;");
 }
 
@@ -29,12 +29,7 @@ export default async function handler(req: any, res: any) {
       });
     }
 
-    if (!resendApiKey) {
-      return res.status(500).json({
-        success: false,
-        error: "Missing RESEND_API_KEY",
-      });
-    }
+    const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
     const inquiryMessage = [
       `Product: ${body.product || "-"}`,
@@ -46,8 +41,6 @@ export default async function handler(req: any, res: any) {
       body.message || "-",
     ].join("\n");
 
-    const supabase = createClient(supabaseUrl, supabaseAnonKey);
-
     const { error: dbError } = await supabase.from("inquiries").insert([
       {
         customer_name: body.name || "",
@@ -58,6 +51,7 @@ export default async function handler(req: any, res: any) {
         quantity: body.quantity || "",
         destination: body.destination || "",
         packing: body.packing || "",
+        country: body.destination || "",
         message: inquiryMessage,
         status: "new",
       },
@@ -67,36 +61,34 @@ export default async function handler(req: any, res: any) {
       return res.status(500).json({ success: false, error: dbError.message });
     }
 
-    const resend = new Resend(resendApiKey);
-
-    const { error: mailError } = await resend.emails.send({
-      from: "ChinaDGExport <onboarding@resend.dev>",
-      to: ["ukcz369@gmail.com"],
-      subject: `New Inquiry - ${body.product || "Unknown Product"}`,
-      html: `
-        <h2>New Inquiry Received</h2>
-        <h3>Customer Information</h3>
-        <p><b>Name:</b> ${escapeHtml(body.name)}</p>
-        <p><b>Email:</b> ${escapeHtml(body.email)}</p>
-        <p><b>Company:</b> ${escapeHtml(body.company)}</p>
-        <p><b>Contact:</b> ${escapeHtml(body.contact)}</p>
-        <hr />
-        <h3>Inquiry Details</h3>
-        <p><b>Product:</b> ${escapeHtml(body.product)}</p>
-        <p><b>Quantity:</b> ${escapeHtml(body.quantity)}</p>
-        <p><b>Destination:</b> ${escapeHtml(body.destination)}</p>
-        <p><b>Packing:</b> ${escapeHtml(body.packing)}</p>
-        <hr />
-        <h3>Message</h3>
-        <p>${escapeHtml(body.message).replace(/\n/g, "<br />")}</p>
-      `,
-    });
-
-    if (mailError) {
-      return res.status(500).json({
-        success: false,
-        error: mailError.message || "Failed to send notification email",
-      });
+    if (resendApiKey) {
+      try {
+        const resend = new Resend(resendApiKey);
+        await resend.emails.send({
+          from: "ChinaDGExport <onboarding@resend.dev>",
+          to: ["ukcz369@gmail.com"],
+          subject: `New Inquiry - ${body.product || "Unknown Product"}`,
+          html: `
+            <h2>New Inquiry Received</h2>
+            <h3>Contact Information</h3>
+            <p><b>Name:</b> ${escapeHtml(body.name)}</p>
+            <p><b>Email:</b> ${escapeHtml(body.email)}</p>
+            <p><b>Company:</b> ${escapeHtml(body.company)}</p>
+            <p><b>Contact:</b> ${escapeHtml(body.contact)}</p>
+            <hr />
+            <h3>Inquiry Details</h3>
+            <p><b>Product:</b> ${escapeHtml(body.product)}</p>
+            <p><b>Quantity:</b> ${escapeHtml(body.quantity)}</p>
+            <p><b>Destination:</b> ${escapeHtml(body.destination)}</p>
+            <p><b>Packing:</b> ${escapeHtml(body.packing)}</p>
+            <hr />
+            <h3>Message</h3>
+            <p>${escapeHtml(body.message).replace(/\n/g, "<br />")}</p>
+          `,
+        });
+      } catch (emailError) {
+        console.error("Inquiry saved, but email notification failed:", emailError);
+      }
     }
 
     return res.status(200).json({ success: true });
