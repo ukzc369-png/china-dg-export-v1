@@ -1891,3 +1891,121 @@ box-shadow:0 4px 20px rgba(0,0,0,.08);
     transform: scale(1);
   }
 }
+.success-modal-overlay {
+  position: fixed !important;
+  inset: 0 !important;
+  background: rgba(0, 0, 0, 0.28) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 99999 !important;
+}
+
+.success-modal {
+  width: 420px !important;
+  max-width: 90vw !important;
+  background: rgba(255, 255, 255, 0.96) !important;
+  border: 2px solid #0b5ed7 !important;
+  border-radius: 16px !important;
+  padding: 34px 32px !important;
+  text-align: center !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.18) !important;
+}
+
+.success-icon {
+  width: 68px !important;
+  height: 68px !important;
+  margin: 0 auto 18px !important;
+  border-radius: 50% !important;
+  border: 3px solid #16a34a !important;
+  color: #16a34a !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 36px !important;
+  font-weight: 700 !important;
+}
+
+.success-modal h3 {
+  margin: 0 !important;
+  color: #0b5ed7 !important;
+  font-size: 26px !important;
+  font-weight: 700 !important;
+}
+
+.success-modal p {
+  margin: 12px 0 0 !important;
+  color: #4b5563 !important;
+  font-size: 15px !important;
+  line-height: 1.6 !important;
+}
+
+/* Article detail page */
+.article-detail {
+  max-width: 860px;
+}
+
+.text-link {
+  border: 0;
+  background: transparent;
+  color: #0b7cff;
+  font-weight: 800;
+  padding: 0;
+  margin-bottom: 28px;
+}
+
+.article-detail article {
+  background: #fff;
+  border: 1px solid #dce6f1;
+  border-radius: 16px;
+  padding: 34px;
+  box-shadow: 0 18px 46px rgba(8, 32, 70, 0.06);
+}
+
+.article-detail article p {
+  color: #33445a;
+  font-size: 16px;
+  line-height: 1.85;
+  margin: 0 0 18px;
+}
+
+.article-cta {
+  margin-top: 24px;
+  background: #06152f;
+  color: #fff;
+  border-radius: 16px;
+  padding: 30px 34px;
+}
+
+.article-cta h3 {
+  font-size: 26px;
+  line-height: 1.15;
+  letter-spacing: -0.035em;
+  margin: 0 0 12px;
+}
+
+.article-cta p {
+  color: #dbe6f2;
+  line-height: 1.7;
+  margin: 0 0 20px;
+}
+
+.article-cta button {
+  border: 0;
+  background: #0b7cff;
+  color: #fff;
+  padding: 13px 18px;
+  border-radius: 7px;
+  font-weight: 800;
+}
+
+.section-heading {
+  margin-bottom: 28px;
+}
+
+.section-heading h2 {
+  font-size: 40px;
+  line-height: 1.05;
+  letter-spacing: -0.05em;
+  margin: 0;
+}

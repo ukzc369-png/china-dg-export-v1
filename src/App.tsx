@@ -34,7 +34,15 @@ type CmsProduct = {
   status: string | null;
   created_at: string;
 };
-
+type Article = {
+  title: I18n;
+  tag: I18n;
+  text: I18n;
+  slug: string;
+  content: I18n;
+  seoTitle: I18n;
+  seoDescription: I18n;
+};
 type CmsArticle = {
   id: number;
   title: string;
@@ -528,7 +536,7 @@ function cmsProductToProduct(item: CmsProduct): Product {
   };
 }
 
-function cmsArticleToArticle(item: CmsArticle) {
+function cmsArticleToArticle(item: CmsArticle): Article {
   return {
     title: t(item.title || "Untitled Article", item.title || "未命名文章"),
     tag: t("Chemical Export Insight", "化工出口知识"),
@@ -536,10 +544,50 @@ function cmsArticleToArticle(item: CmsArticle) {
       item.seo_description || item.content || "Read this export guide and contact our team for shipment support.",
       item.seo_description || item.content || "阅读出口指南，并联系我们获取出运支持。",
     ),
+    slug: item.slug || `article-${item.id}`,
+    content: t(
+      item.content || item.seo_description || "Please contact our team for more details.",
+      item.content || item.seo_description || "请联系我们获取更多详情。",
+    ),
+    seoTitle: t(
+      item.seo_title || item.title || "Chemical Export Article",
+      item.seo_title || item.title || "化工出口文章",
+    ),
+    seoDescription: t(
+      item.seo_description || item.content || "Chemical export guide from ChinaDGExport.",
+      item.seo_description || item.content || "ChinaDGExport 化工品出口指南。",
+    ),
   };
 }
+function fallbackArticleToArticle(item: {
+  title: I18n;
+  tag: I18n;
+  text: I18n;
+}): Article {
+  const titleEn = tx(item.title, "en");
+  const slug = titleEn
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+
+  return {
+    title: item.title,
+    tag: item.tag,
+    text: item.text,
+    slug,
+    content: item.text,
+    seoTitle: item.title,
+    seoDescription: item.text,
+  };
+}
+
+function getArticleSlug(pathname: string) {
+  const match = pathname.match(/^\/insights\/([^/]+)$/);
+  return match ? decodeURIComponent(match[1]) : null;
+}
 function pathToPage(pathname: string): Page {
-  const key = pathname.replace(/^\//, "") as Page;
+  if (getArticleSlug(pathname)) return "insights";
+  const key = pathname.replace("/", "") as Page;
   return [
     "products",
     "services",
@@ -556,53 +604,63 @@ function pageToPath(page: Page) {
 }
 
 export default function App() {
-if (window.location.pathname.startsWith("/admin")) {
-  return <AdminApp />;
-}
-  const [page, setPage] = useState<Page>(() =>
-    pathToPage(window.location.pathname),
-  );
+  if (window.location.pathname.startsWith("/admin")) {
+    return <AdminApp />;
+  }
+
+  const [pathname, setPathname] = useState(() => window.location.pathname);
+  const page = pathToPage(pathname);
+  const currentArticleSlug = getArticleSlug(pathname);
   const [lang, setLang] = useState<Lang>(
     () => (localStorage.getItem("chinadg-lang") as Lang) || "en",
   );
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [products, setProducts] = useState<Product[]>(fallbackProducts);
-const [articles, setArticles] = useState(fallbackArticles);
+  const [articles, setArticles] = useState<Article[]>(
+    fallbackArticles.map(fallbackArticleToArticle),
+  );
 
-useEffect(() => {
-  async function loadCmsData() {
-    const { data: productData } = await supabase
-      .from("products")
-      .select("*")
-      .eq("status", "active")
-      .order("created_at", { ascending: false });
-
-    if (productData && productData.length > 0) {
-      setProducts(productData.map((item) => cmsProductToProduct(item as CmsProduct)));
-    }
-
-    const { data: articleData } = await supabase
-      .from("articles")
-      .select("*")
-      .eq("status", "published")
-      .order("created_at", { ascending: false });
-
-    if (articleData && articleData.length > 0) {
-      setArticles(articleData.map((item) => cmsArticleToArticle(item as CmsArticle)));
-    }
-  }
-
-  loadCmsData();
-}, []);
   useEffect(() => {
-    const onPop = () => setPage(pathToPage(window.location.pathname));
+    async function loadCmsData() {
+      const { data: productData } = await supabase
+        .from("products")
+        .select("*")
+        .eq("status", "active")
+        .order("created_at", { ascending: false });
+
+      if (productData && productData.length > 0) {
+        setProducts(productData.map((item) => cmsProductToProduct(item as CmsProduct)));
+      }
+
+      const { data: articleData } = await supabase
+        .from("articles")
+        .select("*")
+        .eq("status", "published")
+        .order("created_at", { ascending: false });
+
+      if (articleData && articleData.length > 0) {
+        setArticles(articleData.map((item) => cmsArticleToArticle(item as CmsArticle)));
+      }
+    }
+
+    loadCmsData();
+  }, []);
+
+  useEffect(() => {
+    const onPop = () => setPathname(window.location.pathname);
     window.addEventListener("popstate", onPop);
     return () => window.removeEventListener("popstate", onPop);
   }, []);
+
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
-    document.title =
-      page === "home"
+    const currentArticle = currentArticleSlug
+      ? articles.find((article) => article.slug === currentArticleSlug)
+      : null;
+
+    document.title = currentArticle
+      ? `${tx(currentArticle.seoTitle, lang)} | ChinaDGExport`
+      : page === "home"
         ? tx(
             t(
               "ChinaDGExport | Dangerous Chemical Export Platform",
@@ -611,25 +669,43 @@ useEffect(() => {
             lang,
           )
         : `${tx(nav.find((n) => n.page === page)?.label || t(page, page), lang)} | ChinaDGExport`;
-  }, [page, lang]);
+  }, [page, lang, articles, currentArticleSlug]);
+
   useEffect(() => {
     localStorage.setItem("chinadg-lang", lang);
     setMobileMenuOpen(false);
   }, [lang]);
+
   function go(next: Page) {
-    window.history.pushState({}, "", pageToPath(next));
-    setPage(next);
+    goPath(pageToPath(next));
+  }
+
+  function goPath(nextPath: string) {
+    window.history.pushState({}, "", nextPath);
+    setPathname(nextPath);
     setMobileMenuOpen(false);
   }
+
   const content = useMemo(() => {
     if (page === "products") return <ProductsPage go={go} lang={lang} products={products} />;
     if (page === "services") return <ServicesPage go={go} lang={lang} />;
     if (page === "markets") return <MarketsPage go={go} lang={lang} />;
     if (page === "cases") return <CasesPage go={go} lang={lang} />;
-    if (page === "insights") return <InsightsPage go={go} lang={lang} articles={articles} />;
+    if (page === "insights") {
+      return (
+        <InsightsPage
+          go={go}
+          goPath={goPath}
+          lang={lang}
+          articles={articles}
+          currentArticleSlug={currentArticleSlug}
+        />
+      );
+    }
     if (page === "contact") return <ContactPage lang={lang} />;
     return <HomePage go={go} lang={lang} products={products} />;
-  }, [page, lang]);
+  }, [page, lang, products, articles, currentArticleSlug]);
+
   return (
     <>
       <header className="header">
@@ -1281,7 +1357,101 @@ function CasesPage({ go, lang }: { go: (page: Page) => void; lang: Lang }) {
   );
 }
 
-function InsightsPage({ go, lang, articles }: { go: (page: Page) => void; lang: Lang; articles: typeof fallbackArticles }) {
+function InsightsPage({
+  go,
+  goPath,
+  lang,
+  articles,
+  currentArticleSlug,
+}: {
+  go: (page: Page) => void;
+  goPath: (path: string) => void;
+  lang: Lang;
+  articles: Article[];
+  currentArticleSlug: string | null;
+}) {
+  const currentArticle = currentArticleSlug
+    ? articles.find((article) => article.slug === currentArticleSlug)
+    : null;
+
+  if (currentArticleSlug && currentArticle) {
+    return (
+      <main className="page">
+        <PageHero
+          kicker={tx(currentArticle.tag, lang)}
+          title={tx(currentArticle.title, lang)}
+          text={tx(currentArticle.seoDescription, lang)}
+        />
+
+        <section className="section">
+          <div className="container article-detail">
+            <button className="text-link" onClick={() => go("insights")}>
+              ← {tx(t("Back to Insights", "返回知识中心"), lang)}
+            </button>
+
+            <article>
+              {tx(currentArticle.content, lang)
+                .split("\n")
+                .filter(Boolean)
+                .map((paragraph, index) => (
+                  <p key={index}>{paragraph}</p>
+                ))}
+            </article>
+
+            <div className="article-cta">
+              <h3>
+                {tx(
+                  t(
+                    "Need DG export support from China?",
+                    "需要中国危化品出口支持？",
+                  ),
+                  lang,
+                )}
+              </h3>
+              <p>
+                {tx(
+                  t(
+                    "Send us your product name, CAS number, destination port and quantity. Our team will help check documents, packing and shipment options.",
+                    "请发送产品名称、CAS号、目的港和数量，我们将协助确认单证、包装和出运方案。",
+                  ),
+                  lang,
+                )}
+              </p>
+              <button onClick={() => go("contact")}>
+                {tx(t("Contact Our Team", "联系团队"), lang)}
+              </button>
+            </div>
+          </div>
+        </section>
+      </main>
+    );
+  }
+
+  if (currentArticleSlug && !currentArticle) {
+    return (
+      <main className="page">
+        <PageHero
+          kicker={tx(t("Insights", "知识中心"), lang)}
+          title={tx(t("Article not found", "文章未找到"), lang)}
+          text={tx(
+            t(
+              "This article may be unpublished or the URL may be incorrect.",
+              "这篇文章可能尚未发布，或URL不正确。",
+            ),
+            lang,
+          )}
+        />
+        <section className="section">
+          <div className="container">
+            <button className="blue-btn" onClick={() => go("insights")}>
+              {tx(t("Back to Insights", "返回知识中心"), lang)}
+            </button>
+          </div>
+        </section>
+      </main>
+    );
+  }
+
   return (
     <main className="page">
       <PageHero
@@ -1302,12 +1472,12 @@ function InsightsPage({ go, lang, articles }: { go: (page: Page) => void; lang: 
         <div className="container">
           <div className="article-grid">
             {articles.map((a) => (
-              <article key={tx(a.title, "en")}>
+              <article key={a.slug}>
                 <span>{tx(a.tag, lang)}</span>
                 <h3>{tx(a.title, lang)}</h3>
                 <p>{tx(a.text, lang)}</p>
-                <button onClick={() => go("contact")}>
-                  {tx(t("Ask Our Team →", "咨询团队 →"), lang)}
+                <button onClick={() => goPath(`/insights/${a.slug}`)}>
+                  {tx(t("Read More →", "阅读全文 →"), lang)}
                 </button>
               </article>
             ))}
@@ -1316,23 +1486,22 @@ function InsightsPage({ go, lang, articles }: { go: (page: Page) => void; lang: 
       </section>
       <section className="section muted">
         <div className="container faq">
-          <SectionTop
-            kicker="FAQ"
-            title={tx(
-              t(
-                "Questions buyers ask before shipment.",
-                "买家出运前常问的问题。",
-              ),
-              lang,
-            )}
-          />
+          <div className="section-heading">
+            <p className="kicker">FAQ</p>
+            <h2>
+              {tx(
+                t("Questions buyers ask before shipment.", "买家出运前常问的问题。"),
+                lang,
+              )}
+            </h2>
+          </div>
           {faqs.map((q) => (
             <details key={tx(q, "en")}>
               <summary>{tx(q, lang)}</summary>
               <p>
                 {tx(
                   t(
-                    "Yes. Our team will check the product class, packing method, destination port and documents required before quotation and shipment arrangement.",
+                    "Yes. Our team will check the product class, packing method, destination port requirement and documents before quotation.",
                     "可以。我们会在报价和出运安排前核对产品类别、包装方式、目的港和所需单证。",
                   ),
                   lang,
