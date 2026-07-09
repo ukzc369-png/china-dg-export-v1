@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { Card, Col, Empty, List, Row, Space, Spin, Statistic, Tag, Typography } from "antd";
+import { Card, Col, Empty, message, Row, Space, Spin, Statistic, Table, Tag, Typography } from "antd";
+import type { ColumnsType } from "antd/es/table";
 import {
   AppstoreOutlined,
   FileTextOutlined,
@@ -8,51 +9,58 @@ import {
 } from "@ant-design/icons";
 import { supabase } from "../lib/supabase";
 
-const { Text, Title } = Typography;
+const { Title, Text } = Typography;
 
 type Inquiry = {
   id: number;
   customer_name?: string | null;
   name?: string | null;
-  email: string | null;
-  company: string | null;
+  email?: string | null;
+  company?: string | null;
   product?: string | null;
+  quantity?: string | null;
   destination?: string | null;
   country?: string | null;
-  status: string | null;
-  created_at: string;
+  status?: string | null;
+  created_at?: string | null;
 };
 
-type Stats = {
-  products: number;
-  activeProducts: number;
-  articles: number;
-  publishedArticles: number;
-  inquiries: number;
+type DashboardStats = {
   todayInquiries: number;
-  newInquiries: number;
+  totalInquiries: number;
+  productCount: number;
+  articleCount: number;
 };
 
-function startOfTodayIso() {
-  const date = new Date();
-  date.setHours(0, 0, 0, 0);
-  return date.toISOString();
+function buyerName(record: Inquiry) {
+  return record.customer_name || record.name || "Unknown buyer";
 }
 
-function displayName(inquiry: Inquiry) {
-  return inquiry.customer_name || inquiry.name || "Unknown buyer";
+function todayStartIso() {
+  const now = new Date();
+  now.setHours(0, 0, 0, 0);
+  return now.toISOString();
+}
+
+function formatDate(value?: string | null) {
+  if (!value) return "-";
+  return new Date(value).toLocaleString();
+}
+
+function statusColor(status?: string | null) {
+  if (status === "closed") return "green";
+  if (status === "contacted") return "blue";
+  if (status === "processing") return "orange";
+  return "red";
 }
 
 export default function DashboardPage() {
-  const [loading, setLoading] = useState(false);
-  const [stats, setStats] = useState<Stats>({
-    products: 0,
-    activeProducts: 0,
-    articles: 0,
-    publishedArticles: 0,
-    inquiries: 0,
+  const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState<DashboardStats>({
     todayInquiries: 0,
-    newInquiries: 0,
+    totalInquiries: 0,
+    productCount: 0,
+    articleCount: 0,
   });
   const [latestInquiries, setLatestInquiries] = useState<Inquiry[]>([]);
 
@@ -63,108 +71,141 @@ export default function DashboardPage() {
   async function loadDashboard() {
     setLoading(true);
 
-    const today = startOfTodayIso();
+    const todayIso = todayStartIso();
 
-    const [
-      productsRes,
-      activeProductsRes,
-      articlesRes,
-      publishedArticlesRes,
-      inquiriesRes,
-      todayInquiriesRes,
-      newInquiriesRes,
-      latestInquiriesRes,
-    ] = await Promise.all([
-      supabase.from("products").select("*", { count: "exact", head: true }),
-      supabase
-        .from("products")
-        .select("*", { count: "exact", head: true })
-        .eq("status", "active"),
-      supabase.from("articles").select("*", { count: "exact", head: true }),
-      supabase
-        .from("articles")
-        .select("*", { count: "exact", head: true })
-        .eq("status", "published"),
-      supabase.from("inquiries").select("*", { count: "exact", head: true }),
+    const [todayRes, totalRes, productsRes, articlesRes, latestRes] = await Promise.all([
       supabase
         .from("inquiries")
-        .select("*", { count: "exact", head: true })
-        .gte("created_at", today),
+        .select("id", { count: "exact", head: true })
+        .gte("created_at", todayIso),
+      supabase.from("inquiries").select("id", { count: "exact", head: true }),
+      supabase.from("products").select("id", { count: "exact", head: true }),
+      supabase.from("articles").select("id", { count: "exact", head: true }),
       supabase
         .from("inquiries")
-        .select("*", { count: "exact", head: true })
-        .eq("status", "new"),
-      supabase.from("inquiries").select("*").order("id", { ascending: false }).limit(5),
+        .select("*")
+        .order("id", { ascending: false })
+        .limit(10),
     ]);
 
+    const firstError =
+      todayRes.error || totalRes.error || productsRes.error || articlesRes.error || latestRes.error;
+
+    if (firstError) {
+      message.error(firstError.message || "Failed to load dashboard");
+    }
+
     setStats({
-      products: productsRes.count || 0,
-      activeProducts: activeProductsRes.count || 0,
-      articles: articlesRes.count || 0,
-      publishedArticles: publishedArticlesRes.count || 0,
-      inquiries: inquiriesRes.count || 0,
-      todayInquiries: todayInquiriesRes.count || 0,
-      newInquiries: newInquiriesRes.count || 0,
+      todayInquiries: todayRes.count || 0,
+      totalInquiries: totalRes.count || 0,
+      productCount: productsRes.count || 0,
+      articleCount: articlesRes.count || 0,
     });
 
-    setLatestInquiries((latestInquiriesRes.data || []) as Inquiry[]);
+    setLatestInquiries((latestRes.data || []) as Inquiry[]);
     setLoading(false);
   }
 
-  const cards = useMemo(
+  const columns = useMemo<ColumnsType<Inquiry>>(
     () => [
       {
-        title: "Today Inquiries",
-        value: stats.todayInquiries,
-        icon: <RiseOutlined />,
-        note: "New leads submitted today",
+        title: "ID",
+        dataIndex: "id",
+        width: 70,
       },
       {
-        title: "Total Inquiries",
-        value: stats.inquiries,
-        icon: <MailOutlined />,
-        note: `${stats.newInquiries} waiting for follow-up`,
+        title: "Buyer",
+        render: (_, record) => (
+          <Space direction="vertical" size={0}>
+            <Text strong>{buyerName(record)}</Text>
+            <Text type="secondary" style={{ fontSize: 12 }}>
+              {record.email || "-"}
+            </Text>
+          </Space>
+        ),
       },
       {
-        title: "Products",
-        value: stats.products,
-        icon: <AppstoreOutlined />,
-        note: `${stats.activeProducts} active on website`,
+        title: "Company",
+        dataIndex: "company",
+        render: (value) => value || "-",
       },
       {
-        title: "Articles",
-        value: stats.articles,
-        icon: <FileTextOutlined />,
-        note: `${stats.publishedArticles} published for SEO`,
+        title: "Product",
+        dataIndex: "product",
+        render: (value) => value || "-",
+      },
+      {
+        title: "Destination",
+        render: (_, record) => record.destination || record.country || "-",
+      },
+      {
+        title: "Status",
+        dataIndex: "status",
+        width: 130,
+        render: (value) => <Tag color={statusColor(value)}>{value || "new"}</Tag>,
+      },
+      {
+        title: "Created",
+        dataIndex: "created_at",
+        width: 180,
+        render: (value) => formatDate(value),
       },
     ],
-    [stats]
+    []
   );
 
   return (
-    <Spin spinning={loading}>
-      <Space direction="vertical" size={18} style={{ width: "100%" }}>
-        <div>
-          <Title level={2} style={{ marginBottom: 0 }}>
-            Dashboard
-          </Title>
-          <Text type="secondary">
-            Track product library, SEO content and buyer inquiries in one place.
-          </Text>
-        </div>
+    <div>
+      <div style={{ marginBottom: 24 }}>
+        <Title level={3} style={{ marginBottom: 4 }}>
+          Dashboard
+        </Title>
+        <Text type="secondary">
+          Overview of inquiries, products and content activity.
+        </Text>
+      </div>
 
-        <Row gutter={[16, 16]}>
-          {cards.map((card) => (
-            <Col xs={24} md={12} xl={6} key={card.title}>
-              <Card bordered={false} style={{ minHeight: 150 }}>
-                <Space direction="vertical" size={8} style={{ width: "100%" }}>
-                  <Space style={{ color: "#1677ff", fontSize: 22 }}>{card.icon}</Space>
-                  <Statistic title={card.title} value={card.value} />
-                  <Text type="secondary">{card.note}</Text>
-                </Space>
-              </Card>
-            </Col>
-          ))}
+      <Spin spinning={loading}>
+        <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
+          <Col xs={24} sm={12} lg={6}>
+            <Card>
+              <Statistic
+                title="Today Inquiries"
+                value={stats.todayInquiries}
+                prefix={<RiseOutlined />}
+              />
+            </Card>
+          </Col>
+
+          <Col xs={24} sm={12} lg={6}>
+            <Card>
+              <Statistic
+                title="Total Inquiries"
+                value={stats.totalInquiries}
+                prefix={<MailOutlined />}
+              />
+            </Card>
+          </Col>
+
+          <Col xs={24} sm={12} lg={6}>
+            <Card>
+              <Statistic
+                title="Products"
+                value={stats.productCount}
+                prefix={<AppstoreOutlined />}
+              />
+            </Card>
+          </Col>
+
+          <Col xs={24} sm={12} lg={6}>
+            <Card>
+              <Statistic
+                title="Articles"
+                value={stats.articleCount}
+                prefix={<FileTextOutlined />}
+              />
+            </Card>
+          </Col>
         </Row>
 
         <Card
@@ -175,44 +216,19 @@ export default function DashboardPage() {
             </a>
           }
         >
-          {latestInquiries.length === 0 ? (
-            <Empty description="No inquiries yet" />
-          ) : (
-            <List
-              itemLayout="horizontal"
+          {latestInquiries.length ? (
+            <Table
+              rowKey="id"
+              columns={columns}
               dataSource={latestInquiries}
-              renderItem={(item) => (
-                <List.Item>
-                  <List.Item.Meta
-                    title={
-                      <Space wrap>
-                        <span>{displayName(item)}</span>
-                        <Tag color={item.status === "new" ? "blue" : "default"}>
-                          {item.status || "new"}
-                        </Tag>
-                      </Space>
-                    }
-                    description={
-                      <Space direction="vertical" size={2}>
-                        <Text type="secondary">
-                          {item.email || "No email"} · {item.company || "No company"}
-                        </Text>
-                        <Text>
-                          Product: {item.product || "-"} · Destination:{" "}
-                          {item.destination || item.country || "-"}
-                        </Text>
-                      </Space>
-                    }
-                  />
-                  <Text type="secondary">
-                    {item.created_at ? new Date(item.created_at).toLocaleString() : "-"}
-                  </Text>
-                </List.Item>
-              )}
+              pagination={false}
+              scroll={{ x: 900 }}
             />
+          ) : (
+            <Empty description="No inquiries yet" />
           )}
         </Card>
-      </Space>
-    </Spin>
+      </Spin>
+    </div>
   );
 }
