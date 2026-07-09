@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import "./App.css";
 import AdminApp from "./admin/AdminApp";
+import { supabase } from "./lib/supabase";
 type Page =
   | "home"
   | "products"
@@ -20,6 +21,29 @@ type Product = {
   category: I18n;
   application: I18n;
   icon: string;
+};
+type CmsProduct = {
+  id: number;
+  name: string;
+  cas: string | null;
+  un_number: string | null;
+  category: string | null;
+  description: string | null;
+  image_url: string | null;
+  specification: string | null;
+  status: string | null;
+  created_at: string;
+};
+
+type CmsArticle = {
+  id: number;
+  title: string;
+  slug: string | null;
+  content: string | null;
+  seo_title: string | null;
+  seo_description: string | null;
+  status: string | null;
+  created_at: string;
 };
 type Service = { title: I18n; text: I18n; icon: string };
 type Market = { region: I18n; countries: I18n; ports: string; demand: I18n };
@@ -48,7 +72,7 @@ const nav: { label: I18n; page: Page }[] = [
   { label: t("Contact", "联系"), page: "contact" },
 ];
 
-const products: Product[] = [
+const fallbackProducts: Product[] =[
   {
     name: t("Toluene", "甲苯"),
     cas: "108-88-3",
@@ -432,7 +456,7 @@ const cases: CaseItem[] = [
   },
 ];
 
-const articles = [
+const fallbackArticles = [
   {
     title: t(
       "How To Export Class 3 Chemicals From China",
@@ -488,7 +512,32 @@ const faqs: I18n[] = [
     "可以连同货价一起报CFR/CIF海运价吗？",
   ),
 ];
+function cmsProductToProduct(item: CmsProduct): Product {
+  return {
+    name: t(item.name || "Unnamed Product", item.name || "未命名产品"),
+    cas: item.cas || "-",
+    un: item.un_number || "-",
+    purity: item.specification || "To be confirmed",
+    packing: t("Drums / ISO Tank / IBC", "桶装 / ISO罐 / IBC"),
+    category: t(item.category || "General Chemicals", item.category || "化工产品"),
+    application: t(
+      item.description || "Please contact us for product specification, documents and export quotation.",
+      item.description || "请联系我们确认产品规格、单证和出口报价。",
+    ),
+    icon: "⬡",
+  };
+}
 
+function cmsArticleToArticle(item: CmsArticle) {
+  return {
+    title: t(item.title || "Untitled Article", item.title || "未命名文章"),
+    tag: t("Chemical Export Insight", "化工出口知识"),
+    text: t(
+      item.seo_description || item.content || "Read this export guide and contact our team for shipment support.",
+      item.seo_description || item.content || "阅读出口指南，并联系我们获取出运支持。",
+    ),
+  };
+}
 function pathToPage(pathname: string): Page {
   const key = pathname.replace(/^\//, "") as Page;
   return [
@@ -517,6 +566,34 @@ if (window.location.pathname.startsWith("/admin")) {
     () => (localStorage.getItem("chinadg-lang") as Lang) || "en",
   );
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [products, setProducts] = useState<Product[]>(fallbackProducts);
+const [articles, setArticles] = useState(fallbackArticles);
+
+useEffect(() => {
+  async function loadCmsData() {
+    const { data: productData } = await supabase
+      .from("products")
+      .select("*")
+      .eq("status", "active")
+      .order("created_at", { ascending: false });
+
+    if (productData && productData.length > 0) {
+      setProducts(productData.map((item) => cmsProductToProduct(item as CmsProduct)));
+    }
+
+    const { data: articleData } = await supabase
+      .from("articles")
+      .select("*")
+      .eq("status", "published")
+      .order("created_at", { ascending: false });
+
+    if (articleData && articleData.length > 0) {
+      setArticles(articleData.map((item) => cmsArticleToArticle(item as CmsArticle)));
+    }
+  }
+
+  loadCmsData();
+}, []);
   useEffect(() => {
     const onPop = () => setPage(pathToPage(window.location.pathname));
     window.addEventListener("popstate", onPop);
@@ -545,13 +622,13 @@ if (window.location.pathname.startsWith("/admin")) {
     setMobileMenuOpen(false);
   }
   const content = useMemo(() => {
-    if (page === "products") return <ProductsPage go={go} lang={lang} />;
+    if (page === "products") return <ProductsPage go={go} lang={lang} products={products} />;
     if (page === "services") return <ServicesPage go={go} lang={lang} />;
     if (page === "markets") return <MarketsPage go={go} lang={lang} />;
     if (page === "cases") return <CasesPage go={go} lang={lang} />;
-    if (page === "insights") return <InsightsPage go={go} lang={lang} />;
+    if (page === "insights") return <InsightsPage go={go} lang={lang} articles={articles} />;
     if (page === "contact") return <ContactPage lang={lang} />;
-    return <HomePage go={go} lang={lang} />;
+    return <HomePage go={go} lang={lang} products={products} />;
   }, [page, lang]);
   return (
     <>
@@ -643,7 +720,7 @@ if (window.location.pathname.startsWith("/admin")) {
   );
 }
 
-function HomePage({ go, lang }: { go: (page: Page) => void; lang: Lang }) {
+function HomePage({ go, lang, products }: { go: (page: Page) => void; lang: Lang; products: Product[] }) {
   return (
     <main>
       <section className="hero">
@@ -858,7 +935,7 @@ function HomePage({ go, lang }: { go: (page: Page) => void; lang: Lang }) {
   );
 }
 
-function ProductsPage({ go, lang }: { go: (page: Page) => void; lang: Lang }) {
+function ProductsPage({ go, lang, products }: { go: (page: Page) => void; lang: Lang; products: Product[] }) {
   const [category, setCategory] = useState("All Products");
   const [query, setQuery] = useState("");
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -1204,7 +1281,7 @@ function CasesPage({ go, lang }: { go: (page: Page) => void; lang: Lang }) {
   );
 }
 
-function InsightsPage({ go, lang }: { go: (page: Page) => void; lang: Lang }) {
+function InsightsPage({ go, lang, articles }: { go: (page: Page) => void; lang: Lang; articles: typeof fallbackArticles }) {
   return (
     <main className="page">
       <PageHero
