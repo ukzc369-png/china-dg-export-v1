@@ -604,63 +604,56 @@ function pageToPath(page: Page) {
 }
 
 export default function App() {
-  if (window.location.pathname.startsWith("/admin")) {
-    return <AdminApp />;
-  }
-
-  const [pathname, setPathname] = useState(() => window.location.pathname);
-  const page = pathToPage(pathname);
-  const currentArticleSlug = getArticleSlug(pathname);
+if (window.location.pathname.startsWith("/admin")) {
+  return <AdminApp />;
+}
+  const [page, setPage] = useState<Page>(() =>
+    pathToPage(window.location.pathname),
+  );
   const [lang, setLang] = useState<Lang>(
     () => (localStorage.getItem("chinadg-lang") as Lang) || "en",
   );
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const currentArticleSlug = getArticleSlug(window.location.pathname);
   const [products, setProducts] = useState<Product[]>(fallbackProducts);
-  const [articles, setArticles] = useState<Article[]>(
-    fallbackArticles.map(fallbackArticleToArticle),
-  );
+const [articles, setArticles] = useState<Article[]>(
+  fallbackArticles.map(fallbackArticleToArticle),
+);
 
-  useEffect(() => {
-    async function loadCmsData() {
-      const { data: productData } = await supabase
-        .from("products")
-        .select("*")
-        .eq("status", "active")
-        .order("created_at", { ascending: false });
+useEffect(() => {
+  async function loadCmsData() {
+    const { data: productData } = await supabase
+      .from("products")
+      .select("*")
+      .eq("status", "active")
+      .order("created_at", { ascending: false });
 
-      if (productData && productData.length > 0) {
-        setProducts(productData.map((item) => cmsProductToProduct(item as CmsProduct)));
-      }
-
-      const { data: articleData } = await supabase
-        .from("articles")
-        .select("*")
-        .eq("status", "published")
-        .order("created_at", { ascending: false });
-
-      if (articleData && articleData.length > 0) {
-        setArticles(articleData.map((item) => cmsArticleToArticle(item as CmsArticle)));
-      }
+    if (productData && productData.length > 0) {
+      setProducts(productData.map((item) => cmsProductToProduct(item as CmsProduct)));
     }
 
-    loadCmsData();
-  }, []);
+    const { data: articleData } = await supabase
+      .from("articles")
+      .select("*")
+      .eq("status", "published")
+      .order("created_at", { ascending: false });
 
+    if (articleData && articleData.length > 0) {
+      setArticles(articleData.map((item) => cmsArticleToArticle(item as CmsArticle)));
+    }
+  }
+
+  loadCmsData();
+}, []);
   useEffect(() => {
-    const onPop = () => setPathname(window.location.pathname);
+    const onPop = () => setPage(pathToPage(window.location.pathname));
     window.addEventListener("popstate", onPop);
     return () => window.removeEventListener("popstate", onPop);
   }, []);
-
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
-    const currentArticle = currentArticleSlug
-      ? articles.find((article) => article.slug === currentArticleSlug)
-      : null;
-
-    document.title = currentArticle
-      ? `${tx(currentArticle.seoTitle, lang)} | ChinaDGExport`
-      : page === "home"
+    document.title =
+      page === "home"
         ? tx(
             t(
               "ChinaDGExport | Dangerous Chemical Export Platform",
@@ -669,43 +662,32 @@ export default function App() {
             lang,
           )
         : `${tx(nav.find((n) => n.page === page)?.label || t(page, page), lang)} | ChinaDGExport`;
-  }, [page, lang, articles, currentArticleSlug]);
-
+  }, [page, lang, products, articles, currentArticleSlug]);
   useEffect(() => {
     localStorage.setItem("chinadg-lang", lang);
     setMobileMenuOpen(false);
   }, [lang]);
-
   function go(next: Page) {
-    goPath(pageToPath(next));
-  }
-
-  function goPath(nextPath: string) {
-    window.history.pushState({}, "", nextPath);
-    setPathname(nextPath);
+    window.history.pushState({}, "", pageToPath(next));
+    setPage(next);
     setMobileMenuOpen(false);
   }
-
   const content = useMemo(() => {
     if (page === "products") return <ProductsPage go={go} lang={lang} products={products} />;
     if (page === "services") return <ServicesPage go={go} lang={lang} />;
     if (page === "markets") return <MarketsPage go={go} lang={lang} />;
     if (page === "cases") return <CasesPage go={go} lang={lang} />;
-    if (page === "insights") {
-      return (
-        <InsightsPage
-          go={go}
-          goPath={goPath}
-          lang={lang}
-          articles={articles}
-          currentArticleSlug={currentArticleSlug}
-        />
-      );
-    }
+    if (page === "insights") return (
+  <InsightsPage
+    go={go}
+    lang={lang}
+    articles={articles}
+    currentArticleSlug={currentArticleSlug}
+  />
+);
     if (page === "contact") return <ContactPage lang={lang} />;
     return <HomePage go={go} lang={lang} products={products} />;
-  }, [page, lang, products, articles, currentArticleSlug]);
-
+ }, [page, lang, products, articles, currentArticleSlug]);
   return (
     <>
       <header className="header">
@@ -806,8 +788,8 @@ function HomePage({ go, lang, products }: { go: (page: Page) => void; lang: Lang
             <p className="eyebrow green">
               {tx(
                 t(
-                  "China-Origin Petrochemical Export Solutions",
-                  "中国来源石化品出口解决方案",
+                  "China Dangerous Goods Export Channel",
+                  "中国危化品出口通道",
                 ),
                 lang,
               )}
@@ -815,8 +797,8 @@ function HomePage({ go, lang, products }: { go: (page: Page) => void; lang: Lang
             <h1>
               {tx(
                 t(
-                  "Dangerous Chemical Export Platform From China",
-                  "中国危险化学品出口平台",
+                  "Your Export Channel for Dangerous Chemicals from China",
+                  "你的中国危化品出口通道",
                 ),
                 lang,
               )}
@@ -824,15 +806,15 @@ function HomePage({ go, lang, products }: { go: (page: Page) => void; lang: Lang
             <p className="lead">
               {tx(
                 t(
-                  "Integrated support for chemical supply, DG warehousing, UN packaging, customs, port coordination and ocean freight.",
-                  "整合化工品供应、危化仓储、UN包装、报关、港口协调与海运支持。",
+                  "Tell us the chemical you need. We help source it in China and make the export process compliant, executable and shipment-ready.",
+                  "告诉我们你需要的化工品。我们协助在中国寻源，并完成合规、可执行、可出运的出口流程。",
                 ),
                 lang,
               )}
             </p>
             <div className="hero-actions">
               <button className="blue-btn" onClick={() => go("contact")}>
-                {tx(t("Request Quotation", "提交询价"), lang)}
+                {tx(t("Request a Chemical", "提交产品需求"), lang)}
               </button>
               <button className="ghost-btn" onClick={() => go("services")}>
                 {tx(t("View Export Services", "查看出口服务"), lang)}
@@ -840,16 +822,16 @@ function HomePage({ go, lang, products }: { go: (page: Page) => void; lang: Lang
             </div>
             <div className="hero-tags">
               <button type="button" onClick={() => go("products")}>
-                {tx(t("Class 3 Chemicals", "3类危险品"), lang)}
+                {tx(t("Product Sourcing", "产品寻源"), lang)}
               </button>
               <button type="button" onClick={() => go("services")}>
-                ISO Tank
+                DG Compliance
               </button>
               <button type="button" onClick={() => go("services")}>
-                UN Drums
+                Inland Handling
               </button>
-              <button type="button" onClick={() => go("services")}>
-                MSDS / COA
+              <button type="button" onClick={() => go("contact")}>
+                Shipment Request
               </button>
             </div>
           </div>
@@ -877,8 +859,8 @@ function HomePage({ go, lang, products }: { go: (page: Page) => void; lang: Lang
             <h2>
               {tx(
                 t(
-                  "Not a simple trader.\nNot a freight forwarder.",
-                  "不只是贸易商。\n也不只是货代。",
+                  "Not just a chemical seller.\nYour export-ready channel in China.",
+                  "不只是化工品销售商。\n而是你在中国的出口通道。",
                 ),
                 lang,
               )
@@ -893,14 +875,14 @@ function HomePage({ go, lang, products }: { go: (page: Page) => void; lang: Lang
             <p>
               {tx(
                 t(
-                  "ChinaDGExport is built as a dangerous chemical export execution platform. We connect upstream supply, compliant packing, hazardous warehouse resources, customs documentation and port shipment coordination into one export workflow.",
-                  "ChinaDGExport 定位为危险化学品出口执行平台，将上游供应、合规包装、危化仓储资源、报关单证与港口出运协调整合为一套出口流程。",
+                  "ChinaDGExport helps overseas buyers turn chemical product requests into real export shipments from China. We connect sourcing, DG compliance, inland handling, documents and shipment coordination into one workflow.",
+                  "ChinaDGExport 帮助海外买家把化工品需求转化为真正可执行的中国出口货物，将寻源、危化合规、内陆处理、单证和出运协调整合为一套流程。",
                 ),
                 lang,
               )}
             </p>
             <button className="outline-btn" onClick={() => go("services")}>
-              {tx(t("Learn More About Us", "了解更多"), lang)}
+              {tx(t("View Export Services", "查看出口服务"), lang)}
             </button>
           </div>
           <div className="overview-block ecosystem-block">
@@ -910,8 +892,8 @@ function HomePage({ go, lang, products }: { go: (page: Page) => void; lang: Lang
             <h2>
               {tx(
                 t(
-                  "One workflow from product to shipment.",
-                  "从产品到出运的一体化流程。",
+                  "You choose the product. We handle the export.",
+                  "你选择产品，我们完成出口。",
                 ),
                 lang,
               )}
@@ -936,8 +918,8 @@ function HomePage({ go, lang, products }: { go: (page: Page) => void; lang: Lang
                 <h2>
                   {tx(
                     t(
-                      "Core petrochemical products for export.",
-                      "适合出口的核心石化产品。",
+                      "Export-ready chemical examples.",
+                      "可协助出口的化工品示例。",
                     ),
                     lang,
                   )}
@@ -986,8 +968,8 @@ function HomePage({ go, lang, products }: { go: (page: Page) => void; lang: Lang
             <h2>
               {tx(
                 t(
-                  "Need chemical supply with DG export execution?",
-                  "需要化工品供应与危品出口执行？",
+                  "Need a dangerous chemical exported from China?",
+                  "需要从中国出口危险化学品？",
                 ),
                 lang,
               )}
@@ -995,14 +977,14 @@ function HomePage({ go, lang, products }: { go: (page: Page) => void; lang: Lang
             <p>
               {tx(
                 t(
-                  "Send product, quantity and destination port. We will check supply, packing, documents and freight plan.",
-                  "发送产品、数量和目的港，我们将核对供应、包装、单证和运费方案。",
+                  "Send product name, CAS number, quantity and destination port. We will check sourcing, compliance documents, packing and shipment route.",
+                  "发送产品名称、CAS号、数量和目的港，我们将确认寻源、合规单证、包装和出运路径。",
                 ),
                 lang,
               )}
             </p>
             <button onClick={() => go("contact")}>
-              {tx(t("Start Inquiry", "开始询价"), lang)}
+              {tx(t("Submit Inquiry", "提交询盘"), lang)}
             </button>
           </div>
         </div>
@@ -1359,13 +1341,11 @@ function CasesPage({ go, lang }: { go: (page: Page) => void; lang: Lang }) {
 
 function InsightsPage({
   go,
-  goPath,
   lang,
   articles,
   currentArticleSlug,
 }: {
   go: (page: Page) => void;
-  goPath: (path: string) => void;
   lang: Lang;
   articles: Article[];
   currentArticleSlug: string | null;
@@ -1399,15 +1379,7 @@ function InsightsPage({
             </article>
 
             <div className="article-cta">
-              <h3>
-                {tx(
-                  t(
-                    "Need DG export support from China?",
-                    "需要中国危化品出口支持？",
-                  ),
-                  lang,
-                )}
-              </h3>
+              <h3>{tx(t("Need DG export support from China?", "需要中国危化品出口支持？"), lang)}</h3>
               <p>
                 {tx(
                   t(
@@ -1421,31 +1393,6 @@ function InsightsPage({
                 {tx(t("Contact Our Team", "联系团队"), lang)}
               </button>
             </div>
-          </div>
-        </section>
-      </main>
-    );
-  }
-
-  if (currentArticleSlug && !currentArticle) {
-    return (
-      <main className="page">
-        <PageHero
-          kicker={tx(t("Insights", "知识中心"), lang)}
-          title={tx(t("Article not found", "文章未找到"), lang)}
-          text={tx(
-            t(
-              "This article may be unpublished or the URL may be incorrect.",
-              "这篇文章可能尚未发布，或URL不正确。",
-            ),
-            lang,
-          )}
-        />
-        <section className="section">
-          <div className="container">
-            <button className="blue-btn" onClick={() => go("insights")}>
-              {tx(t("Back to Insights", "返回知识中心"), lang)}
-            </button>
           </div>
         </section>
       </main>
@@ -1476,7 +1423,13 @@ function InsightsPage({
                 <span>{tx(a.tag, lang)}</span>
                 <h3>{tx(a.title, lang)}</h3>
                 <p>{tx(a.text, lang)}</p>
-                <button onClick={() => goPath(`/insights/${a.slug}`)}>
+                <button
+                  onClick={() => {
+                    window.history.pushState({}, "", `/insights/${a.slug}`);
+                    window.dispatchEvent(new PopStateEvent("popstate"));
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                  }}
+                >
                   {tx(t("Read More →", "阅读全文 →"), lang)}
                 </button>
               </article>
@@ -1487,14 +1440,14 @@ function InsightsPage({
       <section className="section muted">
         <div className="container faq">
           <div className="section-heading">
-            <p className="kicker">FAQ</p>
-            <h2>
-              {tx(
-                t("Questions buyers ask before shipment.", "买家出运前常问的问题。"),
-                lang,
-              )}
-            </h2>
-          </div>
+  <p className="kicker">FAQ</p>
+  <h2>
+    {tx(
+      t("Questions buyers ask before shipment.", "买家出运前常问的问题。"),
+      lang,
+    )}
+  </h2>
+</div>
           {faqs.map((q) => (
             <details key={tx(q, "en")}>
               <summary>{tx(q, lang)}</summary>
