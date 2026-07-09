@@ -1483,6 +1483,7 @@ function ContactPage({ lang }: { lang: Lang }) {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState(false);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -1495,12 +1496,13 @@ function ContactPage({ lang }: { lang: Lang }) {
 
   const handleSubmit = () => {
     if (!formData.product) {
-      alert("Please enter product information");
+      setSubmitError(true);
       return;
     }
 
     setIsSubmitting(true);
     setSubmitSuccess(false);
+    setSubmitError(false);
 
     fetch("/api/inquiry", {
       method: "POST",
@@ -1536,7 +1538,7 @@ function ContactPage({ lang }: { lang: Lang }) {
       })
       .catch((err) => {
         console.error(err);
-        alert("Submit failed");
+        setSubmitError(true);
       })
       .finally(() => {
         setIsSubmitting(false);
@@ -1768,6 +1770,71 @@ return (
           ? "我们会在24小时内联系您。"
           : "We will contact you within 24 hours."}
       </p>
+    </div>
+  </div>
+)}
+
+{submitError && (
+  <div
+    style={{
+      position: "fixed",
+      inset: 0,
+      background: "rgba(0,0,0,0.28)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      zIndex: 99999,
+    }}
+    onClick={() => setSubmitError(false)}
+  >
+    <div
+      style={{
+        width: "420px",
+        maxWidth: "90vw",
+        background: "rgba(255,255,255,0.96)",
+        border: "2px solid #ef4444",
+        borderRadius: "16px",
+        padding: "36px 32px",
+        textAlign: "center",
+        boxShadow: "0 20px 50px rgba(0,0,0,0.18)",
+      }}
+      onClick={(e) => e.stopPropagation()}
+    >
+      <div
+        style={{
+          width: "68px",
+          height: "68px",
+          margin: "0 auto 18px",
+          borderRadius: "50%",
+          border: "3px solid #ef4444",
+          color: "#ef4444",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: "36px",
+          fontWeight: 700,
+        }}
+      >
+        !
+      </div>
+
+      <h3 style={{ margin: 0, color: "#ef4444", fontSize: "26px" }}>
+        {lang === "zh" ? "提交失败" : "Submit Failed"}
+      </h3>
+
+      <p style={{ marginTop: "12px", color: "#4b5563", fontSize: "15px" }}>
+        {lang === "zh"
+          ? "请稍后重试，或直接通过邮箱联系我们。"
+          : "Please try again later or contact us by email directly."}
+      </p>
+
+      <button
+        className="blue-btn"
+        style={{ marginTop: "18px" }}
+        onClick={() => setSubmitError(false)}
+      >
+        OK
+      </button>
     </div>
   </div>
 )}
