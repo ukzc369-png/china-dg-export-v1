@@ -103,7 +103,7 @@ export default function ArticlesPage() {
 
   const contentValue = Form.useWatch("content", form) || "";
   const coverImageValue = Form.useWatch("cover_image", form) || "";
-  const titleValue = Form.useWatch("title", form) || "";
+
   const isEditing = Boolean(editingArticle);
 
   const wordCount = useMemo(() => contentValue.trim().split(/\s+/).filter(Boolean).length, [contentValue]);
