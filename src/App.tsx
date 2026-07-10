@@ -614,7 +614,9 @@ if (window.location.pathname.startsWith("/admin")) {
     () => (localStorage.getItem("chinadg-lang") as Lang) || "en",
   );
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const currentArticleSlug = getArticleSlug(window.location.pathname);
+  const [currentArticleSlug, setCurrentArticleSlug] = useState<string | null>(() =>
+    getArticleSlug(window.location.pathname),
+  );
   const [products, setProducts] = useState<Product[]>(fallbackProducts);
 const [articles, setArticles] = useState<Article[]>(
   fallbackArticles.map(fallbackArticleToArticle),
@@ -646,7 +648,11 @@ useEffect(() => {
   loadCmsData();
 }, []);
   useEffect(() => {
-    const onPop = () => setPage(pathToPage(window.location.pathname));
+    const onPop = () => {
+      const pathname = window.location.pathname;
+      setPage(pathToPage(pathname));
+      setCurrentArticleSlug(getArticleSlug(pathname));
+    };
     window.addEventListener("popstate", onPop);
     return () => window.removeEventListener("popstate", onPop);
   }, []);
@@ -670,6 +676,7 @@ useEffect(() => {
   function go(next: Page) {
     window.history.pushState({}, "", pageToPath(next));
     setPage(next);
+    setCurrentArticleSlug(null);
     setMobileMenuOpen(false);
   }
   const content = useMemo(() => {
