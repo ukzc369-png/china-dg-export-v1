@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import "./App.css";
-import AdminApp from "./admin/AdminApp";
 import { supabase } from "./lib/supabase";
+const AdminApp = lazy(() => import("./admin/AdminApp"));
 type Page =
   | "home"
   | "products"
@@ -605,7 +605,17 @@ function pageToPath(page: Page) {
 
 export default function App() {
 if (window.location.pathname.startsWith("/admin")) {
-  return <AdminApp />;
+  return (
+    <Suspense
+      fallback={
+        <div style={{ minHeight: "100vh", display: "grid", placeItems: "center" }}>
+          Loading admin…
+        </div>
+      }
+    >
+      <AdminApp />
+    </Suspense>
+  );
 }
   const [page, setPage] = useState<Page>(() =>
     pathToPage(window.location.pathname),
