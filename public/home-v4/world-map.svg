@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 360">
+<defs><pattern id="dots" width="9" height="9" patternUnits="userSpaceOnUse"><circle cx="2.2" cy="2.2" r="1.25" fill="#c4cbd2"/></pattern></defs>
+<g fill="url(#dots)">
+<path d="M70 76 116 48l72 8 45 35 5 36-26 31-41 7-25 41-28-18-8-43-35-18z"/>
+<path d="M209 190 250 207l23 45-13 48-22 43-24-18-4-49-18-37z"/>
+<path d="M380 69 421 51l62 8 41 30-3 30-37 11-22 26-16 72-45-22-22-53-36-7-23-28z"/>
+<path d="M474 170 513 167l37 42-3 78-31 52-31-38-8-71-18-28z"/>
+<path d="M524 85 585 56l97 10 64 40 31 43-42 31-72-8-42 29-38-19-28-35-37-17z"/>
+<path d="M738 245 778 229l49 22 18 38-24 27-54-10-37-32z"/>
+</g>
+<g fill="#0b84ff" stroke="#fff" stroke-width="3">
+<circle cx="176" cy="138" r="7"/><circle cx="226" cy="254" r="7"/><circle cx="435" cy="108" r="7"/><circle cx="532" cy="186" r="7"/><circle cx="533" cy="267" r="7"/><circle cx="663" cy="161" r="7"/><circle cx="791" cy="269" r="7"/>
+</g>
+<g stroke="#0b84ff" stroke-width="3" fill="none">
+<path d="M176 145v22M226 261v22M435 115v22M532 193v22M533 274v22M663 168v22M791 276v22"/>
+</g>
+</svg>
