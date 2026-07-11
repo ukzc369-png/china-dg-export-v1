@@ -1,7 +1,8 @@
-import { lazy, Suspense, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "./App.css";
+import AdminApp from "./admin/AdminApp";
 import { supabase } from "./lib/supabase";
-const AdminApp = lazy(() => import("./admin/AdminApp"));
+import HomePage from "./HomePage";
 type Page =
   | "home"
   | "products"
@@ -605,17 +606,7 @@ function pageToPath(page: Page) {
 
 export default function App() {
 if (window.location.pathname.startsWith("/admin")) {
-  return (
-    <Suspense
-      fallback={
-        <div style={{ minHeight: "100vh", display: "grid", placeItems: "center" }}>
-          Loading admin…
-        </div>
-      }
-    >
-      <AdminApp />
-    </Suspense>
-  );
+  return <AdminApp />;
 }
   const [page, setPage] = useState<Page>(() =>
     pathToPage(window.location.pathname),
@@ -624,9 +615,7 @@ if (window.location.pathname.startsWith("/admin")) {
     () => (localStorage.getItem("chinadg-lang") as Lang) || "en",
   );
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [currentArticleSlug, setCurrentArticleSlug] = useState<string | null>(() =>
-    getArticleSlug(window.location.pathname),
-  );
+  const currentArticleSlug = getArticleSlug(window.location.pathname);
   const [products, setProducts] = useState<Product[]>(fallbackProducts);
 const [articles, setArticles] = useState<Article[]>(
   fallbackArticles.map(fallbackArticleToArticle),
@@ -658,11 +647,7 @@ useEffect(() => {
   loadCmsData();
 }, []);
   useEffect(() => {
-    const onPop = () => {
-      const pathname = window.location.pathname;
-      setPage(pathToPage(pathname));
-      setCurrentArticleSlug(getArticleSlug(pathname));
-    };
+    const onPop = () => setPage(pathToPage(window.location.pathname));
     window.addEventListener("popstate", onPop);
     return () => window.removeEventListener("popstate", onPop);
   }, []);
@@ -686,7 +671,12 @@ useEffect(() => {
   function go(next: Page) {
     window.history.pushState({}, "", pageToPath(next));
     setPage(next);
-    setCurrentArticleSlug(null);
+    setMobileMenuOpen(false);
+  }
+
+  function openArticle(slug: string) {
+    window.history.pushState({}, "", `/insights/${slug}`);
+    setPage("insights");
     setMobileMenuOpen(false);
   }
   const content = useMemo(() => {
@@ -703,7 +693,15 @@ useEffect(() => {
   />
 );
     if (page === "contact") return <ContactPage lang={lang} />;
-    return <HomePage go={go} lang={lang} products={products} />;
+    return (
+      <HomePage
+        go={go}
+        lang={lang}
+        products={products}
+        articles={articles}
+        onOpenArticle={openArticle}
+      />
+    );
  }, [page, lang, products, articles, currentArticleSlug]);
   return (
     <>
@@ -792,221 +790,6 @@ useEffect(() => {
       {content}
       <Footer go={go} lang={lang} />
     </>
-  );
-}
-
-function HomePage({ go, lang, products }: { go: (page: Page) => void; lang: Lang; products: Product[] }) {
-  return (
-    <main>
-      <section className="hero">
-        <div className="hero-bg" />
-        <div className="container hero-grid">
-          <div>
-            <p className="eyebrow green">
-              {tx(
-                t(
-                  "China Dangerous Goods Export Channel",
-                  "中国危化品出口通道",
-                ),
-                lang,
-              )}
-            </p>
-            <h1>
-              {tx(
-                t(
-                  "Your Export Channel for Dangerous Chemicals from China",
-                  "你的中国危化品出口通道",
-                ),
-                lang,
-              )}
-            </h1>
-            <p className="lead">
-              {tx(
-                t(
-                  "Tell us the chemical you need. We help source it in China and make the export process compliant, executable and shipment-ready.",
-                  "告诉我们你需要的化工品。我们协助在中国寻源，并完成合规、可执行、可出运的出口流程。",
-                ),
-                lang,
-              )}
-            </p>
-            <div className="hero-actions">
-              <button className="blue-btn" onClick={() => go("contact")}>
-                {tx(t("Request a Chemical", "提交产品需求"), lang)}
-              </button>
-              <button className="ghost-btn" onClick={() => go("services")}>
-                {tx(t("View Export Services", "查看出口服务"), lang)}
-              </button>
-            </div>
-            <div className="hero-tags">
-              <button type="button" onClick={() => go("products")}>
-                {tx(t("Product Sourcing", "产品寻源"), lang)}
-              </button>
-              <button type="button" onClick={() => go("services")}>
-                DG Compliance
-              </button>
-              <button type="button" onClick={() => go("services")}>
-                Inland Handling
-              </button>
-              <button type="button" onClick={() => go("contact")}>
-                Shipment Request
-              </button>
-            </div>
-          </div>
-          <div className="hero-card">
-            <b>{tx(t("Platform Scope", "平台服务范围"), lang)}</b>
-            {services.map((s) => (
-              <button
-                key={tx(s.title, "en")}
-                type="button"
-                onClick={() => go("services")}
-              >
-                <span>{s.icon}</span>
-                {tx(s.title, lang)}
-              </button>
-            ))}
-          </div>
-        </div>
-      </section>
-      <section className="home-overview">
-        <div className="container overview-grid">
-          <div className="overview-block">
-            <p className="eyebrow">
-              {tx(t("About Platform", "平台定位"), lang)}
-            </p>
-            <h2>
-              {tx(
-                t(
-                  "Not just a chemical seller.\nYour export-ready channel in China.",
-                  "不只是化工品销售商。\n而是你在中国的出口通道。",
-                ),
-                lang,
-              )
-                .split("\n")
-                .map((x, i) => (
-                  <span key={x}>
-                    {x}
-                    {i === 0 && <br />}
-                  </span>
-                ))}
-            </h2>
-            <p>
-              {tx(
-                t(
-                  "ChinaDGExport helps overseas buyers turn chemical product requests into real export shipments from China. We connect sourcing, DG compliance, inland handling, documents and shipment coordination into one workflow.",
-                  "ChinaDGExport 帮助海外买家把化工品需求转化为真正可执行的中国出口货物，将寻源、危化合规、内陆处理、单证和出运协调整合为一套流程。",
-                ),
-                lang,
-              )}
-            </p>
-            <button className="outline-btn" onClick={() => go("services")}>
-              {tx(t("View Export Services", "查看出口服务"), lang)}
-            </button>
-          </div>
-          <div className="overview-block ecosystem-block">
-            <p className="eyebrow">
-              {tx(t("Export Ecosystem", "出口生态"), lang)}
-            </p>
-            <h2>
-              {tx(
-                t(
-                  "You choose the product. We handle the export.",
-                  "你选择产品，我们完成出口。",
-                ),
-                lang,
-              )}
-            </h2>
-            <div className="mini-service-grid">
-              {services.map((s) => (
-                <ServiceMini
-                  key={tx(s.title, "en")}
-                  service={s}
-                  lang={lang}
-                  onClick={() => go("services")}
-                />
-              ))}
-            </div>
-          </div>
-          <div className="overview-block products-block">
-            <div className="block-head">
-              <div>
-                <p className="eyebrow">
-                  {tx(t("Featured Products", "核心产品"), lang)}
-                </p>
-                <h2>
-                  {tx(
-                    t(
-                      "Export-ready chemical examples.",
-                      "可协助出口的化工品示例。",
-                    ),
-                    lang,
-                  )}
-                </h2>
-              </div>
-              <button onClick={() => go("products")}>
-                {tx(t("View All Products", "查看全部产品"), lang)}
-              </button>
-            </div>
-            <div className="mini-product-list">
-              {products.slice(0, 6).map((p) => (
-                <button key={p.cas} onClick={() => go("products")}>
-                  <span className="product-icon">{p.icon}</span>
-                  <b>{tx(p.name, lang)}</b>
-                  <small>CAS {p.cas}</small>
-                  <i>→</i>
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-      <section className="market-cta-row">
-        <div className="container market-cta-grid">
-          <div className="market-panel">
-            <p className="eyebrow green">{tx(t("Markets", "市场"), lang)}</p>
-            <h2>
-              {tx(
-                t(
-                  "Serving chemical buyers across major import markets.",
-                  "服务主要进口市场的化工品买家。",
-                ),
-                lang,
-              )}
-            </h2>
-          </div>
-          <div className="market-mini-grid">
-            {markets.slice(0, 4).map((m) => (
-              <button key={tx(m.region, "en")} onClick={() => go("markets")}>
-                <b>{tx(m.region, lang)}</b>
-                <span>{tx(m.countries, lang)}</span>
-              </button>
-            ))}
-          </div>
-          <div className="blue-cta-box">
-            <h2>
-              {tx(
-                t(
-                  "Need a dangerous chemical exported from China?",
-                  "需要从中国出口危险化学品？",
-                ),
-                lang,
-              )}
-            </h2>
-            <p>
-              {tx(
-                t(
-                  "Send product name, CAS number, quantity and destination port. We will check sourcing, compliance documents, packing and shipment route.",
-                  "发送产品名称、CAS号、数量和目的港，我们将确认寻源、合规单证、包装和出运路径。",
-                ),
-                lang,
-              )}
-            </p>
-            <button onClick={() => go("contact")}>
-              {tx(t("Submit Inquiry", "提交询盘"), lang)}
-            </button>
-          </div>
-        </div>
-      </section>
-    </main>
   );
 }
 
@@ -1986,23 +1769,6 @@ function PageHero({
         <p>{text}</p>
       </div>
     </section>
-  );
-}
-function ServiceMini({
-  service,
-  lang,
-  onClick,
-}: {
-  service: Service;
-  lang: Lang;
-  onClick?: () => void;
-}) {
-  return (
-    <button type="button" className="service-mini" onClick={onClick}>
-      <span>{service.icon}</span>
-      <b>{tx(service.title, lang)}</b>
-      <small>{tx(service.text, lang)}</small>
-    </button>
   );
 }
 function ServiceCard({ service, lang }: { service: Service; lang: Lang }) {
