@@ -22,6 +22,8 @@ type Product = {
   category: I18n;
   application: I18n;
   icon: string;
+  imageUrl?: string;
+  imagePosition?: string;
 };
 type CmsProduct = {
   id: number;
@@ -43,6 +45,7 @@ type Article = {
   content: I18n;
   seoTitle: I18n;
   seoDescription: I18n;
+  coverImage?: string;
 };
 type CmsArticle = {
   id: number;
@@ -51,6 +54,7 @@ type CmsArticle = {
   content: string | null;
   seo_title: string | null;
   seo_description: string | null;
+  cover_image: string | null;
   status: string | null;
   created_at: string;
 };
@@ -527,6 +531,7 @@ function cmsProductToProduct(item: CmsProduct): Product {
     cas: item.cas || "-",
     un: item.un_number || "-",
     purity: item.specification || "To be confirmed",
+    imageUrl: item.image_url || undefined,
     packing: t("Drums / ISO Tank / IBC", "桶装 / ISO罐 / IBC"),
     category: t(item.category || "General Chemicals", item.category || "化工产品"),
     application: t(
@@ -558,6 +563,7 @@ function cmsArticleToArticle(item: CmsArticle): Article {
       item.seo_description || item.content || "Chemical export guide from ChinaDGExport.",
       item.seo_description || item.content || "ChinaDGExport 化工品出口指南。",
     ),
+    coverImage: item.cover_image || undefined,
   };
 }
 function fallbackArticleToArticle(item: {
@@ -615,7 +621,9 @@ if (window.location.pathname.startsWith("/admin")) {
     () => (localStorage.getItem("chinadg-lang") as Lang) || "en",
   );
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const currentArticleSlug = getArticleSlug(window.location.pathname);
+  const [currentArticleSlug, setCurrentArticleSlug] = useState<string | null>(() =>
+    getArticleSlug(window.location.pathname),
+  );
   const [products, setProducts] = useState<Product[]>(fallbackProducts);
 const [articles, setArticles] = useState<Article[]>(
   fallbackArticles.map(fallbackArticleToArticle),
@@ -647,7 +655,10 @@ useEffect(() => {
   loadCmsData();
 }, []);
   useEffect(() => {
-    const onPop = () => setPage(pathToPage(window.location.pathname));
+    const onPop = () => {
+      setPage(pathToPage(window.location.pathname));
+      setCurrentArticleSlug(getArticleSlug(window.location.pathname));
+    };
     window.addEventListener("popstate", onPop);
     return () => window.removeEventListener("popstate", onPop);
   }, []);
@@ -671,12 +682,14 @@ useEffect(() => {
   function go(next: Page) {
     window.history.pushState({}, "", pageToPath(next));
     setPage(next);
+    setCurrentArticleSlug(null);
     setMobileMenuOpen(false);
   }
 
   function openArticle(slug: string) {
     window.history.pushState({}, "", `/insights/${slug}`);
     setPage("insights");
+    setCurrentArticleSlug(slug);
     setMobileMenuOpen(false);
   }
   const content = useMemo(() => {
@@ -1139,6 +1152,29 @@ function CasesPage({ go, lang }: { go: (page: Page) => void; lang: Lang }) {
   );
 }
 
+function renderArticleContent(content: string) {
+  return content.split("\n").map((rawLine, index) => {
+    const line = rawLine.trim();
+    if (!line) return null;
+    const image = line.match(/^!\[([^\]]*)\]\((https?:\/\/[^)]+)\)$/);
+    if (image) return <figure className="article-body-image" key={index}><img src={image[2]} alt={image[1] || "Article illustration"} loading="lazy" /><figcaption>{image[1]}</figcaption></figure>;
+    if (line.startsWith("### ")) return <h3 key={index}>{line.slice(4)}</h3>;
+    if (line.startsWith("## ")) return <h2 key={index}>{line.slice(3)}</h2>;
+    if (line.startsWith("# ")) return <h2 key={index}>{line.slice(2)}</h2>;
+    if (/^[-*] /.test(line)) return <ul className="article-single-list" key={index}><li>{line.slice(2)}</li></ul>;
+    if (/^\d+\. /.test(line)) return <ol className="article-single-list" key={index}><li>{line.replace(/^\d+\. /, "")}</li></ol>;
+    if (line.startsWith("> ")) return <blockquote key={index}>{line.slice(2)}</blockquote>;
+    return <p key={index}>{line}</p>;
+  });
+}
+
+function articleFallbackImage(article: Article) {
+  const slug = article.slug.toLowerCase();
+  if (slug.includes("tank") || slug.includes("packing")) return "/home-v4/products-photo.png";
+  if (slug.includes("document")) return "/home-v4/hero-drums-photo.png";
+  return "/home-v4/cta-ship-photo.png";
+}
+
 function InsightsPage({
   go,
   lang,
@@ -1170,12 +1206,8 @@ function InsightsPage({
             </button>
 
             <article>
-              {tx(currentArticle.content, lang)
-                .split("\n")
-                .filter(Boolean)
-                .map((paragraph, index) => (
-                  <p key={index}>{paragraph}</p>
-                ))}
+              <img className="article-cover" src={currentArticle.coverImage || articleFallbackImage(currentArticle)} alt={tx(currentArticle.title, lang)} />
+              <div className="article-body">{renderArticleContent(tx(currentArticle.content, lang))}</div>
             </article>
 
             <div className="article-cta">
@@ -1220,6 +1252,7 @@ function InsightsPage({
           <div className="article-grid">
             {articles.map((a) => (
               <article key={a.slug}>
+                <img className="article-card-image" src={a.coverImage || articleFallbackImage(a)} alt={tx(a.title, lang)} loading="lazy" />
                 <span>{tx(a.tag, lang)}</span>
                 <h3>{tx(a.title, lang)}</h3>
                 <p>{tx(a.text, lang)}</p>
@@ -1791,7 +1824,11 @@ function CatalogCard({
 }) {
   return (
     <article className="catalog-card">
-      <div className="catalog-icon">{product.icon}</div>
+      {product.imageUrl ? (
+        <img className="catalog-product-photo" src={product.imageUrl} alt={tx(product.name, lang)} loading="lazy" />
+      ) : (
+        <div className="catalog-icon">{product.icon}</div>
+      )}
       <h3>{tx(product.name, lang)}</h3>
       <div className="chip-row">
         <span>CAS {product.cas}</span>
@@ -1838,7 +1875,7 @@ function ProductDetailModal({
           ×
         </button>
         <div className="modal-head">
-          <div className="catalog-icon">{product.icon}</div>
+          {product.imageUrl ? <img className="product-modal-photo" src={product.imageUrl} alt={tx(product.name, lang)} /> : <div className="catalog-icon">{product.icon}</div>}
           <div>
             <p className="eyebrow">
               {tx(t("Product Detail", "产品详情"), lang)}

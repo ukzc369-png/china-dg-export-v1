@@ -67,6 +67,23 @@ body.home-page-active #root > footer:not(.hp-footer) { display: none !important;
   flex: 0 0 auto;
 }
 
+.hp-subpage-logo {
+  width: 36px;
+  height: 36px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: 9px;
+  color: #fff;
+  background: #071832;
+  box-shadow: 0 6px 16px rgba(0,0,0,.18);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .02em;
+}
+.hp-subpage-logo-modal { background:#071832; }
+
 .hp-logo-mark {
   position: relative;
   width: 34px;
@@ -696,7 +713,7 @@ body.home-page-active #root > footer:not(.hp-footer) { display: none !important;
   margin-top: 15px;
 }
 
-.hp-insight-grid article { min-width: 0; }
+.hp-insight-grid article { min-width: 0; display:flex; flex-direction:column; height:100%; }
 .hp-insight-grid article { cursor:pointer; transition:transform .22s ease; }
 .hp-insight-grid article:hover { transform:translateY(-6px); }
 .hp-insight-grid article:hover img { transform:scale(1.05); }
@@ -746,6 +763,7 @@ body.home-page-active #root > footer:not(.hp-footer) { display: none !important;
   font-size: 11px;
   line-height: 1.38;
   font-weight: 780;
+  flex: 1 1 auto;
 }
 
 .hp-insight-grid button {
@@ -756,6 +774,7 @@ body.home-page-active #root > footer:not(.hp-footer) { display: none !important;
   background: transparent;
   font-size: 8.5px;
   font-weight: 700;
+  align-self:flex-start;
 }
 
 .hp-cta {

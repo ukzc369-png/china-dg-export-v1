@@ -148,10 +148,10 @@ export default function HomePage({ go, lang, products, articles, onOpenArticle }
       <header className="hp-header">
         <div className="hp-header-shell">
           <button className="hp-logo" onClick={() => go("home")} aria-label="ChinaDGExport home">
-            <img className="hp-logo-image" src="/home-v4/logo-mark.svg" alt="" aria-hidden="true" />
+            <span className="hp-subpage-logo" aria-hidden="true">DG</span>
             <span className="hp-logo-copy">
               <strong>ChinaDGExport</strong>
-              <small>Your Reliable Chemical Export Partner</small>
+              <small>DANGEROUS CHEMICAL EXPORT PLATFORM</small>
             </span>
           </button>
 
@@ -358,8 +358,8 @@ export default function HomePage({ go, lang, products, articles, onOpenArticle }
         <div className="hp-shell hp-footer-grid">
           <div className="hp-footer-about">
             <button className="hp-footer-logo" onClick={() => go("home")}>
-              <img className="hp-logo-image" src="/home-v4/logo-mark.svg" alt="" aria-hidden="true" />
-              <span><strong>ChinaDGExport</strong><small>Your Reliable Chemical Export Partner</small></span>
+              <span className="hp-subpage-logo" aria-hidden="true">DG</span>
+              <span><strong>ChinaDGExport</strong><small>DANGEROUS CHEMICAL EXPORT PLATFORM</small></span>
             </button>
             <p>
               {tx(
@@ -401,7 +401,7 @@ export default function HomePage({ go, lang, products, articles, onOpenArticle }
         <div className="hp-company-modal" role="dialog" aria-modal="true" onClick={() => setCompanyOpen(false)}>
           <section onClick={(event) => event.stopPropagation()}>
             <button className="hp-company-close" onClick={() => setCompanyOpen(false)}>×</button>
-            <img className="hp-logo-image" src="/home-v4/logo-mark.svg" alt="" />
+            <span className="hp-subpage-logo hp-subpage-logo-modal" aria-hidden="true">DG</span>
             <h2>{tx(t("About ChinaDGExport", "关于 ChinaDGExport"), lang)}</h2>
             <p>{tx(t("With more than 20 years of chemical industry experience, ChinaDGExport provides compliant sourcing, quality control, documentation, packaging and global logistics solutions for bulk chemical buyers worldwide.", "ChinaDGExport 拥有二十余年化工行业经验，为全球大宗化工采购商提供合规采购、质量控制、单证、包装及国际物流解决方案。"), lang)}</p>
             <div className="hp-company-stats"><strong>20+</strong><span>Years Experience</span><strong>100+</strong><span>Countries Served</span></div>
