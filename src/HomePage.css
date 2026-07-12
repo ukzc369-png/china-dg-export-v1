@@ -235,7 +235,7 @@ body.home-page-active #root > footer:not(.hp-footer) { display: none !important;
 }
 
 .hp-hero-art {
-  background: url("/home-v4/hero-drums-photo.png") center / cover no-repeat;
+  background: url("/home-v4/hero-drums-photo.webp") center / cover no-repeat;
 }
 
 .hp-hero-overlay {
@@ -792,7 +792,7 @@ body.home-page-active #root > footer:not(.hp-footer) { display: none !important;
 }
 
 .hp-cta-art {
-  background: url("/home-v4/cta-ship-photo.png") center 64% / cover no-repeat;
+  background: url("/home-v4/cta-ship-photo.webp") center 64% / cover no-repeat;
 }
 
 .hp-cta-overlay {

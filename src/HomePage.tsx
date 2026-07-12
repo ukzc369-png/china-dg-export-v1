@@ -256,8 +256,9 @@ export default function HomePage({ go, lang, products, articles, onOpenArticle }
               <article key={`${product.cas}-${index}`} role="link" tabIndex={0} onClick={() => openProductPage(product)} onKeyDown={(event) => event.key === "Enter" && openProductPage(product)}>
                 <div className="hp-product-image">
                   <img
-                    src={product.imageUrl || "/home-v4/products-photo.png"}
+                    src={product.imageUrl || "/home-v4/products-photo.webp"}
                     alt={tx(product.name, lang)}
+                    loading="lazy"
                     style={{ objectPosition: product.imagePosition || `${index * 25}% center` }}
                   />
                 </div>
@@ -323,7 +324,7 @@ export default function HomePage({ go, lang, products, articles, onOpenArticle }
                 {latestArticles.map((article, index) => (
                   <article key={article.slug} role="button" tabIndex={0} onClick={() => onOpenArticle(article.slug)}>
                     <div className="hp-insight-image">
-                      <img className={`hp-insight-shot hp-insight-shot-${index + 1}`} src={article.coverImage || "/home-v4/insights-photo.png"} alt={tx(article.title, lang)} />
+                      <img className={`hp-insight-shot hp-insight-shot-${index + 1}`} src={article.coverImage || "/home-v4/insights-photo.webp"} alt={tx(article.title, lang)} loading="lazy" />
                     </div>
                     <time>{["May 12, 2025", "May 05, 2025", "Apr 28, 2025"][index]}</time>
                     <h3>{tx(article.title, lang)}</h3>
