@@ -18,6 +18,7 @@ import {
 import type { ColumnsType } from "antd/es/table";
 import { PlusOutlined, StarFilled, StarOutlined, UploadOutlined } from "@ant-design/icons";
 import { supabase } from "../lib/supabase";
+import { imageSizeLabel, optimizeUploadImage } from "./imageUpload";
 
 type ArticleStatus = "draft" | "published";
 
@@ -103,7 +104,6 @@ export default function ArticlesPage() {
 
   const contentValue = Form.useWatch("content", form) || "";
   const coverImageValue = Form.useWatch("cover_image", form) || "";
-
   const isEditing = Boolean(editingArticle);
 
   const wordCount = useMemo(() => contentValue.trim().split(/\s+/).filter(Boolean).length, [contentValue]);
@@ -227,9 +227,11 @@ export default function ArticlesPage() {
   async function uploadCover(file: File) {
     setUploading(true);
     try {
-      const safeName = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, "-")}`;
-      const { error: uploadError } = await supabase.storage.from(BUCKET_NAME).upload(safeName, file, {
+      const optimized = await optimizeUploadImage(file);
+      const safeName = `${Date.now()}-${optimized.name}`;
+      const { error: uploadError } = await supabase.storage.from(BUCKET_NAME).upload(safeName, optimized, {
         upsert: true,
+        contentType: optimized.type,
       });
 
       if (uploadError) {
@@ -239,7 +241,10 @@ export default function ArticlesPage() {
 
       const { data } = supabase.storage.from(BUCKET_NAME).getPublicUrl(safeName);
       form.setFieldsValue({ cover_image: data.publicUrl });
-      message.success("Cover image uploaded");
+      message.success(`Cover optimized and uploaded (${imageSizeLabel(optimized.size)})`);
+      return false;
+    } catch (error) {
+      message.error(error instanceof Error ? error.message : "Image processing failed");
       return false;
     } finally {
       setUploading(false);
@@ -249,9 +254,11 @@ export default function ArticlesPage() {
   async function uploadInlineImage(file: File) {
     setUploading(true);
     try {
-      const safeName = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, "-")}`;
-      const { error: uploadError } = await supabase.storage.from(BUCKET_NAME).upload(safeName, file, {
+      const optimized = await optimizeUploadImage(file);
+      const safeName = `${Date.now()}-${optimized.name}`;
+      const { error: uploadError } = await supabase.storage.from(BUCKET_NAME).upload(safeName, optimized, {
         upsert: true,
+        contentType: optimized.type,
       });
 
       if (uploadError) {
@@ -261,7 +268,10 @@ export default function ArticlesPage() {
 
       const { data } = supabase.storage.from(BUCKET_NAME).getPublicUrl(safeName);
       insertContent(`\n![Article Image](${data.publicUrl})\n`);
-      message.success("Image inserted into content");
+      message.success(`Image optimized and inserted (${imageSizeLabel(optimized.size)})`);
+      return false;
+    } catch (error) {
+      message.error(error instanceof Error ? error.message : "Image processing failed");
       return false;
     } finally {
       setUploading(false);

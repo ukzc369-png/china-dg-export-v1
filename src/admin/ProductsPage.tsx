@@ -27,6 +27,7 @@ import {
   UploadOutlined,
 } from "@ant-design/icons";
 import { supabase } from "../lib/supabase";
+import { imageSizeLabel, optimizeUploadImage } from "./imageUpload";
 
 type ProductStatus = "active" | "inactive";
 
@@ -263,9 +264,11 @@ export default function ProductsPage() {
   async function uploadFile(file: File, addToGallery = false) {
     setUploading(true);
     try {
-      const safeName = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, "-")}`;
-      const { error: uploadError } = await supabase.storage.from(BUCKET_NAME).upload(safeName, file, {
+      const optimized = await optimizeUploadImage(file);
+      const safeName = `${Date.now()}-${optimized.name}`;
+      const { error: uploadError } = await supabase.storage.from(BUCKET_NAME).upload(safeName, optimized, {
         upsert: true,
+        contentType: optimized.type,
       });
 
       if (uploadError) {
@@ -283,7 +286,10 @@ export default function ProductsPage() {
         setFileList([{ uid: safeName, name: file.name, status: "done", url: publicUrl }]);
       }
 
-      message.success("Image uploaded");
+      message.success(`Image optimized and uploaded (${imageSizeLabel(optimized.size)})`);
+      return false;
+    } catch (error) {
+      message.error(error instanceof Error ? error.message : "Image processing failed");
       return false;
     } finally {
       setUploading(false);
