@@ -119,12 +119,13 @@ function MetricIcon({ index }: { index: number }) {
 
 export default function HomePage({ go, lang, products, articles, onOpenArticle }: Props) {
   const [companyOpen, setCompanyOpen] = useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   useEffect(() => {
     document.body.classList.add("home-page-active");
     return () => document.body.classList.remove("home-page-active");
   }, []);
 
-  const featuredProducts = products.slice(0, 5);
+  const featuredProducts = products.slice(0, 6);
   const extraArticle: Article = {
     title: t("How Chemical Exporters Build Safer Global Supply Chains", "化工出口企业如何构建更安全的全球供应链"),
     tag: t("Supply Chain", "供应链"), text: t("Practical methods for compliant storage, packaging and international shipping.", "合规仓储、包装与国际运输的实用方法。"),
@@ -151,7 +152,7 @@ export default function HomePage({ go, lang, products, articles, onOpenArticle }
             </span>
           </button>
 
-          <nav className="hp-nav hp-nav-i18n" aria-label="Main navigation">
+          <nav className={`hp-nav hp-nav-i18n ${mobileNavOpen ? "is-open" : ""}`} aria-label="Main navigation">
             <button className="active" onClick={() => go("home")}>{tx(t("Home", "首页"), lang)}</button>
             <button onClick={() => go("products")}>{tx(t("Products", "产品"), lang)} <span>⌄</span></button>
             <button onClick={() => go("services")}>{tx(t("Services", "服务"), lang)} <span>⌄</span></button>
@@ -176,6 +177,9 @@ export default function HomePage({ go, lang, products, articles, onOpenArticle }
             </button>
             <button className="hp-inquiry" onClick={() => go("contact")}>
               {tx(t("Inquiry Now", "立即询盘"), lang)}
+            </button>
+            <button className="hp-menu-toggle" onClick={() => setMobileNavOpen((open) => !open)} aria-label="Toggle navigation" aria-expanded={mobileNavOpen}>
+              <span /><span /><span />
             </button>
           </div>
         </div>
