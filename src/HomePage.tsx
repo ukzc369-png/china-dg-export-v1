@@ -75,14 +75,6 @@ const process = [
   [t("After-sales", "售后"), t("Ongoing support and long-term partnership", "持续支持与长期合作")],
 ] as const;
 
-function slugify(value: string) {
-  return value
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-}
-
 function LineIcon({ name }: { name: string }) {
   const common = {
     fill: "none",
@@ -131,12 +123,6 @@ export default function HomePage({ go, lang, products, articles, onOpenArticle }
     seoTitle: t("Safer Global Chemical Supply Chains", "更安全的全球化工供应链"), seoDescription: t("A practical chemical export supply-chain guide.", "化工出口供应链实用指南。"),
   };
   const latestArticles = [...articles, extraArticle, extraArticle].slice(0, 3);
-
-  const openProduct = (product: Product) => {
-    const slug = slugify(product.name.en);
-    window.history.pushState({}, "", `/products/${slug}`);
-    window.dispatchEvent(new PopStateEvent("popstate"));
-  };
 
   const clickOriginalLanguageToggle = () => {
     const hiddenToggle = document.querySelector<HTMLButtonElement>(".header .lang-switch");
@@ -257,7 +243,7 @@ export default function HomePage({ go, lang, products, articles, onOpenArticle }
 
           <div className="hp-product-grid">
             {featuredProducts.map((product, index) => (
-              <article key={`${product.cas}-${index}`}>
+              <article key={`${product.cas}-${index}`} role="link" tabIndex={0} onClick={() => go("products")} onKeyDown={(event) => event.key === "Enter" && go("products")}>
                 <div className="hp-product-image">
                   <img
                     src={product.imageUrl || "/home-v4/products-photo.png"}
@@ -269,7 +255,7 @@ export default function HomePage({ go, lang, products, articles, onOpenArticle }
                   <h3>{tx(product.name, lang)}</h3>
                   <p>CAS: {product.cas || "-"}</p>
                   <p>UN: {product.un || "-"}</p>
-                  <button onClick={() => openProduct(product)}>
+                  <button onClick={(event) => { event.stopPropagation(); go("products"); }}>
                     {tx(t("View Details", "查看详情"), lang)}
                   </button>
                 </div>

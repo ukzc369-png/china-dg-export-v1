@@ -1201,9 +1201,9 @@ function InsightsPage({
 
         <section className="section">
           <div className="container article-detail">
-            <button className="text-link" onClick={() => go("insights")}>
+            <a className="text-link article-back-link" href="/insights" onClick={(event) => { event.preventDefault(); go("insights"); }}>
               ← {tx(t("Back to Insights", "返回知识中心"), lang)}
-            </button>
+            </a>
 
             <article>
               <img className="article-cover" src={currentArticle.coverImage || articleFallbackImage(currentArticle)} alt={tx(currentArticle.title, lang)} />
