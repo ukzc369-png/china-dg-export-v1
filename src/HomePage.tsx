@@ -48,6 +48,16 @@ type Props = {
 const t = (en: string, zh: string): I18n => ({ en, zh });
 const tx = (value: I18n, lang: Lang) => value[lang];
 
+function productSlug(product: Product) {
+  return product.name.en.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+}
+
+function openProductPage(product: Product) {
+  window.history.pushState({}, "", `/products/${productSlug(product)}`);
+  window.dispatchEvent(new PopStateEvent("popstate"));
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
 const strengths = [
   ["shield", t("Strict Compliance", "严格合规"), t("Meet REACH, GHS, IMO, ISOTANK and local regulations.", "符合 REACH、GHS、IMO、ISO TANK 及当地法规。")],
   ["award", t("Premium Quality", "优质品质"), t("Rigorous QC system ensures stable and consistent quality.", "严格质控确保品质稳定一致。")],
@@ -243,7 +253,7 @@ export default function HomePage({ go, lang, products, articles, onOpenArticle }
 
           <div className="hp-product-grid">
             {featuredProducts.map((product, index) => (
-              <article key={`${product.cas}-${index}`} role="link" tabIndex={0} onClick={() => go("products")} onKeyDown={(event) => event.key === "Enter" && go("products")}>
+              <article key={`${product.cas}-${index}`} role="link" tabIndex={0} onClick={() => openProductPage(product)} onKeyDown={(event) => event.key === "Enter" && openProductPage(product)}>
                 <div className="hp-product-image">
                   <img
                     src={product.imageUrl || "/home-v4/products-photo.png"}
@@ -255,7 +265,7 @@ export default function HomePage({ go, lang, products, articles, onOpenArticle }
                   <h3>{tx(product.name, lang)}</h3>
                   <p>CAS: {product.cas || "-"}</p>
                   <p>UN: {product.un || "-"}</p>
-                  <button onClick={(event) => { event.stopPropagation(); go("products"); }}>
+                  <button onClick={(event) => { event.stopPropagation(); openProductPage(product); }}>
                     {tx(t("View Details", "查看详情"), lang)}
                   </button>
                 </div>

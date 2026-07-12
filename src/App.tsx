@@ -592,8 +592,16 @@ function getArticleSlug(pathname: string) {
   const match = pathname.match(/^\/insights\/([^/]+)$/);
   return match ? decodeURIComponent(match[1]) : null;
 }
+function getProductSlug(pathname: string) {
+  const match = pathname.match(/^\/products\/([^/]+)$/);
+  return match ? decodeURIComponent(match[1]) : null;
+}
+function productSlug(product: Product) {
+  return product.name.en.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+}
 function pathToPage(pathname: string): Page {
   if (getArticleSlug(pathname)) return "insights";
+  if (getProductSlug(pathname)) return "products";
   const key = pathname.replace("/", "") as Page;
   return [
     "products",
@@ -810,6 +818,10 @@ function ProductsPage({ go, lang, products }: { go: (page: Page) => void; lang: 
   const [category, setCategory] = useState("All Products");
   const [query, setQuery] = useState("");
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  useEffect(() => {
+    const slug = getProductSlug(window.location.pathname);
+    if (slug) setSelectedProduct(products.find((product) => productSlug(product) === slug) || null);
+  }, [products]);
   const categories = [
     "All Products",
     ...Array.from(new Set(products.map((p) => tx(p.category, "en")))),
@@ -943,7 +955,10 @@ function ProductsPage({ go, lang, products }: { go: (page: Page) => void; lang: 
         <ProductDetailModal
           product={selectedProduct}
           lang={lang}
-          onClose={() => setSelectedProduct(null)}
+          onClose={() => {
+            setSelectedProduct(null);
+            if (getProductSlug(window.location.pathname)) window.history.pushState({}, "", "/products");
+          }}
           onQuote={() => requestQuote(selectedProduct)}
         />
       )}
