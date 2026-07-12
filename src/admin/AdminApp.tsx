@@ -5,7 +5,9 @@ import {
   FileTextOutlined,
   MailOutlined,
 } from "@ant-design/icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import type { Session } from "@supabase/supabase-js";
+import { supabase } from "../lib/supabase";
 
 import DashboardPage from "./DashboardPage";
 import ProductsPage from "./ProductsPage";
@@ -17,11 +19,23 @@ const { Sider, Content } = Layout;
 
 export default function AdminApp() {
   const [tab, setTab] = useState("dashboard");
+  const [session, setSession] = useState<Session | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
 
-  const isLoggedIn =
-    localStorage.getItem("admin_logged_in") === "true";
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      setSession(data.session);
+      setAuthLoading(false);
+    });
+    const { data } = supabase.auth.onAuthStateChange((_event, nextSession) => {
+      setSession(nextSession);
+      setAuthLoading(false);
+    });
+    return () => data.subscription.unsubscribe();
+  }, []);
 
-  if (!isLoggedIn) {
+  if (authLoading) return null;
+  if (!session) {
     return <LoginPage />;
   }
 
@@ -81,14 +95,11 @@ export default function AdminApp() {
             }}
           >
             <span style={{ color: "#666" }}>
-              admin@chinadgexport.com
+              {session.user.email}
             </span>
 
             <Button
-              onClick={() => {
-                localStorage.removeItem("admin_logged_in");
-                window.location.reload();
-              }}
+              onClick={() => supabase.auth.signOut()}
             >
               Logout
             </Button>

@@ -1,20 +1,19 @@
 import { Card, Input, Button, message } from "antd";
 import { useState } from "react";
+import { supabase } from "../lib/supabase";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = () => {
-    if (
-      email === "admin@chinadgexport.com" &&
-      password === "Admin@2025DG"
-    ) {
-      localStorage.setItem("admin_logged_in", "true");
-      window.location.reload();
-    } else {
-      message.error("Invalid email or password");
-    }
+  const [loading, setLoading] = useState(false);
+
+  const handleLogin = async () => {
+    if (!email.trim() || !password) return message.warning("Enter your email and password");
+    setLoading(true);
+    const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
+    setLoading(false);
+    if (error) message.error("Invalid email or password");
   };
 
   return (
@@ -42,7 +41,7 @@ export default function LoginPage() {
           style={{ marginBottom: 12 }}
         />
 
-        <Button type="primary" block onClick={handleLogin}>
+        <Button type="primary" block loading={loading} onClick={handleLogin}>
           Login
         </Button>
       </Card>
