@@ -1185,9 +1185,9 @@ function renderArticleContent(content: string) {
 
 function articleFallbackImage(article: Article) {
   const slug = article.slug.toLowerCase();
-  if (slug.includes("tank") || slug.includes("packing")) return "/home-v4/products-photo.png";
-  if (slug.includes("document")) return "/home-v4/hero-drums-photo.png";
-  return "/home-v4/cta-ship-photo.png";
+  if (slug.includes("tank") || slug.includes("packing")) return "/home-v4/products-photo.webp";
+  if (slug.includes("document")) return "/home-v4/hero-drums-photo.webp";
+  return "/home-v4/cta-ship-photo.webp";
 }
 
 function InsightsPage({
@@ -1221,7 +1221,7 @@ function InsightsPage({
             </a>
 
             <article>
-              <img className="article-cover" src={currentArticle.coverImage || articleFallbackImage(currentArticle)} alt={tx(currentArticle.title, lang)} />
+              <img className="article-cover" src={currentArticle.coverImage || articleFallbackImage(currentArticle)} alt={tx(currentArticle.title, lang)} onError={(event) => { event.currentTarget.onerror = null; event.currentTarget.src = articleFallbackImage(currentArticle); }} />
               <div className="article-body">{renderArticleContent(tx(currentArticle.content, lang))}</div>
             </article>
 
@@ -1267,7 +1267,7 @@ function InsightsPage({
           <div className="article-grid">
             {articles.map((a) => (
               <article key={a.slug}>
-                <img className="article-card-image" src={a.coverImage || articleFallbackImage(a)} alt={tx(a.title, lang)} loading="lazy" />
+                <img className="article-card-image" src={a.coverImage || articleFallbackImage(a)} alt={tx(a.title, lang)} loading="lazy" onError={(event) => { event.currentTarget.onerror = null; event.currentTarget.src = articleFallbackImage(a); }} />
                 <span>{tx(a.tag, lang)}</span>
                 <h3>{tx(a.title, lang)}</h3>
                 <p>{tx(a.text, lang)}</p>
