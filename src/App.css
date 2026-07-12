@@ -616,6 +616,9 @@ button {
   gap: 16px;
 }
 .catalog-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   background: #fff;
   border: 1px solid #dce6f1;
   border-radius: 14px;
@@ -653,6 +656,7 @@ button {
   font-size: 20px;
   letter-spacing: -0.035em;
   margin: 0 0 11px;
+  min-height: 48px;
 }
 .chip-row {
   display: flex;
@@ -682,7 +686,9 @@ button {
   color: #0b7cff;
   font-weight: 800;
   padding: 0;
-  margin-top: 13px;
+  margin-top: auto;
+  padding-top: 18px;
+  align-self: flex-start;
   font-size: 13px;
 }
 
