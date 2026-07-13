@@ -270,7 +270,7 @@ export default function HomePage({ go, lang, products, articles, onOpenArticle }
                 <div className="hp-product-content">
                   <h3>{tx(product.name, lang)}</h3>
                   <p>CAS: {product.cas || "-"}</p>
-                  <p>UN: {product.un || "-"}</p>
+                  {product.un && product.un !== "-" && <p>UN: {product.un}</p>}
                   <button onClick={(event) => { event.stopPropagation(); openProductPage(product); }}>
                     {tx(t("View Details", "查看详情"), lang)}
                   </button>

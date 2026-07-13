@@ -487,6 +487,8 @@ body.home-page-active #root > footer:not(.hp-footer) { display: none !important;
 }
 
 .hp-product-grid article {
+  display: flex;
+  flex-direction: column;
   min-width: 0;
   overflow: hidden;
   border: 1px solid rgba(168,202,234,.34);
@@ -511,6 +513,9 @@ body.home-page-active #root > footer:not(.hp-footer) { display: none !important;
 }
 
 .hp-product-content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
   padding: 15px 16px 16px;
 }
 
@@ -529,7 +534,7 @@ body.home-page-active #root > footer:not(.hp-footer) { display: none !important;
 }
 
 .hp-product-content button {
-  margin-top: 9px;
+  margin-top: auto;
   border: 1px solid rgba(255,255,255,.5);
   border-radius: 2px;
   padding: 7px 15px;
