@@ -529,7 +529,7 @@ function cmsProductToProduct(item: CmsProduct): Product {
   return {
     name: t(item.name || "Unnamed Product", item.name || "未命名产品"),
     cas: item.cas || "-",
-    un: item.un_number || "-",
+    un: item.un_number?.trim() || "",
     purity: item.specification || "To be confirmed",
     imageUrl: item.image_url || undefined,
     packing: t("Drums / ISO Tank / IBC", "桶装 / ISO罐 / IBC"),
@@ -850,7 +850,7 @@ function ProductsPage({ go, lang, products }: { go: (page: Page) => void; lang: 
         ".contact-card input",
       );
       if (firstInput && product)
-        firstInput.value = `${tx(product.name, lang)} / CAS ${product.cas} / UN ${product.un}`;
+        firstInput.value = `${tx(product.name, lang)} / CAS ${product.cas}${product.un ? ` / UN ${product.un}` : ""}`;
     }, 120);
   }
   return (
@@ -1847,7 +1847,7 @@ function CatalogCard({
       <h3>{tx(product.name, lang)}</h3>
       <div className="chip-row">
         <span>CAS {product.cas}</span>
-        <span>UN {product.un}</span>
+        {product.un && product.un !== "-" && <span>UN {product.un}</span>}
       </div>
       <p>{tx(t("Appearance: Colorless liquid", "外观：无色液体"), lang)}</p>
       <p>
@@ -1898,7 +1898,7 @@ function ProductDetailModal({
             <h2>{tx(product.name, lang)}</h2>
             <div className="chip-row">
               <span>CAS {product.cas}</span>
-              <span>UN {product.un}</span>
+              {product.un && product.un !== "-" && <span>UN {product.un}</span>}
               <span>{tx(product.category, lang)}</span>
             </div>
           </div>
