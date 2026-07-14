@@ -885,7 +885,12 @@ body.home-page-active #root > footer:not(.hp-footer) { display: none !important;
   grid-template-columns: 1.5fr .9fr .9fr .9fr 1.45fr;
   gap: 48px;
   padding-bottom: 20px;
+  align-items: start;
 }
+
+.hp-footer-about,
+.hp-footer-column,
+.hp-contact { padding-top: 4px; }
 
 .hp-footer-logo { color: #fff; }
 
@@ -921,11 +926,28 @@ body.home-page-active #root > footer:not(.hp-footer) { display: none !important;
   font-size: 11px;
 }
 
-.hp-footer-column p,
+.hp-footer-column button,
 .hp-contact p {
   margin: 5px 0;
   font-size: 8.5px;
 }
+
+.hp-footer-column button {
+  display: block;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: rgba(255,255,255,.74);
+  text-align: left;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.hp-footer-column button:hover,
+.hp-footer-column button:focus-visible,
+.hp-contact a:hover { color: #40a5ff; }
+
+.hp-contact a { color: inherit; text-decoration: none; }
 
 .hp-footer-bottom {
   min-height: 44px;
@@ -956,7 +978,7 @@ body.home-page-active #root > footer:not(.hp-footer) { display: none !important;
   .hp-six-grid p,
   .hp-service-grid p { max-width: 175px; }
   .hp-product-content h3 { min-height: 34px; }
-  .hp-footer-column p,
+  .hp-footer-column button,
   .hp-contact p { font-size: 9.5px; }
 }
 

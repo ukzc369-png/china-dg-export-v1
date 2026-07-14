@@ -79,7 +79,7 @@ const t = (en: string, zh: string): I18n => ({ en, zh });
 const nav: { label: I18n; page: Page }[] = [
   { label: t("Home", "首页"), page: "home" },
   { label: t("Products", "产品"), page: "products" },
-  { label: t("Services", "服务"), page: "services" },
+  { label: t("Export Services", "出口服务"), page: "services" },
   { label: t("Markets", "市场"), page: "markets" },
   { label: t("Cases", "案例"), page: "cases" },
   { label: t("Insights", "知识"), page: "insights" },
@@ -258,8 +258,8 @@ const services: Service[] = [
   {
     title: t("DG Warehousing", "危化品仓储"),
     text: t(
-      "Licensed hazardous storage, batch separation and controlled handling.",
-      "合规危化仓储、批次分离及受控操作。",
+      "Compliant hazardous storage, batch separation and controlled handling through our regional service network.",
+      "依托区域服务网络提供合规危化仓储、批次分离及受控操作。",
     ),
     icon: "⌂",
   },
@@ -679,20 +679,20 @@ useEffect(() => {
       page === "home"
         ? tx(
             t(
-              "ChinaDGExport | Dangerous Chemical Export Platform",
-              "ChinaDGExport | 危险化学品出口平台",
+              "China Chemical Supplier & Bulk Chemical Exporter | ChinaDGExport",
+              "中国化工品供应商与大宗化工品出口商 | ChinaDGExport",
             ),
             lang,
           )
         : `${tx(nav.find((n) => n.page === page)?.label || t(page, page), lang)} | ChinaDGExport`;
     const descriptions: Partial<Record<Page, I18n>> = {
       about: t(
-        "Learn how ChinaDGExport supports chemical sourcing, compliant storage, export documentation, packaging and international logistics from Dongying, China.",
-        "了解 ChinaDGExport 如何依托中国东营，为客户提供化工品采购、合规仓储、出口单证、包装及国际物流服务。",
+        "ChinaDGExport supplies bulk chemicals from Dongying, China, backed by petrochemical industry resources and integrated dangerous-goods export support.",
+        "ChinaDGExport立足中国东营供应大宗化工品，并依托炼化产业资源与危险品出口一站式配套支持全球采购商。",
       ),
       services: t(
-        "Chemical sourcing, quality control, export documentation, packaging and dangerous-goods logistics services from China.",
-        "中国化工品采购、质量控制、出口单证、包装及危险品物流服务。",
+        "Export support for chemical orders from China, including quality control, documentation, packaging, customs and dangerous-goods logistics.",
+        "为中国化工品订单提供质量控制、单证、包装、报关及危险品物流配套支持。",
       ),
     };
     const meta = document.querySelector('meta[name="description"]');
@@ -749,7 +749,7 @@ useEffect(() => {
             <b>ChinaDGExport</b>
             <small>
               {tx(
-                t("Dangerous Chemical Export Platform", "危险化学品出口平台"),
+                t("Chemical Supplier & Exporter", "化工品供应商与出口商"),
                 lang,
               )}
             </small>
@@ -984,13 +984,13 @@ function ProductsPage({ go, lang, products }: { go: (page: Page) => void; lang: 
 
 function AboutPage({ go, lang }: { go: (page: Page) => void; lang: Lang }) {
   const capabilities = [
-    t("Chemical sourcing and supplier coordination", "化工产品采购与供应商协调"),
+    t("Bulk chemical supply and product matching", "大宗化工品供应与产品匹配"),
     t("Compliant storage and cargo consolidation", "合规仓储与货物集散"),
     t("Export documents and customs support", "出口单证与报关支持"),
     t("Packaging, labeling and dangerous-goods logistics", "包装、标签与危险品物流"),
   ];
   const advantages = [
-    [t("Dongying Chemical Base", "东营化工产业基地"), t("Close access to a broad chemical supply network and experienced production partners.", "依托东营化工产业集群，对接广泛的产品供应网络与成熟生产企业。")],
+    [t("Dongying Petrochemical Belt", "东营炼化产业带"), t("Close access to refining and chemical production resources around the Shengli Oilfield industrial region.", "依托胜利油田周边炼化产业资源，对接成熟的化工生产与供应网络。")],
     [t("Inland Port & Warehousing", "内陆港与仓储集散"), t("Cargo can be stored, consolidated, prepared and coordinated before port departure.", "货物可在出港前完成仓储、集散、备货及运输协调。")],
     [t("One-stop Export Execution", "一站式出口执行"), t("We coordinate documentation, packaging, declaration and international logistics under one workflow.", "统一协调单证、包装、申报及国际物流，减少多方衔接成本。")],
   ] as const;
@@ -998,18 +998,18 @@ function AboutPage({ go, lang }: { go: (page: Page) => void; lang: Lang }) {
     <main className="page about-page">
       <PageHero
         kicker={tx(t("About ChinaDGExport", "关于 ChinaDGExport"), lang)}
-        title={tx(t("A practical chemical export platform based in Dongying, China.", "立足中国东营的化工品出口综合服务平台。"), lang)}
-        text={tx(t("We connect chemical supply, compliant storage, export procedures and international logistics to help global buyers execute shipments with greater clarity and control.", "我们连接化工品供应、合规仓储、出口手续与国际物流，帮助全球采购商更清晰、更可控地完成出口交付。"), lang)}
+        title={tx(t("Chemical supply from Dongying, built for global trade.", "立足中国东营，面向全球贸易的化工品供应。"), lang)}
+        text={tx(t("ChinaDGExport supplies and exports bulk chemicals to international importers, distributors and industrial buyers, backed by integrated dangerous-goods export support.", "ChinaDGExport面向国际进口商、分销商和工业采购商供应并出口大宗化工品，并提供危险品出口一站式配套支持。"), lang)}
       />
 
       <section className="section about-intro">
         <div className="container about-intro-grid">
           <div>
             <p className="eyebrow">{tx(t("Who We Are", "我们是谁"), lang)}</p>
-            <h2>{tx(t("Built around real export execution—not only product matching.", "不仅匹配产品，更注重真实的出口执行。"), lang)}</h2>
+            <h2>{tx(t("A chemical supplier first, backed by integrated export execution.", "以化工品供应为核心，以出口执行能力为支撑。"), lang)}</h2>
           </div>
           <div className="about-copy">
-            <p>{tx(t("ChinaDGExport supports overseas importers, distributors and industrial users sourcing chemicals from China. Our role is to organize the work between suppliers, warehouses, documentation teams, customs and logistics providers.", "ChinaDGExport 服务于从中国采购化工品的海外进口商、分销商及工业用户，负责协调供应商、仓储、单证、报关与物流各环节。"), lang)}</p>
+            <p>{tx(t("ChinaDGExport supplies solvents, organic acids, alcohols, glycols and chemical intermediates to overseas importers, distributors and industrial users.", "ChinaDGExport向海外进口商、分销商及工业用户供应溶剂、有机酸、醇类、二元醇及化工中间体。"), lang)}</p>
             <p>{tx(t("Based in Dongying, Shandong, we benefit from a strong chemical industry cluster and an inland-port service network that supports storage, cargo consolidation and export formalities.", "平台位于山东东营，依托当地化工产业集群及内陆港服务网络，能够提供仓储、货物集散及出口手续协同支持。"), lang)}</p>
           </div>
         </div>
@@ -1034,7 +1034,7 @@ function AboutPage({ go, lang }: { go: (page: Page) => void; lang: Lang }) {
         <div className="container about-capability-grid">
           <div>
             <p className="eyebrow">{tx(t("Integrated Support", "综合服务能力"), lang)}</p>
-            <h2>{tx(t("One coordinated path from inquiry to shipment.", "从询盘到出运的一体化协调路径。"), lang)}</h2>
+            <h2>{tx(t("Export support built around every chemical order.", "围绕每笔化工品订单提供出口配套支持。"), lang)}</h2>
             <p>{tx(t("Each shipment is reviewed according to product characteristics, destination requirements and the appropriate packing and transport method.", "每票货物均结合产品特性、目的地要求以及适用的包装与运输方式进行核对。"), lang)}</p>
             <button className="blue-btn" onClick={() => go("services")}>{tx(t("View Services & Export Process", "查看服务与出口流程"), lang)}</button>
           </div>
@@ -1073,15 +1073,15 @@ function ServicesPage({ go, lang }: { go: (page: Page) => void; lang: Lang }) {
         kicker={tx(t("Services", "服务"), lang)}
         title={tx(
           t(
-            "Integrated dangerous chemical export execution.",
-            "一体化危险化学品出口执行服务。",
+            "Export support built around every chemical order.",
+            "围绕每笔化工品订单提供出口配套支持。",
           ),
           lang,
         )}
         text={tx(
           t(
-            "From product confirmation to port departure, the service page explains how ChinaDGExport organizes the export workflow.",
-            "从产品确认到港口离港，展示 ChinaDGExport 如何组织完整出口流程。",
+            "From product confirmation and quotation to compliant storage, packaging, customs and ocean freight, we help overseas buyers receive chemicals from China efficiently.",
+            "从产品确认和报价，到合规仓储、包装、报关及海运，帮助海外采购商高效接收来自中国的化工品。",
           ),
           lang,
         )}
@@ -1135,8 +1135,8 @@ function MarketsPage({ go, lang }: { go: (page: Page) => void; lang: Lang }) {
         )}
         text={tx(
           t(
-            "Destination-focused chemical export support for importers, distributors and industrial users.",
-            "为进口商、分销商和工业用户提供目的港导向的化工品出口支持。",
+            "Product supply and destination-specific export support for international importers, distributors and industrial users.",
+            "为国际进口商、分销商和工业用户提供化工品供应及目的地专项出口支持。",
           ),
           lang,
         )}
@@ -1939,10 +1939,9 @@ function CatalogCard({
         <span>CAS {product.cas}</span>
         {/^\d{4}$/.test(product.un.trim()) && <span>UN {product.un}</span>}
       </div>
-      <p>{tx(t("Appearance: Colorless liquid", "外观：无色液体"), lang)}</p>
-      <p>
-        {tx(t("Purity:", "纯度："), lang)} ≥ {product.purity}
-      </p>
+      {!/to be confirmed/i.test(product.purity) && (
+        <p>{tx(t("Purity:", "纯度："), lang)} ≥ {product.purity}</p>
+      )}
       <p>
         {tx(t("Packing:", "包装："), lang)} {tx(product.packing, lang)}
       </p>
@@ -2050,9 +2049,9 @@ function productDataSheet(product: Product, lang: Lang) {
     },
     {
       label: tx(t("Appearance", "外观"), lang),
-      value: tx(t("Colorless transparent liquid", "无色透明液体"), lang),
+      value: tx(t("Refer to product specification", "请参考产品规格"), lang),
     },
-    { label: tx(t("Purity", "纯度"), lang), value: `≥ ${product.purity}` },
+    { label: tx(t("Purity", "纯度"), lang), value: /to be confirmed/i.test(product.purity) ? tx(t("Available upon request", "可按需确认"), lang) : `≥ ${product.purity}` },
     { label: tx(t("Packing", "包装"), lang), value: tx(product.packing, lang) },
     {
       label: tx(t("Shelf Life", "保质期"), lang),
@@ -2120,7 +2119,7 @@ function Footer({ go, lang }: { go: (page: Page) => void; lang: Lang }) {
           <b>ChinaDGExport</b>
           <p>
             {tx(
-              t("Dangerous Chemical Export Platform", "危险化学品出口平台"),
+              t("Chemical Supplier & Exporter", "化工品供应商与出口商"),
               lang,
             )}
           </p>

@@ -60,12 +60,12 @@ function openProductPage(product: Product) {
 }
 
 const strengths = [
-  ["shield", t("Strict Compliance", "严格合规"), t("Meet REACH, GHS, IMO, ISOTANK and local regulations.", "符合 REACH、GHS、IMO、ISO TANK 及当地法规。")],
-  ["award", t("Premium Quality", "优质品质"), t("Rigorous QC system ensures stable and consistent quality.", "严格质控确保品质稳定一致。")],
-  ["team", t("Experienced Team", "经验团队"), t("Professional team with deep knowledge in chemicals and international trade.", "拥有深厚化工与国际贸易经验的专业团队。")],
-  ["globe", t("Global Network", "全球网络"), t("Strong logistics network ensures safe and timely delivery worldwide.", "强大物流网络确保全球安全及时交付。")],
-  ["truck", t("One-stop Service", "一站式服务"), t("From product selection to shipping, we provide complete solutions.", "从产品选择到运输提供完整解决方案。")],
-  ["hand", t("Customer First", "客户至上"), t("We focus on long-term partnership and customer satisfaction.", "专注长期合作与客户满意。")],
+  ["shield", t("Reliable Chemical Supply", "可靠化工品供应"), t("Stable product matching, specifications and batch coordination for international buyers.", "为国际采购商提供稳定的产品匹配、规格确认与批次协调。")],
+  ["award", t("Quality & Documentation", "质量与单证"), t("COA, MSDS, specifications and export documents coordinated for each order.", "按订单协调COA、MSDS、产品规格与出口单证。")],
+  ["team", t("Dongying Petrochemical Belt", "东营炼化产业带"), t("Close access to a strong refining and chemical production and supply base.", "依托东营炼化产业集群，连接成熟的化工生产与供应资源。")],
+  ["globe", t("Inland-Port Support", "内陆港配套支持"), t("Storage, consolidation, repacking and container handling through our service network.", "依托服务网络提供仓储、集散、分装与集装箱作业支持。")],
+  ["truck", t("DG Export Execution", "危险品出口执行"), t("Packaging, declaration, customs and dangerous-goods shipping coordination.", "提供包装、申报、报关及危险品运输协调。")],
+  ["hand", t("Buyer-focused Service", "以采购商为中心"), t("Responsive quotation, order follow-up and long-term supply cooperation.", "提供快速报价、订单跟进与长期供应合作。")],
 ] as const;
 
 const services = [
@@ -110,7 +110,6 @@ function MetricIcon({ index }: { index: number }) {
 }
 
 export default function HomePage({ go, lang, products, articles, onOpenArticle }: Props) {
-  const [companyOpen, setCompanyOpen] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   useEffect(() => {
     document.body.classList.add("home-page-active");
@@ -140,7 +139,7 @@ export default function HomePage({ go, lang, products, articles, onOpenArticle }
             <span className="hp-subpage-logo" aria-hidden="true">DG</span>
             <span className="hp-logo-copy">
               <strong>ChinaDGExport</strong>
-              <small>DANGEROUS CHEMICAL EXPORT PLATFORM</small>
+              <small>CHEMICAL SUPPLIER &amp; EXPORTER</small>
             </span>
           </button>
 
@@ -190,8 +189,8 @@ export default function HomePage({ go, lang, products, articles, onOpenArticle }
             <p>
               {tx(
                 t(
-                  "We specialize in manufacturing and exporting high-quality bulk chemicals in drums, compliant with international standards.",
-                  "我们专注于高品质桶装大宗化工品制造与出口，并符合国际标准。",
+                  "ChinaDGExport supplies and exports bulk chemicals from Dongying, China, with reliable products and integrated dangerous-goods export support.",
+                  "ChinaDGExport立足中国东营，供应并出口大宗化工品，同时提供可靠产品与危险品出口一站式配套支持。",
                 ),
                 lang,
               )}
@@ -207,12 +206,12 @@ export default function HomePage({ go, lang, products, articles, onOpenArticle }
 
             <div className="hp-metrics">
               {[
-                ["20+", t("Years Experience", "年行业经验")],
-                ["100+", t("Countries Served", "服务国家")],
-                ["200+", t("Chemical Products", "化工产品")],
-                ["100%", t("Compliance Guarantee", "合规保障")],
+                ["Dongying", t("Supply Base", "供应基地")],
+                [`${products.length}+`, t("Listed Chemicals", "在售化工品")],
+                ["DG", t("Export Support", "危险品出口支持")],
+                ["One-stop", t("Order Coordination", "订单全程协调")],
               ].map(([number, label], index) => (
-                <button className="hp-metric" key={String(number)} onClick={() => index === 0 ? setCompanyOpen(true) : index === 2 ? go("products") : go("markets")}>
+                <button className="hp-metric" key={String(number)} onClick={() => index === 1 ? go("products") : index === 2 || index === 3 ? go("services") : go("about")}>
                   <MetricIcon index={index} />
                   <span>
                     <strong>{String(number)}</strong>
@@ -275,7 +274,7 @@ export default function HomePage({ go, lang, products, articles, onOpenArticle }
 
       <section className="hp-section hp-services">
         <div className="hp-shell">
-          <SectionHeading title={tx(t("OUR SERVICES", "我们的服务"), lang)} />
+          <SectionHeading title={tx(t("EXPORT SUPPORT FOR EVERY ORDER", "每笔订单的出口配套支持"), lang)} />
           <div className="hp-service-grid hp-service-grid-compact">
             {services.slice(0, 4).map(([icon, title, text]) => (
               <article key={title.en} role="button" tabIndex={0} onClick={() => go("services")}>
@@ -346,13 +345,13 @@ export default function HomePage({ go, lang, products, articles, onOpenArticle }
           <div className="hp-footer-about">
             <button className="hp-footer-logo" onClick={() => go("home")}>
               <span className="hp-subpage-logo" aria-hidden="true">DG</span>
-              <span><strong>ChinaDGExport</strong><small>DANGEROUS CHEMICAL EXPORT PLATFORM</small></span>
+              <span><strong>ChinaDGExport</strong><small>CHEMICAL SUPPLIER &amp; EXPORTER</small></span>
             </button>
             <p>
               {tx(
                 t(
-                  "We are a professional chemical exporter from China, committed to providing high-quality products, compliant solutions and reliable service to customers worldwide.",
-                  "我们是一家专业的中国化工品出口商，致力于为全球客户提供高品质产品、合规解决方案与可靠服务。",
+                  "ChinaDGExport supplies bulk chemicals from Dongying, China, backed by integrated dangerous-goods export coordination for global buyers.",
+                  "ChinaDGExport立足中国东营，面向全球采购商供应大宗化工品，并提供危险品出口全流程协调支持。",
                 ),
                 lang,
               )}
@@ -366,15 +365,15 @@ export default function HomePage({ go, lang, products, articles, onOpenArticle }
             </div>
           </div>
 
-          <FooterColumn title="Products" items={["Inorganic Chemicals", "Organic Chemicals", "Fine Chemicals", "Water Treatment Chemicals", "View All Products"]} />
-          <FooterColumn title="Services" items={["Product Sourcing", "Quality Control", "Documentation", "Logistics & Shipping", "After-sales Support"]} />
-          <FooterColumn title="Company" items={["About Us", "Our Team", "Certifications", "News", "Contact Us"]} />
+          <FooterColumn title="Products" go={go} items={[["Solvents", "products"], ["Organic Acids", "products"], ["Alcohols & Glycols", "products"], ["Chemical Intermediates", "products"], ["View All Products", "products"]]} />
+          <FooterColumn title="Services" go={go} items={[["Order Support", "services"], ["Quality Control", "services"], ["Documentation", "services"], ["DG Logistics", "services"], ["Export Process", "services"]]} />
+          <FooterColumn title="Company" go={go} items={[["About Us", "about"], ["Our Advantages", "about"], ["Insights", "insights"], ["Markets", "markets"], ["Contact Us", "contact"]]} />
 
           <div className="hp-contact">
             <h3>Contact Us</h3>
-            <p>◉&nbsp; Email: info@chinadgexport.com</p>
-            <p>◉&nbsp; Tel: +86 186 7869 5200</p>
-            <p>◉&nbsp; WhatsApp: +86 186 7869 5200</p>
+            <p>◉&nbsp; <a href="mailto:info@chinadgexport.com">Email: info@chinadgexport.com</a></p>
+            <p>◉&nbsp; <a href="tel:+8618678695200">Tel: +86 186 7869 5200</a></p>
+            <p>◉&nbsp; <a href="https://wa.me/8618678695200">WhatsApp: +86 186 7869 5200</a></p>
             <p>◉&nbsp; Address: Dongying, Shandong, China</p>
           </div>
         </div>
@@ -384,18 +383,6 @@ export default function HomePage({ go, lang, products, articles, onOpenArticle }
           <span>Privacy Policy&nbsp;&nbsp; | &nbsp;&nbsp;Terms of Use</span>
         </div>
       </footer>
-      {companyOpen && (
-        <div className="hp-company-modal" role="dialog" aria-modal="true" onClick={() => setCompanyOpen(false)}>
-          <section onClick={(event) => event.stopPropagation()}>
-            <button className="hp-company-close" onClick={() => setCompanyOpen(false)}>×</button>
-            <span className="hp-subpage-logo hp-subpage-logo-modal" aria-hidden="true">DG</span>
-            <h2>{tx(t("About ChinaDGExport", "关于 ChinaDGExport"), lang)}</h2>
-            <p>{tx(t("With more than 20 years of chemical industry experience, ChinaDGExport provides compliant sourcing, quality control, documentation, packaging and global logistics solutions for bulk chemical buyers worldwide.", "ChinaDGExport 拥有二十余年化工行业经验，为全球大宗化工采购商提供合规采购、质量控制、单证、包装及国际物流解决方案。"), lang)}</p>
-            <div className="hp-company-stats"><strong>20+</strong><span>Years Experience</span><strong>100+</strong><span>Countries Served</span></div>
-            <button className="hp-company-action" onClick={() => { setCompanyOpen(false); go("contact"); }}>{tx(t("Contact Our Team", "联系我们"), lang)}</button>
-          </section>
-        </div>
-      )}
     </main>
   );
 }
@@ -409,11 +396,11 @@ function SectionHeading({ title, compact = false }: { title: string; compact?: b
   );
 }
 
-function FooterColumn({ title, items }: { title: string; items: string[] }) {
+function FooterColumn({ title, items, go }: { title: string; items: [string, Page][]; go: (page: Page) => void }) {
   return (
     <div className="hp-footer-column">
       <h3>{title}</h3>
-      {items.map((item) => <p key={item}>{item}</p>)}
+      {items.map(([label, page]) => <button key={label} type="button" onClick={() => go(page)}>{label}</button>)}
     </div>
   );
 }
