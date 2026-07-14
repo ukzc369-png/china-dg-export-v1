@@ -990,7 +990,7 @@ function AboutPage({ go, lang }: { go: (page: Page) => void; lang: Lang }) {
     t("Packaging, labeling and dangerous-goods logistics", "包装、标签与危险品物流"),
   ];
   const advantages = [
-    [t("Dongying Petrochemical Belt", "东营炼化产业带"), t("Close access to refining and chemical production resources around the Shengli Oilfield industrial region.", "依托胜利油田周边炼化产业资源，对接成熟的化工生产与供应网络。")],
+    [t("Dongying Petrochemical Belt", "东营炼化产业带"), t("Built around Shengli Oilfield and one of China's leading petrochemical clusters, Dongying offers dense refining capacity, established chemical supply chains and access to major industry enterprises.", "依托胜利油田及中国领先的石化产业集群，东营具备密集的炼化产能、成熟的化工供应链与大型产业企业资源。")],
     [t("Inland Port & Warehousing", "内陆港与仓储集散"), t("Cargo can be stored, consolidated, prepared and coordinated before port departure.", "货物可在出港前完成仓储、集散、备货及运输协调。")],
     [t("One-stop Export Execution", "一站式出口执行"), t("We coordinate documentation, packaging, declaration and international logistics under one workflow.", "统一协调单证、包装、申报及国际物流，减少多方衔接成本。")],
   ] as const;

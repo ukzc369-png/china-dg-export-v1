@@ -892,7 +892,13 @@ body.home-page-active #root > footer:not(.hp-footer) { display: none !important;
 .hp-footer-column,
 .hp-contact { padding-top: 4px; }
 
-.hp-footer-logo { color: #fff; }
+.hp-footer-logo {
+  width: 100%;
+  margin: 0;
+  color: #fff;
+  justify-content: flex-start;
+  align-self: flex-start;
+}
 
 .hp-footer-about > p {
   max-width: 290px;
