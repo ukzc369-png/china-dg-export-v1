@@ -1053,6 +1053,29 @@ footer small {
   box-shadow: 0 10px 24px rgba(8, 32, 70, 0.06);
 }
 
+.about-intro-grid { display: grid; grid-template-columns: .85fr 1.15fr; gap: 72px; align-items: start; }
+.about-intro h2, .about-capabilities h2, .about-commitment h2 { margin: 10px 0 18px; color: #071f48; font-size: clamp(28px, 3vw, 44px); line-height: 1.12; }
+.about-copy p, .about-capabilities p, .about-commitment p { color: #53657d; font-size: 16px; line-height: 1.85; }
+.about-copy p + p { margin-top: 18px; }
+.about-advantage-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; margin-top: 34px; }
+.about-advantage-grid article { min-height: 245px; padding: 32px; border: 1px solid #d4e1ee; border-radius: 14px; background: #fff; box-shadow: 0 16px 40px rgba(8,45,91,.06); }
+.about-advantage-grid b { color: #0b7cff; font-size: 14px; letter-spacing: .12em; }
+.about-advantage-grid h3 { margin: 34px 0 14px; color: #08265a; font-size: 21px; }
+.about-advantage-grid p { color: #5b6c81; line-height: 1.75; }
+.about-capability-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 78px; align-items: center; }
+.about-capabilities .blue-btn { margin-top: 22px; }
+.about-checklist { display: grid; gap: 14px; }
+.about-checklist div { display: flex; align-items: center; gap: 15px; min-height: 64px; padding: 15px 18px; border: 1px solid #d6e3f0; border-radius: 10px; color: #153257; font-weight: 700; background: #f8fbff; }
+.about-checklist span { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; color: #fff; background: #0b7cff; }
+.about-commitment { text-align: center; background: #061f45; }
+.about-commitment h2 { color: #fff; }
+.about-commitment p { max-width: 820px; margin: 0 auto; color: rgba(255,255,255,.76); }
+
+@media (max-width: 920px) {
+  .about-intro-grid, .about-capability-grid { grid-template-columns: 1fr; gap: 34px; }
+  .about-advantage-grid { grid-template-columns: 1fr; }
+}
+
 .mobile-menu-toggle span {
   display: block;
   width: 18px;

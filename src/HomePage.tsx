@@ -7,6 +7,7 @@ export type I18n = { en: string; zh: string };
 export type Page =
   | "home"
   | "products"
+  | "about"
   | "services"
   | "markets"
   | "cases"
@@ -74,15 +75,6 @@ const services = [
   ["pack", t("Packaging & Labeling", "包装与标签"), t("Professional packaging and labeling in compliance with standards.", "符合标准的专业包装与标签。")],
   ["ship", t("Logistics & Shipping", "物流与海运"), t("Safe, efficient and cost-effective logistics solutions worldwide.", "安全、高效且具成本优势的全球物流。")],
   ["support", t("After-sales Support", "售后支持"), t("Dedicated support for any questions and after-sales service.", "提供专属售后支持与问题响应。")],
-] as const;
-
-const process = [
-  [t("Inquiry", "提交需求"), t("Tell us your requirement", "告诉我们您的需求")],
-  [t("Quotation", "报价"), t("Receive our best offer", "获取最佳报价")],
-  [t("Order Confirmation", "订单确认"), t("Confirm details and PI", "确认细节与形式发票")],
-  [t("Production & QC", "生产与质检"), t("Manufacturing and quality inspection", "生产及质量检验")],
-  [t("Shipping", "出运"), t("Safe packing and on-time delivery", "安全包装并准时交付")],
-  [t("After-sales", "售后"), t("Ongoing support and long-term partnership", "持续支持与长期合作")],
 ] as const;
 
 function LineIcon({ name }: { name: string }) {
@@ -158,7 +150,7 @@ export default function HomePage({ go, lang, products, articles, onOpenArticle }
             <button onClick={() => go("services")}>{tx(t("Services", "服务"), lang)} <span>⌄</span></button>
             <button onClick={() => go("markets")}>{tx(t("Markets", "市场"), lang)} <span>⌄</span></button>
             <button onClick={() => go("insights")}>{tx(t("Insights", "洞察"), lang)} <span>⌄</span></button>
-            <button onClick={() => document.getElementById("about-home")?.scrollIntoView({ behavior: "smooth" })}>{tx(t("About Us", "关于我们"), lang)}</button>
+            <button onClick={() => go("about")}>{tx(t("About Us", "关于我们"), lang)}</button>
             <button onClick={() => go("contact")}>{tx(t("Contact", "联系我们"), lang)}</button>
           </nav>
           <nav className="hp-nav hp-nav-legacy" aria-hidden="true">
@@ -167,7 +159,7 @@ export default function HomePage({ go, lang, products, articles, onOpenArticle }
             <button onClick={() => go("services")}>Services <span>⌄</span></button>
             <button onClick={() => go("markets")}>Markets <span>⌄</span></button>
             <button onClick={() => go("insights")}>Insights <span>⌄</span></button>
-            <button onClick={() => document.getElementById("about-home")?.scrollIntoView({ behavior: "smooth" })}>About Us</button>
+            <button onClick={() => go("about")}>About Us</button>
             <button onClick={() => go("contact")}>Contact</button>
           </nav>
 
@@ -284,8 +276,8 @@ export default function HomePage({ go, lang, products, articles, onOpenArticle }
       <section className="hp-section hp-services">
         <div className="hp-shell">
           <SectionHeading title={tx(t("OUR SERVICES", "我们的服务"), lang)} />
-          <div className="hp-service-grid">
-            {services.map(([icon, title, text]) => (
+          <div className="hp-service-grid hp-service-grid-compact">
+            {services.slice(0, 4).map(([icon, title, text]) => (
               <article key={title.en} role="button" tabIndex={0} onClick={() => go("services")}>
                 <div className="hp-line-icon"><LineIcon name={icon} /></div>
                 <h3>{tx(title, lang)}</h3>
@@ -294,15 +286,8 @@ export default function HomePage({ go, lang, products, articles, onOpenArticle }
             ))}
           </div>
 
-          <SectionHeading title={tx(t("EXPORT PROCESS", "出口流程"), lang)} compact />
-          <div className="hp-process">
-            {process.map(([title, text], index) => (
-              <article key={title.en}>
-                <div className="hp-process-number">{index + 1}</div>
-                <h3>{tx(title, lang)}</h3>
-                <p>{tx(text, lang)}</p>
-              </article>
-            ))}
+          <div className="hp-services-more">
+            <button onClick={() => go("services")}>{tx(t("Explore All Services & Export Process", "查看全部服务与出口流程"), lang)} →</button>
           </div>
 
           <div className="hp-lower-grid">

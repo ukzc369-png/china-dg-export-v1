@@ -6,6 +6,7 @@ import HomePage from "./HomePage";
 type Page =
   | "home"
   | "products"
+  | "about"
   | "services"
   | "markets"
   | "cases"
@@ -82,6 +83,7 @@ const nav: { label: I18n; page: Page }[] = [
   { label: t("Markets", "市场"), page: "markets" },
   { label: t("Cases", "案例"), page: "cases" },
   { label: t("Insights", "知识"), page: "insights" },
+  { label: t("About Us", "关于我们"), page: "about" },
   { label: t("Contact", "联系"), page: "contact" },
 ];
 
@@ -605,6 +607,7 @@ function pathToPage(pathname: string): Page {
   const key = pathname.replace("/", "") as Page;
   return [
     "products",
+    "about",
     "services",
     "markets",
     "cases",
@@ -682,6 +685,18 @@ useEffect(() => {
             lang,
           )
         : `${tx(nav.find((n) => n.page === page)?.label || t(page, page), lang)} | ChinaDGExport`;
+    const descriptions: Partial<Record<Page, I18n>> = {
+      about: t(
+        "Learn how ChinaDGExport supports chemical sourcing, compliant storage, export documentation, packaging and international logistics from Dongying, China.",
+        "了解 ChinaDGExport 如何依托中国东营，为客户提供化工品采购、合规仓储、出口单证、包装及国际物流服务。",
+      ),
+      services: t(
+        "Chemical sourcing, quality control, export documentation, packaging and dangerous-goods logistics services from China.",
+        "中国化工品采购、质量控制、出口单证、包装及危险品物流服务。",
+      ),
+    };
+    const meta = document.querySelector('meta[name="description"]');
+    if (meta && descriptions[page]) meta.setAttribute("content", tx(descriptions[page]!, lang));
   }, [page, lang, products, articles, currentArticleSlug]);
   useEffect(() => {
     localStorage.setItem("chinadg-lang", lang);
@@ -702,6 +717,7 @@ useEffect(() => {
   }
   const content = useMemo(() => {
     if (page === "products") return <ProductsPage go={go} lang={lang} products={products} />;
+    if (page === "about") return <AboutPage go={go} lang={lang} />;
     if (page === "services") return <ServicesPage go={go} lang={lang} />;
     if (page === "markets") return <MarketsPage go={go} lang={lang} />;
     if (page === "cases") return <CasesPage go={go} lang={lang} />;
@@ -962,6 +978,80 @@ function ProductsPage({ go, lang, products }: { go: (page: Page) => void; lang: 
           onQuote={() => requestQuote(selectedProduct)}
         />
       )}
+    </main>
+  );
+}
+
+function AboutPage({ go, lang }: { go: (page: Page) => void; lang: Lang }) {
+  const capabilities = [
+    t("Chemical sourcing and supplier coordination", "化工产品采购与供应商协调"),
+    t("Compliant storage and cargo consolidation", "合规仓储与货物集散"),
+    t("Export documents and customs support", "出口单证与报关支持"),
+    t("Packaging, labeling and dangerous-goods logistics", "包装、标签与危险品物流"),
+  ];
+  const advantages = [
+    [t("Dongying Chemical Base", "东营化工产业基地"), t("Close access to a broad chemical supply network and experienced production partners.", "依托东营化工产业集群，对接广泛的产品供应网络与成熟生产企业。")],
+    [t("Inland Port & Warehousing", "内陆港与仓储集散"), t("Cargo can be stored, consolidated, prepared and coordinated before port departure.", "货物可在出港前完成仓储、集散、备货及运输协调。")],
+    [t("One-stop Export Execution", "一站式出口执行"), t("We coordinate documentation, packaging, declaration and international logistics under one workflow.", "统一协调单证、包装、申报及国际物流，减少多方衔接成本。")],
+  ] as const;
+  return (
+    <main className="page about-page">
+      <PageHero
+        kicker={tx(t("About ChinaDGExport", "关于 ChinaDGExport"), lang)}
+        title={tx(t("A practical chemical export platform based in Dongying, China.", "立足中国东营的化工品出口综合服务平台。"), lang)}
+        text={tx(t("We connect chemical supply, compliant storage, export procedures and international logistics to help global buyers execute shipments with greater clarity and control.", "我们连接化工品供应、合规仓储、出口手续与国际物流，帮助全球采购商更清晰、更可控地完成出口交付。"), lang)}
+      />
+
+      <section className="section about-intro">
+        <div className="container about-intro-grid">
+          <div>
+            <p className="eyebrow">{tx(t("Who We Are", "我们是谁"), lang)}</p>
+            <h2>{tx(t("Built around real export execution—not only product matching.", "不仅匹配产品，更注重真实的出口执行。"), lang)}</h2>
+          </div>
+          <div className="about-copy">
+            <p>{tx(t("ChinaDGExport supports overseas importers, distributors and industrial users sourcing chemicals from China. Our role is to organize the work between suppliers, warehouses, documentation teams, customs and logistics providers.", "ChinaDGExport 服务于从中国采购化工品的海外进口商、分销商及工业用户，负责协调供应商、仓储、单证、报关与物流各环节。"), lang)}</p>
+            <p>{tx(t("Based in Dongying, Shandong, we benefit from a strong chemical industry cluster and an inland-port service network that supports storage, cargo consolidation and export formalities.", "平台位于山东东营，依托当地化工产业集群及内陆港服务网络，能够提供仓储、货物集散及出口手续协同支持。"), lang)}</p>
+          </div>
+        </div>
+      </section>
+
+      <section className="section muted">
+        <div className="container">
+          <SectionTop kicker={tx(t("Our Advantage", "我们的优势"), lang)} title={tx(t("Local industry resources connected to global delivery.", "连接本地产业资源与全球交付。"), lang)} />
+          <div className="about-advantage-grid">
+            {advantages.map(([title, text], index) => (
+              <article key={title.en}>
+                <b>0{index + 1}</b>
+                <h3>{tx(title, lang)}</h3>
+                <p>{tx(text, lang)}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="section about-capabilities">
+        <div className="container about-capability-grid">
+          <div>
+            <p className="eyebrow">{tx(t("Integrated Support", "综合服务能力"), lang)}</p>
+            <h2>{tx(t("One coordinated path from inquiry to shipment.", "从询盘到出运的一体化协调路径。"), lang)}</h2>
+            <p>{tx(t("Each shipment is reviewed according to product characteristics, destination requirements and the appropriate packing and transport method.", "每票货物均结合产品特性、目的地要求以及适用的包装与运输方式进行核对。"), lang)}</p>
+            <button className="blue-btn" onClick={() => go("services")}>{tx(t("View Services & Export Process", "查看服务与出口流程"), lang)}</button>
+          </div>
+          <div className="about-checklist">
+            {capabilities.map((item) => <div key={item.en}><span>✓</span>{tx(item, lang)}</div>)}
+          </div>
+        </div>
+      </section>
+
+      <section className="section about-commitment">
+        <div className="container">
+          <p className="eyebrow green">{tx(t("Our Commitment", "我们的承诺"), lang)}</p>
+          <h2>{tx(t("Compliance, transparency and long-term cooperation.", "合规、透明与长期合作。"), lang)}</h2>
+          <p>{tx(t("We aim to provide clear product information, traceable documentation and responsive communication throughout the export process. Final specifications, regulatory requirements and transport plans are confirmed for each order.", "我们致力于在出口过程中提供清晰的产品信息、可追溯的单证和及时沟通。最终规格、监管要求及运输方案均按具体订单确认。"), lang)}</p>
+        </div>
+      </section>
+      <CTA go={go} lang={lang} />
     </main>
   );
 }

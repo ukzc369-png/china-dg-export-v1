@@ -555,6 +555,14 @@ body.home-page-active #root > footer:not(.hp-footer) { display: none !important;
   margin-top: 15px;
 }
 
+.hp-service-grid-compact { grid-template-columns: repeat(4, 1fr); }
+.hp-services-more { display: flex; justify-content: center; margin: 18px 0 8px; }
+.hp-services-more button { border: 1px solid #0b7cff; border-radius: 4px; padding: 10px 20px; background: #fff; color: #0875e8; font-size: 10px; font-weight: 750; transition: .2s ease; }
+.hp-services-more button:hover { transform: translateY(-2px); background: #0b7cff; color: #fff; }
+
+@media (max-width: 920px) { .hp-service-grid-compact { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 620px) { .hp-service-grid-compact { grid-template-columns: 1fr; } }
+
 .hp-service-grid article {
   min-height: 154px;
   padding: 18px 15px 14px;
