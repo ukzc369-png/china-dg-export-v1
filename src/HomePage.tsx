@@ -361,7 +361,7 @@ export default function HomePage({ go, lang, products, articles, onOpenArticle }
               <a href="#" aria-label="Facebook">f</a>
               <a href="#" aria-label="X">𝕏</a>
               <a href="https://wa.me/8618678695200" aria-label="WhatsApp">◉</a>
-              <a href="mailto:info@chinachemexport.com" aria-label="Email">✉</a>
+              <a href="mailto:18678695200@163.com" aria-label="Email">✉</a>
             </div>
           </div>
 
@@ -371,7 +371,7 @@ export default function HomePage({ go, lang, products, articles, onOpenArticle }
 
           <div className="hp-contact">
             <h3>Contact Us</h3>
-            <p>◉&nbsp; <a href="mailto:info@chinachemexport.com">Email: info@chinachemexport.com</a></p>
+            <p>◉&nbsp; <a href="mailto:18678695200@163.com">Email: 18678695200@163.com</a></p>
             <p>◉&nbsp; <a href="tel:+8618678695200">Tel: +86 186 7869 5200</a></p>
             <p>◉&nbsp; <a href="https://wa.me/8618678695200">WhatsApp: +86 186 7869 5200</a></p>
             <p>◉&nbsp; Address: Dongying, Shandong, China</p>
