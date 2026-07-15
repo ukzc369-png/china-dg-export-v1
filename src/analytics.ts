@@ -1,4 +1,3 @@
-const MEASUREMENT_ID = "G-LX6Z6RLDEP";
 const CONSENT_KEY = "chinachemexport-analytics-consent";
 
 declare global {
@@ -8,32 +7,7 @@ declare global {
   }
 }
 
-let lastTrackedPath = "";
-
-export function initializeAnalytics() {
-  if (window.location.pathname.startsWith("/admin")) return;
-
-  window.dataLayer = window.dataLayer || [];
-  window.gtag = window.gtag || function gtag(...args: unknown[]) {
-    window.dataLayer.push(args);
-  };
-
-  const granted = localStorage.getItem(CONSENT_KEY) === "granted";
-  window.gtag("consent", "default", {
-    analytics_storage: granted ? "granted" : "denied",
-    ad_storage: "denied",
-    ad_user_data: "denied",
-    ad_personalization: "denied",
-  });
-  window.gtag("js", new Date());
-  window.gtag("config", MEASUREMENT_ID);
-  lastTrackedPath = `${window.location.pathname}${window.location.search}`;
-
-  const script = document.createElement("script");
-  script.async = true;
-  script.src = `https://www.googletagmanager.com/gtag/js?id=${MEASUREMENT_ID}`;
-  document.head.appendChild(script);
-}
+let lastTrackedPath = `${window.location.pathname}${window.location.search}`;
 
 export function getAnalyticsConsent() {
   return localStorage.getItem(CONSENT_KEY);

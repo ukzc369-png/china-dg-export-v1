@@ -40,6 +40,24 @@
     <meta property="og:site_name" content="ChinaChemExport" />
 
     <meta name="twitter:card" content="summary_large_image" />
+
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      window.gtag = gtag;
+      if (!window.location.pathname.startsWith('/admin')) {
+        var analyticsGranted = localStorage.getItem('chinachemexport-analytics-consent') === 'granted';
+        gtag('consent', 'default', {
+          analytics_storage: analyticsGranted ? 'granted' : 'denied',
+          ad_storage: 'denied',
+          ad_user_data: 'denied',
+          ad_personalization: 'denied'
+        });
+        gtag('js', new Date());
+        gtag('config', 'G-LX6Z6RLDEP');
+      }
+    </script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-LX6Z6RLDEP"></script>
   </head>
 
   <body>
