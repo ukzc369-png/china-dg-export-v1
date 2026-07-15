@@ -62,7 +62,7 @@ export default async function handler(req: any, res: any) {
 
       await resend.emails.send({
         from: "ChinaChemExport <onboarding@resend.dev>",
-        to: ["ukzc369@gmail.com"],
+        to: ["18678695200@163.com"],
         subject: `New Inquiry - ${body.product || "Unknown Product"}`,
         html: `
           <h2>New Inquiry Received</h2>
