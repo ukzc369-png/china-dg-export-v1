@@ -26,7 +26,8 @@ export function initializeAnalytics() {
     ad_personalization: "denied",
   });
   window.gtag("js", new Date());
-  window.gtag("config", MEASUREMENT_ID, { send_page_view: false });
+  window.gtag("config", MEASUREMENT_ID);
+  lastTrackedPath = `${window.location.pathname}${window.location.search}`;
 
   const script = document.createElement("script");
   script.async = true;
