@@ -284,10 +284,10 @@ export default function ArticlesPage() {
 
   function generateSlugAndSeo() {
     const title = form.getFieldValue("title") || "chemical-export-guide";
-    const content = form.getFieldValue("content") || "Chemical export guide from ChinaDGExport.";
+    const content = form.getFieldValue("content") || "Chemical export guide from ChinaChemExport.";
     form.setFieldsValue({
       slug: createSlug(title),
-      seo_title: `${title} | ChinaDGExport`,
+      seo_title: `${title} | ChinaChemExport`,
       seo_description: content.replace(/[#*\-\n]/g, " ").replace(/\s+/g, " ").trim().slice(0, 155),
     });
   }
@@ -475,7 +475,7 @@ export default function ArticlesPage() {
 
           <Card size="small" title="SEO">
             <Form.Item name="seo_title" label="SEO Title">
-              <Input maxLength={70} showCount placeholder="Chemical Export Guide | ChinaDGExport" />
+              <Input maxLength={70} showCount placeholder="Chemical Export Guide | ChinaChemExport" />
             </Form.Item>
             <Form.Item name="seo_description" label="SEO Description">
               <Input.TextArea rows={3} maxLength={160} showCount placeholder="Short search description under 160 characters." />

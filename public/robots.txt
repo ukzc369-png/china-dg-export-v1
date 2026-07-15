@@ -1,6 +1,5 @@
 User-agent: *
 Allow: /
 Disallow: /admin
-Disallow: /api/
 
-Sitemap: https://china-dg-export-v1.vercel.app/sitemap.xml
+Sitemap: https://chinachemexport.com/sitemap.xml

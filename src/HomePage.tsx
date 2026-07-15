@@ -135,10 +135,10 @@ export default function HomePage({ go, lang, products, articles, onOpenArticle }
     <main className="hp">
       <header className="hp-header">
         <div className="hp-header-shell">
-          <button className="hp-logo" onClick={() => go("home")} aria-label="ChinaDGExport home">
-            <span className="hp-subpage-logo" aria-hidden="true">DG</span>
+          <button className="hp-logo" onClick={() => go("home")} aria-label="ChinaChemExport home">
+            <span className="hp-subpage-logo" aria-hidden="true">CE</span>
             <span className="hp-logo-copy">
-              <strong>ChinaDGExport</strong>
+              <strong>ChinaChemExport</strong>
               <small>CHEMICAL SUPPLIER &amp; EXPORTER</small>
             </span>
           </button>
@@ -189,8 +189,8 @@ export default function HomePage({ go, lang, products, articles, onOpenArticle }
             <p>
               {tx(
                 t(
-                  "ChinaDGExport supplies and exports bulk chemicals from Dongying, China, with reliable products and integrated dangerous-goods export support.",
-                  "ChinaDGExport立足中国东营，供应并出口大宗化工品，同时提供可靠产品与危险品出口一站式配套支持。",
+                  "ChinaChemExport supplies and exports bulk chemicals from Dongying, China, with reliable products and integrated dangerous-goods export support.",
+                  "ChinaChemExport立足中国东营，供应并出口大宗化工品，同时提供可靠产品与危险品出口一站式配套支持。",
                 ),
                 lang,
               )}
@@ -226,7 +226,7 @@ export default function HomePage({ go, lang, products, articles, onOpenArticle }
 
       <section id="about-home" className="hp-section hp-why">
         <div className="hp-shell">
-          <SectionHeading title={tx(t("WHY CHOOSE CHINADGEXPORT", "为什么选择 CHINADGEXPORT"), lang)} />
+          <SectionHeading title={tx(t("WHY CHOOSE CHINACHEMEXPORT", "为什么选择 CHINACHEMEXPORT"), lang)} />
           <div className="hp-six-grid">
             {strengths.map(([icon, title, text], index) => (
               <article key={title.en} role="button" tabIndex={0} onClick={() => index < 2 ? go("products") : index === 3 ? go("markets") : index === 5 ? go("contact") : go("services")}>
@@ -344,14 +344,14 @@ export default function HomePage({ go, lang, products, articles, onOpenArticle }
         <div className="hp-shell hp-footer-grid">
           <div className="hp-footer-about">
             <button className="hp-footer-logo" onClick={() => go("home")}>
-              <span className="hp-subpage-logo" aria-hidden="true">DG</span>
-              <span><strong>ChinaDGExport</strong><small>CHEMICAL SUPPLIER &amp; EXPORTER</small></span>
+              <span className="hp-subpage-logo" aria-hidden="true">CE</span>
+              <span><strong>ChinaChemExport</strong><small>CHEMICAL SUPPLIER &amp; EXPORTER</small></span>
             </button>
             <p>
               {tx(
                 t(
-                  "ChinaDGExport supplies bulk chemicals from Dongying, China, backed by integrated dangerous-goods export coordination for global buyers.",
-                  "ChinaDGExport立足中国东营，面向全球采购商供应大宗化工品，并提供危险品出口全流程协调支持。",
+                  "ChinaChemExport supplies bulk chemicals from Dongying, China, backed by integrated dangerous-goods export coordination for global buyers.",
+                  "ChinaChemExport立足中国东营，面向全球采购商供应大宗化工品，并提供危险品出口全流程协调支持。",
                 ),
                 lang,
               )}
@@ -361,7 +361,7 @@ export default function HomePage({ go, lang, products, articles, onOpenArticle }
               <a href="#" aria-label="Facebook">f</a>
               <a href="#" aria-label="X">𝕏</a>
               <a href="https://wa.me/8618678695200" aria-label="WhatsApp">◉</a>
-              <a href="mailto:info@chinadgexport.com" aria-label="Email">✉</a>
+              <a href="mailto:info@chinachemexport.com" aria-label="Email">✉</a>
             </div>
           </div>
 
@@ -371,7 +371,7 @@ export default function HomePage({ go, lang, products, articles, onOpenArticle }
 
           <div className="hp-contact">
             <h3>Contact Us</h3>
-            <p>◉&nbsp; <a href="mailto:info@chinadgexport.com">Email: info@chinadgexport.com</a></p>
+            <p>◉&nbsp; <a href="mailto:info@chinachemexport.com">Email: info@chinachemexport.com</a></p>
             <p>◉&nbsp; <a href="tel:+8618678695200">Tel: +86 186 7869 5200</a></p>
             <p>◉&nbsp; <a href="https://wa.me/8618678695200">WhatsApp: +86 186 7869 5200</a></p>
             <p>◉&nbsp; Address: Dongying, Shandong, China</p>
@@ -379,7 +379,7 @@ export default function HomePage({ go, lang, products, articles, onOpenArticle }
         </div>
 
         <div className="hp-shell hp-footer-bottom">
-          <span>© 2025 ChinaDGExport. All Rights Reserved.</span>
+          <span>© 2026 ChinaChemExport. All Rights Reserved.</span>
           <span>Privacy Policy&nbsp;&nbsp; | &nbsp;&nbsp;Terms of Use</span>
         </div>
       </footer>

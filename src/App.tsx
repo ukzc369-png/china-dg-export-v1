@@ -562,8 +562,8 @@ function cmsArticleToArticle(item: CmsArticle): Article {
       item.seo_title || item.title || "化工出口文章",
     ),
     seoDescription: t(
-      item.seo_description || item.content || "Chemical export guide from ChinaDGExport.",
-      item.seo_description || item.content || "ChinaDGExport 化工品出口指南。",
+      item.seo_description || item.content || "Chemical export guide from ChinaChemExport.",
+      item.seo_description || item.content || "ChinaChemExport 化工品出口指南。",
     ),
     coverImage: item.cover_image || undefined,
   };
@@ -679,16 +679,16 @@ useEffect(() => {
       page === "home"
         ? tx(
             t(
-              "China Chemical Supplier & Bulk Chemical Exporter | ChinaDGExport",
-              "中国化工品供应商与大宗化工品出口商 | ChinaDGExport",
+              "China Chemical Supplier & Bulk Chemical Exporter | ChinaChemExport",
+              "中国化工品供应商与大宗化工品出口商 | ChinaChemExport",
             ),
             lang,
           )
-        : `${tx(nav.find((n) => n.page === page)?.label || t(page, page), lang)} | ChinaDGExport`;
+        : `${tx(nav.find((n) => n.page === page)?.label || t(page, page), lang)} | ChinaChemExport`;
     const descriptions: Partial<Record<Page, I18n>> = {
       about: t(
-        "ChinaDGExport supplies bulk chemicals from Dongying, China, backed by petrochemical industry resources and integrated dangerous-goods export support.",
-        "ChinaDGExport立足中国东营供应大宗化工品，并依托炼化产业资源与危险品出口一站式配套支持全球采购商。",
+        "ChinaChemExport supplies bulk chemicals from Dongying, China, backed by petrochemical industry resources and integrated dangerous-goods export support.",
+        "ChinaChemExport立足中国东营供应大宗化工品，并依托炼化产业资源与危险品出口一站式配套支持全球采购商。",
       ),
       services: t(
         "Export support for chemical orders from China, including quality control, documentation, packaging, customs and dangerous-goods logistics.",
@@ -697,6 +697,11 @@ useEffect(() => {
     };
     const meta = document.querySelector('meta[name="description"]');
     if (meta && descriptions[page]) meta.setAttribute("content", tx(descriptions[page]!, lang));
+    const canonicalUrl = `https://chinachemexport.com${window.location.pathname || "/"}`;
+    const canonical = document.querySelector('link[rel="canonical"]');
+    if (canonical) canonical.setAttribute("href", canonicalUrl);
+    const openGraphUrl = document.querySelector('meta[property="og:url"]');
+    if (openGraphUrl) openGraphUrl.setAttribute("content", canonicalUrl);
   }, [page, lang, products, articles, currentArticleSlug]);
   useEffect(() => {
     localStorage.setItem("chinadg-lang", lang);
@@ -744,9 +749,9 @@ useEffect(() => {
     <>
       <header className="header">
         <button className="brand" onClick={() => go("home")}>
-          <span className="brand-mark">DG</span>
+          <span className="brand-mark">CE</span>
           <span>
-            <b>ChinaDGExport</b>
+            <b>ChinaChemExport</b>
             <small>
               {tx(
                 t("Chemical Supplier & Exporter", "化工品供应商与出口商"),
@@ -793,7 +798,7 @@ useEffect(() => {
         <div className={`mobile-menu ${mobileMenuOpen ? "open" : ""}`}>
           <div className="mobile-menu-panel">
             <div className="mobile-menu-head">
-              <b>ChinaDGExport</b>
+              <b>ChinaChemExport</b>
               <button type="button" onClick={() => setMobileMenuOpen(false)}>
                 ×
               </button>
@@ -997,9 +1002,9 @@ function AboutPage({ go, lang }: { go: (page: Page) => void; lang: Lang }) {
   return (
     <main className="page about-page">
       <PageHero
-        kicker={tx(t("About ChinaDGExport", "关于 ChinaDGExport"), lang)}
+        kicker={tx(t("About ChinaChemExport", "关于 ChinaChemExport"), lang)}
         title={tx(t("Chemical supply from Dongying, built for global trade.", "立足中国东营，面向全球贸易的化工品供应。"), lang)}
-        text={tx(t("ChinaDGExport supplies and exports bulk chemicals to international importers, distributors and industrial buyers, backed by integrated dangerous-goods export support.", "ChinaDGExport面向国际进口商、分销商和工业采购商供应并出口大宗化工品，并提供危险品出口一站式配套支持。"), lang)}
+        text={tx(t("ChinaChemExport supplies and exports bulk chemicals to international importers, distributors and industrial buyers, backed by integrated dangerous-goods export support.", "ChinaChemExport面向国际进口商、分销商和工业采购商供应并出口大宗化工品，并提供危险品出口一站式配套支持。"), lang)}
       />
 
       <section className="section about-intro">
@@ -1009,7 +1014,7 @@ function AboutPage({ go, lang }: { go: (page: Page) => void; lang: Lang }) {
             <h2>{tx(t("A chemical supplier first, backed by integrated export execution.", "以化工品供应为核心，以出口执行能力为支撑。"), lang)}</h2>
           </div>
           <div className="about-copy">
-            <p>{tx(t("ChinaDGExport supplies solvents, organic acids, alcohols, glycols and chemical intermediates to overseas importers, distributors and industrial users.", "ChinaDGExport向海外进口商、分销商及工业用户供应溶剂、有机酸、醇类、二元醇及化工中间体。"), lang)}</p>
+            <p>{tx(t("ChinaChemExport supplies solvents, organic acids, alcohols, glycols and chemical intermediates to overseas importers, distributors and industrial users.", "ChinaChemExport向海外进口商、分销商及工业用户供应溶剂、有机酸、醇类、二元醇及化工中间体。"), lang)}</p>
             <p>{tx(t("Based in Dongying, Shandong, we benefit from a strong chemical industry cluster and an inland-port service network that supports storage, cargo consolidation and export formalities.", "平台位于山东东营，依托当地化工产业集群及内陆港服务网络，能够提供仓储、货物集散及出口手续协同支持。"), lang)}</p>
           </div>
         </div>
@@ -2116,7 +2121,7 @@ function Footer({ go, lang }: { go: (page: Page) => void; lang: Lang }) {
     <footer>
       <div className="container footer-grid">
         <div>
-          <b>ChinaDGExport</b>
+          <b>ChinaChemExport</b>
           <p>
             {tx(
               t("Chemical Supplier & Exporter", "化工品供应商与出口商"),
@@ -2131,7 +2136,7 @@ function Footer({ go, lang }: { go: (page: Page) => void; lang: Lang }) {
             </button>
           ))}
         </div>
-        <small>© 2025 ChinaDGExport. All rights reserved.</small>
+        <small>© 2026 ChinaChemExport. All rights reserved.</small>
       </div>
     </footer>
   );

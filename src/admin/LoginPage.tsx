@@ -26,7 +26,7 @@ export default function LoginPage() {
         background: "#f5f5f5",
       }}
     >
-      <Card title="China DG Export CMS" style={{ width: 400 }}>
+      <Card title="ChinaChemExport CMS" style={{ width: 400 }}>
         <Input
           placeholder="Email"
           value={email}

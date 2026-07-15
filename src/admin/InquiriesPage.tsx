@@ -52,7 +52,7 @@ function formatDate(value?: string | null) {
 function buildReplyMailto(inquiry: Inquiry) {
   const subject = encodeURIComponent(`Re: Your inquiry about ${inquiry.product || "chemical export from China"}`);
   const body = encodeURIComponent(
-    `Dear ${buyerName(inquiry)},\n\nThank you for your inquiry. We have received your request and will review product availability, DG compliance, packing and shipment options.\n\nInquiry details:\nProduct: ${inquiry.product || ""}\nQuantity: ${inquiry.quantity || ""}\nDestination: ${inquiry.destination || inquiry.country || ""}\nPacking: ${inquiry.packing || ""}\n\nBest regards,\nChinaDGExport Team`
+    `Dear ${buyerName(inquiry)},\n\nThank you for your inquiry. We have received your request and will review product availability, DG compliance, packing and shipment options.\n\nInquiry details:\nProduct: ${inquiry.product || ""}\nQuantity: ${inquiry.quantity || ""}\nDestination: ${inquiry.destination || inquiry.country || ""}\nPacking: ${inquiry.packing || ""}\n\nBest regards,\nChinaChemExport Team`
   );
   return `mailto:${inquiry.email || ""}?subject=${subject}&body=${body}`;
 }

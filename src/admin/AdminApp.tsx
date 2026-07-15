@@ -50,7 +50,7 @@ export default function AdminApp() {
             padding: 20,
           }}
         >
-          ChinaDGExport
+          ChinaChemExport
         </div>
 
         <Menu

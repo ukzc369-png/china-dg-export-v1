@@ -1,4 +1,4 @@
-/* ChinaDGExport homepage only. Global business pages are intentionally untouched. */
+/* ChinaChemExport homepage only. Global business pages are intentionally untouched. */
 body.home-page-active > #root > .header,
 body.home-page-active #root > .header { display: none !important; }
 

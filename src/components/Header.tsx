@@ -40,7 +40,7 @@ function Header() {
               borderRadius: "4px",
             }}
           >
-            CD
+            CE
           </div>
 
           <div>
@@ -51,7 +51,7 @@ function Header() {
                 color: "#0f172a",
               }}
             >
-              ChinaDGExport
+              ChinaChemExport
             </div>
 
             <div

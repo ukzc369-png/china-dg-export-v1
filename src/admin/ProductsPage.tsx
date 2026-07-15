@@ -319,7 +319,7 @@ export default function ProductsPage() {
     const category = form.getFieldValue("category") || "Dangerous Chemical";
     const desc = form.getFieldValue("description") || `Source ${name} from China with DG export compliance, documentation, packing and shipment support.`;
     form.setFieldsValue({
-      seo_title: `${name}${cas} | China DG Export`,
+      seo_title: `${name}${cas} | ChinaChemExport`,
       seo_description: desc.slice(0, 155),
       category,
     });
@@ -550,7 +550,7 @@ export default function ProductsPage() {
           <Card size="small" title="SEO & Publishing">
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
               <Form.Item name="seo_title" label="SEO Title">
-                <Input placeholder="Methanol CAS 67-56-1 | China DG Export" />
+                <Input placeholder="Methanol CAS 67-56-1 | ChinaChemExport" />
               </Form.Item>
               <Form.Item name="status" label="Status" rules={[{ required: true }]}>
                 <Select options={[{ label: "Active", value: "active" }, { label: "Inactive", value: "inactive" }]} />

@@ -1,4 +1,3 @@
-/// <reference types="node" />
 import { Resend } from "resend";
 import { createClient } from "@supabase/supabase-js";
 
@@ -62,7 +61,7 @@ export default async function handler(req: any, res: any) {
       const resend = new Resend(resendApiKey);
 
       await resend.emails.send({
-        from: "ChinaDGExport <onboarding@resend.dev>",
+        from: "ChinaChemExport <onboarding@resend.dev>",
         to: ["ukzc369@gmail.com"],
         subject: `New Inquiry - ${body.product || "Unknown Product"}`,
         html: `
@@ -86,9 +85,9 @@ export default async function handler(req: any, res: any) {
 
       if (body.email) {
         await resend.emails.send({
-          from: "ChinaDGExport <onboarding@resend.dev>",
+          from: "ChinaChemExport <onboarding@resend.dev>",
           to: [body.email],
-          subject: "Thank you for contacting ChinaDGExport",
+          subject: "Thank you for contacting ChinaChemExport",
           html: `
             <h2>Thank you for your inquiry</h2>
             <p>Dear ${escapeHtml(body.name || "Customer")},</p>
@@ -100,7 +99,7 @@ export default async function handler(req: any, res: any) {
             <p><b>Packing:</b> ${escapeHtml(body.packing || "-")}</p>
             <p>We will contact you within 24 hours by email or your preferred contact method.</p>
             <hr />
-            <p>Best regards,<br/>ChinaDGExport<br/>Dangerous Chemical Export Platform</p>
+            <p>Best regards,<br/>ChinaChemExport<br/>Chemical Supplier &amp; Exporter</p>
           `,
         });
       }
