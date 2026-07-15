@@ -63,7 +63,8 @@ const { error: dbError } = await supabase.from("inquiries").insert([
       const resend = new Resend(resendApiKey);
 
       await resend.emails.send({
-        from: "ChinaChemExport <onboarding@resend.dev>",
+        from: "ChinaChemExport <inquiries@chinachemexport.com>",
+        replyTo: body.email || "18678695200@163.com",
         to: ["18678695200@163.com"],
         subject: `New Inquiry - ${body.product || "Unknown Product"}`,
         html: `
@@ -87,7 +88,8 @@ const { error: dbError } = await supabase.from("inquiries").insert([
 
       if (body.email) {
         await resend.emails.send({
-          from: "ChinaChemExport <onboarding@resend.dev>",
+          from: "ChinaChemExport <inquiries@chinachemexport.com>",
+          replyTo: "18678695200@163.com",
           to: [body.email],
           subject: "Thank you for contacting ChinaChemExport",
           html: `
