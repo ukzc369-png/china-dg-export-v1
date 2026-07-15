@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import "./App.css";
 import AdminApp from "./admin/AdminApp";
+import { trackInquirySubmission, trackPageView } from "./analytics";
 import { supabase } from "./lib/supabase";
 import HomePage from "./HomePage";
 type Page =
@@ -702,6 +703,7 @@ useEffect(() => {
     if (canonical) canonical.setAttribute("href", canonicalUrl);
     const openGraphUrl = document.querySelector('meta[property="og:url"]');
     if (openGraphUrl) openGraphUrl.setAttribute("content", canonicalUrl);
+    trackPageView();
   }, [page, lang, products, articles, currentArticleSlug]);
   useEffect(() => {
     localStorage.setItem("chinadg-lang", lang);
@@ -1462,6 +1464,7 @@ function ContactPage({ lang }: { lang: Lang }) {
       })
       .then(() => {
         setSubmitSuccess(true);
+        trackInquirySubmission(formData.product);
 
         setTimeout(() => {
           setSubmitSuccess(false);
