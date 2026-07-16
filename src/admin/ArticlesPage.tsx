@@ -19,7 +19,6 @@ import type { ColumnsType } from "antd/es/table";
 import { PlusOutlined, StarFilled, StarOutlined, UploadOutlined } from "@ant-design/icons";
 import { supabase } from "../lib/supabase";
 import { imageSizeLabel, optimizeUploadImage } from "./imageUpload";
-import { articleTranslations } from "../articleTranslations";
 import { useAdminLanguage } from "./AdminLanguage";
 
 type ArticleStatus = "draft" | "published";
@@ -40,15 +39,11 @@ type Article = {
 };
 
 type ArticleFormValues = {
-  title_en: string;
-  title_zh?: string;
+  title: string;
   slug?: string;
-  content_en?: string;
-  content_zh?: string;
-  seo_title_en?: string;
-  seo_title_zh?: string;
-  seo_description_en?: string;
-  seo_description_zh?: string;
+  content?: string;
+  seo_title?: string;
+  seo_description?: string;
   cover_image?: string;
   related_products?: string;
   publish_date?: string;
@@ -58,21 +53,17 @@ type ArticleFormValues = {
 
 const BUCKET_NAME = "article-images";
 
-function readBilingual(value: string | null | undefined, fallbackZh = "") {
-  if (!value) return { en: "", zh: fallbackZh };
+function readEnglish(value: string | null | undefined) {
+  if (!value) return "";
   try {
     const parsed = JSON.parse(value) as { en?: string; zh?: string };
     if (parsed && typeof parsed === "object" && (parsed.en || parsed.zh)) {
-      return { en: parsed.en || "", zh: parsed.zh || fallbackZh };
+      return parsed.en || "";
     }
   } catch {
     // Legacy articles contain plain English text.
   }
-  return { en: value, zh: fallbackZh };
-}
-
-function storeBilingual(en = "", zh = "") {
-  return JSON.stringify({ en, zh });
+  return value;
 }
 
 function createSlug(title: string) {
@@ -126,8 +117,7 @@ export default function ArticlesPage() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [uploading, setUploading] = useState(false);
 
-  const contentValue = Form.useWatch("content_en", form) || "";
-  const contentZhValue = Form.useWatch("content_zh", form) || "";
+  const contentValue = Form.useWatch("content", form) || "";
   const coverImageValue = Form.useWatch("cover_image", form) || "";
   const isEditing = Boolean(editingArticle);
 
@@ -173,21 +163,12 @@ export default function ArticlesPage() {
 
   function openEditModal(article: Article) {
     setEditingArticle(article);
-    const fallbackZh = articleTranslations[article.slug || ""];
-    const title = readBilingual(article.title, fallbackZh?.title);
-    const content = readBilingual(article.content, fallbackZh?.content);
-    const seoTitle = readBilingual(article.seo_title, fallbackZh?.seoTitle);
-    const seoDescription = readBilingual(article.seo_description, fallbackZh?.seoDescription);
     form.setFieldsValue({
-      title_en: title.en,
-      title_zh: title.zh,
+      title: readEnglish(article.title),
       slug: article.slug || "",
-      content_en: content.en,
-      content_zh: content.zh,
-      seo_title_en: seoTitle.en,
-      seo_title_zh: seoTitle.zh,
-      seo_description_en: seoDescription.en,
-      seo_description_zh: seoDescription.zh,
+      content: readEnglish(article.content),
+      seo_title: readEnglish(article.seo_title),
+      seo_description: readEnglish(article.seo_description),
       cover_image: article.cover_image || "",
       related_products: article.related_products || "",
       publish_date: article.publish_date || article.created_at?.slice(0, 10) || todayDate(),
@@ -202,16 +183,13 @@ export default function ArticlesPage() {
       const values = await form.validateFields();
       setSaving(true);
 
-      const slug = values.slug || createSlug(values.title_en);
+      const slug = values.slug || createSlug(values.title);
       const payload = {
-        title: storeBilingual(values.title_en, values.title_zh),
+        title: values.title,
         slug,
-        content: storeBilingual(values.content_en, values.content_zh),
-        seo_title: storeBilingual(values.seo_title_en || values.title_en, values.seo_title_zh || values.title_zh),
-        seo_description: storeBilingual(
-          values.seo_description_en || (values.content_en || "").slice(0, 155),
-          values.seo_description_zh || (values.content_zh || "").slice(0, 155),
-        ),
+        content: values.content || "",
+        seo_title: values.seo_title || values.title,
+        seo_description: values.seo_description || (values.content || "").slice(0, 155),
         cover_image: values.cover_image || "",
         related_products: values.related_products || "",
         publish_date: values.publish_date || todayDate(),
@@ -304,9 +282,8 @@ export default function ArticlesPage() {
       }
 
       const { data } = supabase.storage.from(BUCKET_NAME).getPublicUrl(safeName);
-      insertContent("content_en", `\n![Article Image](${data.publicUrl})\n`);
-      insertContent("content_zh", `\n![文章配图](${data.publicUrl})\n`);
-      message.success(`图片已优化并插入中英文正文（${imageSizeLabel(optimized.size)}）`);
+      insertContent(`\n![Article Image](${data.publicUrl})\n`);
+      message.success(`图片已优化并插入正文（${imageSizeLabel(optimized.size)}）`);
       return false;
     } catch (error) {
       message.error(error instanceof Error ? error.message : "图片处理失败");
@@ -316,31 +293,26 @@ export default function ArticlesPage() {
     }
   }
 
-  function insertContent(field: "content_en" | "content_zh", text: string) {
-    form.setFieldsValue({ [field]: `${form.getFieldValue(field) || ""}${text}` });
+  function insertContent(text: string) {
+    form.setFieldsValue({ content: `${form.getFieldValue("content") || ""}${text}` });
   }
 
   function generateSlugAndSeo() {
-    const title = form.getFieldValue("title_en") || "chemical-export-guide";
-    const titleZh = form.getFieldValue("title_zh") || "";
-    const content = form.getFieldValue("content_en") || "Chemical export guide from ChinaChemExport.";
-    const contentZh = form.getFieldValue("content_zh") || "";
+    const title = form.getFieldValue("title") || "chemical-export-guide";
+    const content = form.getFieldValue("content") || "Chemical export guide from ChinaChemExport.";
     form.setFieldsValue({
       slug: createSlug(title),
-      seo_title_en: `${title} | ChinaChemExport`,
-      seo_title_zh: titleZh ? `${titleZh} | ChinaChemExport` : "",
-      seo_description_en: content.replace(/[#*\-\n]/g, " ").replace(/\s+/g, " ").trim().slice(0, 155),
-      seo_description_zh: contentZh.replace(/[#*\-\n]/g, " ").replace(/\s+/g, " ").trim().slice(0, 155),
+      seo_title: `${title} | ChinaChemExport`,
+      seo_description: content.replace(/[#*\-\n]/g, " ").replace(/\s+/g, " ").trim().slice(0, 155),
     });
   }
 
   function exportArticles() {
     const rows = [
-      ["ID", "英文标题", "中文标题", "链接", "状态", "首页推荐", "发布日期"],
+      ["ID", "Title", "Slug", "Status", "Featured", "Publish Date"],
       ...articles.map((item) => {
-        const title = readBilingual(item.title, articleTranslations[item.slug || ""]?.title);
         return [
-          String(item.id), title.en, title.zh, item.slug || "",
+          String(item.id), readEnglish(item.title), item.slug || "",
           item.status === "published" ? "已发布" : "草稿",
           item.featured ? "是" : "否", item.publish_date || item.created_at || "",
         ];
@@ -361,7 +333,7 @@ export default function ArticlesPage() {
       title: tr("Article", "文章"),
       render: (_, record) => (
         <Space direction="vertical" size={2}>
-          <strong>{readBilingual(record.title, articleTranslations[record.slug || ""]?.title).zh || readBilingual(record.title).en}</strong>
+          <strong>{readEnglish(record.title)}</strong>
           <span style={{ color: "#64748b" }}>/{record.slug}</span>
           <Space wrap>
             {record.featured && <Tag color="gold" icon={<StarFilled />}>{tr("Featured", "推荐")}</Tag>}
@@ -460,14 +432,9 @@ export default function ArticlesPage() {
       >
         <Form form={form} layout="vertical">
           <Card size="small" title={tr("Article Information", "文章基本信息")} style={{ marginBottom: 16 }}>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-              <Form.Item name="title_en" label={tr("English Title", "英文标题")} rules={[{ required: true, message: tr("Enter the English title", "请填写英文标题") }]}>
-                <Input placeholder="How to export chemicals from China" />
-              </Form.Item>
-              <Form.Item name="title_zh" label={tr("Chinese Title", "中文标题")} rules={[{ required: true, message: tr("Enter the Chinese title", "请填写中文标题") }]}>
-                <Input placeholder="如何从中国出口化工品" />
-              </Form.Item>
-            </div>
+            <Form.Item name="title" label={tr("Article Title (English)", "文章标题（英文）")} rules={[{ required: true, message: tr("Enter the article title", "请填写英文文章标题") }]}>
+              <Input placeholder="How to export chemicals from China" />
+            </Form.Item>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 180px 180px", gap: 16 }}>
               <Form.Item name="slug" label={tr("Article URL (Slug)", "文章链接（Slug）")}>
                 <Input placeholder="how-to-export-class-3-chemicals" />
@@ -499,35 +466,25 @@ export default function ArticlesPage() {
             {coverImageValue && <Image src={coverImageValue} height={120} style={{ objectFit: "cover", borderRadius: 8 }} />}
           </Card>
 
-          <Card size="small" title={tr(`Bilingual Content Editor (${wordCount} English words)`, `中英文正文编辑（英文约 ${wordCount} 词）`)} style={{ marginBottom: 16 }}>
+          <Card size="small" title={tr(`Content Editor (${wordCount} words)`, `英文正文编辑（约 ${wordCount} 词）`)} style={{ marginBottom: 16 }}>
             <Space style={{ marginBottom: 12 }} wrap>
-              <Button onClick={() => { insertContent("content_en", "\n## New Section\n"); insertContent("content_zh", "\n## 新章节\n"); }}>{tr("Insert Section", "插入章节")}</Button>
-              <Button onClick={() => { insertContent("content_en", "\n- Bullet point\n"); insertContent("content_zh", "\n- 列表内容\n"); }}>{tr("Insert List", "插入列表")}</Button>
+              <Button onClick={() => insertContent("\n## New Section\n")}>{tr("Insert Section", "插入章节")}</Button>
+              <Button onClick={() => insertContent("\n- Bullet point\n")}>{tr("Insert List", "插入列表")}</Button>
               <Upload accept="image/*" showUploadList={false} beforeUpload={uploadInlineImage}>
                 <Button loading={uploading} icon={<UploadOutlined />}>{tr("Insert Image", "插入图片")}</Button>
               </Upload>
             </Space>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-              <Form.Item name="content_en" label={tr("English Content (Markdown)", "英文正文（Markdown）")} rules={[{ required: true, message: tr("Enter English content", "请填写英文正文") }]}>
-                <Input.TextArea rows={18} placeholder="# English title\n\n## Section\n\nWrite English content here..." />
+              <Form.Item name="content" label={tr("English Content (Markdown)", "英文正文（Markdown）")} rules={[{ required: true, message: tr("Enter article content", "请填写英文正文") }]}>
+                <Input.TextArea rows={18} placeholder="# Article title\n\n## Section\n\nWrite English content here..." />
               </Form.Item>
-              <Form.Item name="content_zh" label={tr("Chinese Content (Markdown)", "中文正文（Markdown）")} rules={[{ required: true, message: tr("Enter Chinese content", "请填写中文正文") }]}>
-                <Input.TextArea rows={18} placeholder="# 中文标题\n\n## 章节\n\n在此填写中文正文..." />
-              </Form.Item>
-            </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-              <div><div style={{ marginBottom: 8, fontWeight: 600 }}>{tr("English Preview", "英文预览")}</div><div style={{ minHeight: 240, maxHeight: 420, overflow: "auto", border: "1px solid #e5e7eb", borderRadius: 8, padding: 18, background: "#fff" }}>{renderMarkdownPreview(contentValue)}</div></div>
-              <div><div style={{ marginBottom: 8, fontWeight: 600 }}>{tr("Chinese Preview", "中文预览")}</div><div style={{ minHeight: 240, maxHeight: 420, overflow: "auto", border: "1px solid #e5e7eb", borderRadius: 8, padding: 18, background: "#fff" }}>{renderMarkdownPreview(contentZhValue)}</div></div>
+              <div><div style={{ marginBottom: 8, fontWeight: 600 }}>{tr("Live Preview", "实时预览")}</div><div style={{ minHeight: 360, maxHeight: 520, overflow: "auto", border: "1px solid #e5e7eb", borderRadius: 8, padding: 18, background: "#fff" }}>{renderMarkdownPreview(contentValue)}</div></div>
             </div>
           </Card>
 
           <Card size="small" title={tr("Search Engine Optimization (SEO)", "搜索引擎优化（SEO）")}>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-              <Form.Item name="seo_title_en" label={tr("English SEO Title", "英文 SEO 标题")}><Input maxLength={70} showCount /></Form.Item>
-              <Form.Item name="seo_title_zh" label={tr("Chinese SEO Title", "中文 SEO 标题")}><Input maxLength={70} showCount /></Form.Item>
-              <Form.Item name="seo_description_en" label={tr("English SEO Description", "英文 SEO 描述")}><Input.TextArea rows={3} maxLength={160} showCount /></Form.Item>
-              <Form.Item name="seo_description_zh" label={tr("Chinese SEO Description", "中文 SEO 描述")}><Input.TextArea rows={3} maxLength={160} showCount /></Form.Item>
-            </div>
+            <Form.Item name="seo_title" label={tr("SEO Title (English)", "SEO 标题（英文）")}><Input maxLength={70} showCount /></Form.Item>
+            <Form.Item name="seo_description" label={tr("SEO Description (English)", "SEO 描述（英文）")}><Input.TextArea rows={3} maxLength={160} showCount /></Form.Item>
           </Card>
         </Form>
       </Modal>

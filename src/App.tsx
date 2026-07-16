@@ -4,6 +4,7 @@ import AdminApp from "./admin/AdminApp";
 import { openAnalyticsSettings, trackInquirySubmission, trackPageView } from "./analytics";
 import { legalDocuments, type LegalPageKey } from "./legalContent";
 import { articleTranslations } from "./articleTranslations";
+import { productCategoryZh, productNameZh } from "./productTranslations";
 import { supabase } from "./lib/supabase";
 import HomePage from "./HomePage";
 type Page =
@@ -548,14 +549,16 @@ const faqs: I18n[] = [
   ),
 ];
 function cmsProductToProduct(item: CmsProduct): Product {
+  const name = item.name || "Unnamed Product";
+  const category = item.category || "General Chemicals";
   return {
-    name: t(item.name || "Unnamed Product", item.name || "未命名产品"),
+    name: t(name, productNameZh[name] || name),
     cas: item.cas || "-",
     un: /^\d{4}$/.test(item.un_number?.trim() || "") ? item.un_number!.trim() : "",
     purity: item.specification || "To be confirmed",
     imageUrl: item.image_url || undefined,
     packing: t("Drums / ISO Tank / IBC", "桶装 / ISO罐 / IBC"),
-    category: t(item.category || "General Chemicals", item.category || "化工产品"),
+    category: t(category, productCategoryZh[category] || category),
     application: t(
       item.description || "Please contact us for product specification, documents and export quotation.",
       item.description || "请联系我们确认产品规格、单证和出口报价。",
