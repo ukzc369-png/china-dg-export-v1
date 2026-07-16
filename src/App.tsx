@@ -552,15 +552,43 @@ const faqs: I18n[] = [
     "可以连同货价一起报CFR/CIF海运价吗？",
   ),
 ];
+
+// Conservative reference grades used only when the CMS field is empty.
+// A value entered in the product admin always takes precedence.
+const referenceSpecifications: Record<string, string> = {
+  "100-42-5": "≥ 99.8% (typical; final COA governs)", // Styrene
+  "108-95-2": "≥ 99.9% (typical; final COA governs)", // Phenol
+  "107-06-2": "≥ 99.9% (typical; final COA governs)", // EDC
+  "67-56-1": "≥ 99.9% (typical; final COA governs)", // Methanol
+  "108-88-3": "≥ 99.9% (typical; final COA governs)", // Toluene
+  "67-64-1": "≥ 99.5% (typical; final COA governs)", // Acetone
+  "106-89-8": "≥ 99.9% (typical; final COA governs)", // ECH
+  "108-05-4": "≥ 99.9% (typical; final COA governs)", // VAM
+  "110-63-4": "≥ 99.5% (typical; final COA governs)", // BDO
+  "111-76-2": "≥ 99.0% (typical; final COA governs)", // BCS
+  "78-83-1": "≥ 99.5% (typical; final COA governs)", // IBA
+  "108-87-2": "≥ 99.5% (typical; final COA governs)", // MCH
+  "121-44-8": "≥ 99.5% (typical; final COA governs)", // TEA
+  "1330-20-7": "≥ 99.0% (typical; final COA governs)", // Xylene mixture
+};
+
+const fallbackProductImages: Record<string, string> = {
+  "141-43-5": "/home-v4/product-1.svg", // MEA
+  "111-42-2": "/home-v4/product-2.svg", // DEA
+  "98-00-0": "/home-v4/product-3.svg", // Furfuryl alcohol
+  "584-84-9": "/home-v4/product-4.svg", // TDI 20/80
+};
+
 function cmsProductToProduct(item: CmsProduct): Product {
   const name = item.name || "Unnamed Product";
   const category = item.category || "General Chemicals";
+  const cas = item.cas || "-";
   return {
     name: t(name, translateProductNameZh(name)),
-    cas: item.cas || "-",
+    cas,
     un: /^\d{4}$/.test(item.un_number?.trim() || "") ? item.un_number!.trim() : "",
-    purity: item.specification || "To be confirmed",
-    imageUrl: item.image_url || undefined,
+    purity: item.specification?.trim() || referenceSpecifications[cas] || "To be confirmed by COA",
+    imageUrl: item.image_url?.trim() || fallbackProductImages[cas] || undefined,
     seoTitle: item.seo_title || undefined,
     seoDescription: item.seo_description || undefined,
     packing: t("Drums / ISO Tank / IBC", "桶装 / ISO罐 / IBC"),
