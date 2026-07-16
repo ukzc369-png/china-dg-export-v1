@@ -45,3 +45,17 @@ export const productCategoryZh: Record<string, string> = {
   "Alcohols & Glycols": "醇类与二醇类",
   "General Solvents": "通用溶剂",
 };
+
+function normalizedLookup(map: Record<string, string>, value: string) {
+  const normalized = value.trim().toLowerCase();
+  const match = Object.entries(map).find(([key]) => key.trim().toLowerCase() === normalized);
+  return match?.[1] || value;
+}
+
+export function translateProductNameZh(name: string) {
+  return normalizedLookup(productNameZh, name);
+}
+
+export function translateProductCategoryZh(category: string) {
+  return normalizedLookup(productCategoryZh, category);
+}
