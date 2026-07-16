@@ -8,6 +8,7 @@ import {
   RiseOutlined,
 } from "@ant-design/icons";
 import { supabase } from "../lib/supabase";
+import { useAdminLanguage } from "./AdminLanguage";
 
 const { Title, Text } = Typography;
 
@@ -55,6 +56,7 @@ function statusColor(status?: string | null) {
 }
 
 export default function DashboardPage() {
+  const { tr } = useAdminLanguage();
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState<DashboardStats>({
     todayInquiries: 0,
@@ -92,7 +94,7 @@ export default function DashboardPage() {
       todayRes.error || totalRes.error || productsRes.error || articlesRes.error || latestRes.error;
 
     if (firstError) {
-      message.error(firstError.message || "Failed to load dashboard");
+      message.error(firstError.message || tr("Failed to load dashboard", "后台数据加载失败"));
     }
 
     setStats({
@@ -114,7 +116,7 @@ export default function DashboardPage() {
         width: 70,
       },
       {
-        title: "Buyer",
+        title: tr("Buyer", "买家"),
         render: (_, record) => (
           <Space direction="vertical" size={0}>
             <Text strong>{buyerName(record)}</Text>
@@ -125,43 +127,43 @@ export default function DashboardPage() {
         ),
       },
       {
-        title: "Company",
+        title: tr("Company", "公司"),
         dataIndex: "company",
         render: (value) => value || "-",
       },
       {
-        title: "Product",
+        title: tr("Product", "产品"),
         dataIndex: "product",
         render: (value) => value || "-",
       },
       {
-        title: "Destination",
+        title: tr("Destination", "目的地"),
         render: (_, record) => record.destination || record.country || "-",
       },
       {
-        title: "Status",
+        title: tr("Status", "状态"),
         dataIndex: "status",
         width: 130,
         render: (value) => <Tag color={statusColor(value)}>{value || "new"}</Tag>,
       },
       {
-        title: "Created",
+        title: tr("Created", "提交时间"),
         dataIndex: "created_at",
         width: 180,
         render: (value) => formatDate(value),
       },
     ],
-    []
+    [tr]
   );
 
   return (
     <div>
       <div style={{ marginBottom: 24 }}>
         <Title level={3} style={{ marginBottom: 4 }}>
-          Dashboard
+          {tr("Dashboard", "后台概览")}
         </Title>
         <Text type="secondary">
-          Overview of inquiries, products and content activity.
+          {tr("Overview of inquiries, products and content activity.", "查看询盘、产品和内容的整体情况。")}
         </Text>
       </div>
 
@@ -170,7 +172,7 @@ export default function DashboardPage() {
           <Col xs={24} sm={12} lg={6}>
             <Card>
               <Statistic
-                title="Today Inquiries"
+                title={tr("Today Inquiries", "今日询盘")}
                 value={stats.todayInquiries}
                 prefix={<RiseOutlined />}
               />
@@ -180,7 +182,7 @@ export default function DashboardPage() {
           <Col xs={24} sm={12} lg={6}>
             <Card>
               <Statistic
-                title="Total Inquiries"
+                title={tr("Total Inquiries", "询盘总数")}
                 value={stats.totalInquiries}
                 prefix={<MailOutlined />}
               />
@@ -190,7 +192,7 @@ export default function DashboardPage() {
           <Col xs={24} sm={12} lg={6}>
             <Card>
               <Statistic
-                title="Products"
+                title={tr("Products", "产品数量")}
                 value={stats.productCount}
                 prefix={<AppstoreOutlined />}
               />
@@ -200,7 +202,7 @@ export default function DashboardPage() {
           <Col xs={24} sm={12} lg={6}>
             <Card>
               <Statistic
-                title="Articles"
+                title={tr("Articles", "文章数量")}
                 value={stats.articleCount}
                 prefix={<FileTextOutlined />}
               />
@@ -209,10 +211,10 @@ export default function DashboardPage() {
         </Row>
 
         <Card
-          title="Latest Inquiries"
+          title={tr("Latest Inquiries", "最新询盘")}
           extra={
             <a onClick={loadDashboard} style={{ cursor: "pointer" }}>
-              Refresh
+              {tr("Refresh", "刷新")}
             </a>
           }
         >
@@ -225,7 +227,7 @@ export default function DashboardPage() {
               scroll={{ x: 900 }}
             />
           ) : (
-            <Empty description="No inquiries yet" />
+            <Empty description={tr("No inquiries yet", "暂无询盘")} />
           )}
         </Card>
       </Spin>

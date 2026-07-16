@@ -1,4 +1,6 @@
-import { Layout, Menu, Button } from "antd";
+import { Layout, Menu, Button, ConfigProvider } from "antd";
+import zhCN from "antd/locale/zh_CN";
+import enUS from "antd/locale/en_US";
 import {
   DashboardOutlined,
   AppstoreOutlined,
@@ -14,6 +16,7 @@ import ProductsPage from "./ProductsPage";
 import ArticlesPage from "./ArticlesPage";
 import InquiriesPage from "./InquiriesPage";
 import LoginPage from "./LoginPage";
+import { AdminLanguageProvider, type AdminLang } from "./AdminLanguage";
 
 const { Sider, Content } = Layout;
 
@@ -21,6 +24,13 @@ export default function AdminApp() {
   const [tab, setTab] = useState("dashboard");
   const [session, setSession] = useState<Session | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
+  const [lang, setLang] = useState<AdminLang>(() => (localStorage.getItem("chinachem-admin-lang") as AdminLang) || "zh");
+  const tr = (en: string, zh: string) => (lang === "zh" ? zh : en);
+  function toggleLanguage() {
+    const next = lang === "zh" ? "en" : "zh";
+    setLang(next);
+    localStorage.setItem("chinachem-admin-lang", next);
+  }
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -36,10 +46,12 @@ export default function AdminApp() {
 
   if (authLoading) return null;
   if (!session) {
-    return <LoginPage />;
+    return <AdminLanguageProvider lang={lang}><ConfigProvider locale={lang === "zh" ? zhCN : enUS}><LoginPage onToggleLanguage={toggleLanguage} /></ConfigProvider></AdminLanguageProvider>;
   }
 
   return (
+    <AdminLanguageProvider lang={lang}>
+    <ConfigProvider locale={lang === "zh" ? zhCN : enUS}>
     <Layout style={{ minHeight: "100vh" }}>
       <Sider theme="dark">
         <div
@@ -62,22 +74,22 @@ export default function AdminApp() {
             {
               key: "dashboard",
               icon: <DashboardOutlined />,
-              label: "Dashboard",
+              label: tr("Dashboard", "后台概览"),
             },
             {
               key: "products",
               icon: <AppstoreOutlined />,
-              label: "Products",
+              label: tr("Products", "产品管理"),
             },
             {
               key: "articles",
               icon: <FileTextOutlined />,
-              label: "Articles",
+              label: tr("Articles", "博客管理"),
             },
             {
               key: "inquiries",
               icon: <MailOutlined />,
-              label: "Inquiries",
+              label: tr("Inquiries", "询盘管理"),
             },
           ]}
         />
@@ -98,10 +110,12 @@ export default function AdminApp() {
               {session.user.email}
             </span>
 
+            <Button onClick={toggleLanguage}>{lang === "zh" ? "English" : "中文"}</Button>
+
             <Button
               onClick={() => supabase.auth.signOut()}
             >
-              Logout
+              {tr("Logout", "退出登录")}
             </Button>
           </div>
 
@@ -112,5 +126,7 @@ export default function AdminApp() {
         </Content>
       </Layout>
     </Layout>
+    </ConfigProvider>
+    </AdminLanguageProvider>
   );
 }

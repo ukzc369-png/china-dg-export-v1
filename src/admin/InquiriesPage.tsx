@@ -15,6 +15,7 @@ import {
 import type { ColumnsType } from "antd/es/table";
 import { DownloadOutlined, MailOutlined } from "@ant-design/icons";
 import { supabase } from "../lib/supabase";
+import { useAdminLanguage } from "./AdminLanguage";
 
 type InquiryStatus = "new" | "contacted" | "closed";
 
@@ -58,6 +59,7 @@ function buildReplyMailto(inquiry: Inquiry) {
 }
 
 export default function InquiriesPage() {
+  const { tr } = useAdminLanguage();
   const [loading, setLoading] = useState(false);
   const [inquiries, setInquiries] = useState<Inquiry[]>([]);
   const [searchText, setSearchText] = useState("");
@@ -109,7 +111,7 @@ export default function InquiriesPage() {
       message.error(error.message);
       return;
     }
-    message.success("Status updated");
+    message.success(tr("Status updated", "状态已更新"));
     loadInquiries();
   }
 
@@ -119,7 +121,7 @@ export default function InquiriesPage() {
       message.error(error.message);
       return;
     }
-    message.success("Inquiry deleted");
+    message.success(tr("Inquiry deleted", "询盘已删除"));
     loadInquiries();
   }
 
@@ -186,7 +188,7 @@ export default function InquiriesPage() {
 
   const columns: ColumnsType<Inquiry> = [
     {
-      title: "Buyer",
+      title: tr("Buyer", "买家"),
       render: (_, record) => (
         <Space direction="vertical" size={2}>
           <strong>{buyerName(record)}</strong>
@@ -196,7 +198,7 @@ export default function InquiriesPage() {
       ),
     },
     {
-      title: "Request",
+      title: tr("Request", "询盘需求"),
       render: (_, record) => (
         <Space direction="vertical" size={2}>
           <strong>{record.product || "-"}</strong>
@@ -205,9 +207,9 @@ export default function InquiriesPage() {
         </Space>
       ),
     },
-    { title: "Packing", dataIndex: "packing", width: 120 },
+    { title: tr("Packing", "包装"), dataIndex: "packing", width: 120 },
     {
-      title: "Status",
+      title: tr("Status", "状态"),
       width: 150,
       render: (_, record) => (
         <Select
@@ -216,28 +218,28 @@ export default function InquiriesPage() {
           style={{ width: 130 }}
           onChange={(value) => updateStatus(record.id, value as InquiryStatus)}
           options={[
-            { label: "New", value: "new" },
-            { label: "Contacted", value: "contacted" },
-            { label: "Closed", value: "closed" },
+            { label: tr("New", "新询盘"), value: "new" },
+            { label: tr("Contacted", "已联系"), value: "contacted" },
+            { label: tr("Closed", "已关闭"), value: "closed" },
           ]}
         />
       ),
     },
     {
-      title: "Created",
+      title: tr("Created", "提交时间"),
       dataIndex: "created_at",
       width: 170,
       render: (value) => formatDate(value),
     },
     {
-      title: "Actions",
+      title: tr("Actions", "操作"),
       width: 230,
       render: (_, record) => (
         <Space>
-          <Button size="small" onClick={() => openDetail(record)}>View</Button>
-          <Button size="small" icon={<MailOutlined />} href={buildReplyMailto(record)} onClick={() => updateStatus(record.id, "contacted")}>Reply</Button>
-          <Popconfirm title="Delete this inquiry?" onConfirm={() => deleteInquiry(record.id)}>
-            <Button danger size="small">Delete</Button>
+          <Button size="small" onClick={() => openDetail(record)}>{tr("View", "查看")}</Button>
+          <Button size="small" icon={<MailOutlined />} href={buildReplyMailto(record)} onClick={() => updateStatus(record.id, "contacted")}>{tr("Reply", "回复")}</Button>
+          <Popconfirm title={tr("Delete this inquiry?", "确定删除这条询盘吗？")} onConfirm={() => deleteInquiry(record.id)}>
+            <Button danger size="small">{tr("Delete", "删除")}</Button>
           </Popconfirm>
         </Space>
       ),
@@ -250,27 +252,27 @@ export default function InquiriesPage() {
         <Card>
           <Space style={{ width: "100%", justifyContent: "space-between" }} align="center" wrap>
             <div>
-              <h2 style={{ margin: 0 }}>Inquiries</h2>
+              <h2 style={{ margin: 0 }}>{tr("Inquiries", "询盘管理")}</h2>
               <p style={{ margin: "6px 0 0", color: "#64748b" }}>
-                Search, filter, reply, export and manage buyer inquiries.
+                {tr("Search, filter, reply, export and manage buyer inquiries.", "搜索、筛选、回复、导出并管理买家询盘。")}
               </p>
             </div>
-            <Button icon={<DownloadOutlined />} onClick={exportCsv}>Export CSV</Button>
+            <Button icon={<DownloadOutlined />} onClick={exportCsv}>{tr("Export CSV", "导出 CSV")}</Button>
           </Space>
         </Card>
 
         <Space wrap>
-          <Card size="small"><strong>{stats.today}</strong><div>Today</div></Card>
-          <Card size="small"><strong>{stats.total}</strong><div>Total</div></Card>
-          <Card size="small"><strong>{stats.new}</strong><div>New</div></Card>
-          <Card size="small"><strong>{stats.contacted}</strong><div>Contacted</div></Card>
-          <Card size="small"><strong>{stats.closed}</strong><div>Closed</div></Card>
+          <Card size="small"><strong>{stats.today}</strong><div>{tr("Today", "今日")}</div></Card>
+          <Card size="small"><strong>{stats.total}</strong><div>{tr("Total", "总数")}</div></Card>
+          <Card size="small"><strong>{stats.new}</strong><div>{tr("New", "新询盘")}</div></Card>
+          <Card size="small"><strong>{stats.contacted}</strong><div>{tr("Contacted", "已联系")}</div></Card>
+          <Card size="small"><strong>{stats.closed}</strong><div>{tr("Closed", "已关闭")}</div></Card>
         </Space>
 
         <Card>
           <Space style={{ marginBottom: 16 }} wrap>
             <Input.Search
-              placeholder="Search buyer, email, company, product, destination"
+              placeholder={tr("Search buyer, email, company, product, destination", "搜索买家、邮箱、公司、产品或目的地")}
               allowClear
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
@@ -285,55 +287,55 @@ export default function InquiriesPage() {
               }}
               style={{ width: 150 }}
               options={[
-                { label: "All Status", value: "all" },
-                { label: "New", value: "new" },
-                { label: "Contacted", value: "contacted" },
-                { label: "Closed", value: "closed" },
+                { label: tr("All Status", "全部状态"), value: "all" },
+                { label: tr("New", "新询盘"), value: "new" },
+                { label: tr("Contacted", "已联系"), value: "contacted" },
+                { label: tr("Closed", "已关闭"), value: "closed" },
               ]}
             />
             <Input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} style={{ width: 155 }} />
             <Input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} style={{ width: 155 }} />
-            <Button onClick={() => loadInquiries(searchText, statusFilter, dateFrom, dateTo)}>Apply</Button>
+            <Button onClick={() => loadInquiries(searchText, statusFilter, dateFrom, dateTo)}>{tr("Apply", "应用筛选")}</Button>
             <Button onClick={() => {
               setSearchText("");
               setStatusFilter("all");
               setDateFrom("");
               setDateTo("");
               loadInquiries("", "all", "", "");
-            }}>Reset</Button>
+            }}>{tr("Reset", "重置")}</Button>
           </Space>
           <Table rowKey="id" loading={loading} columns={columns} dataSource={inquiries} pagination={{ pageSize: 10 }} />
         </Card>
       </Space>
 
       <Modal
-        title="Inquiry Detail"
+        title={tr("Inquiry Detail", "询盘详情")}
         open={detailOpen}
         onCancel={() => setDetailOpen(false)}
         footer={currentInquiry ? [
-          <Button key="close" onClick={() => setDetailOpen(false)}>Close</Button>,
-          <Button key="contacted" onClick={markCurrentContacted}>Mark Contacted</Button>,
-          <Button key="reply" type="primary" href={buildReplyMailto(currentInquiry)} icon={<MailOutlined />} onClick={markCurrentContacted}>Reply by Email</Button>,
+          <Button key="close" onClick={() => setDetailOpen(false)}>{tr("Close", "关闭")}</Button>,
+          <Button key="contacted" onClick={markCurrentContacted}>{tr("Mark Contacted", "标记为已联系")}</Button>,
+          <Button key="reply" type="primary" href={buildReplyMailto(currentInquiry)} icon={<MailOutlined />} onClick={markCurrentContacted}>{tr("Reply by Email", "邮件回复")}</Button>,
         ] : null}
         width={760}
       >
         {currentInquiry && (
           <Space direction="vertical" size={16} style={{ width: "100%" }}>
             <Descriptions bordered column={1} size="small">
-              <Descriptions.Item label="Buyer">{buyerName(currentInquiry)}</Descriptions.Item>
-              <Descriptions.Item label="Email">{currentInquiry.email}</Descriptions.Item>
-              <Descriptions.Item label="Company">{currentInquiry.company || "-"}</Descriptions.Item>
-              <Descriptions.Item label="Contact">{currentInquiry.contact || "-"}</Descriptions.Item>
-              <Descriptions.Item label="Product">{currentInquiry.product || "-"}</Descriptions.Item>
-              <Descriptions.Item label="Quantity">{currentInquiry.quantity || "-"}</Descriptions.Item>
-              <Descriptions.Item label="Destination">{currentInquiry.destination || currentInquiry.country || "-"}</Descriptions.Item>
-              <Descriptions.Item label="Packing">{currentInquiry.packing || "-"}</Descriptions.Item>
-              <Descriptions.Item label="Status">
+              <Descriptions.Item label={tr("Buyer", "买家")}>{buyerName(currentInquiry)}</Descriptions.Item>
+              <Descriptions.Item label={tr("Email", "邮箱")}>{currentInquiry.email}</Descriptions.Item>
+              <Descriptions.Item label={tr("Company", "公司")}>{currentInquiry.company || "-"}</Descriptions.Item>
+              <Descriptions.Item label={tr("Contact", "联系方式")}>{currentInquiry.contact || "-"}</Descriptions.Item>
+              <Descriptions.Item label={tr("Product", "产品")}>{currentInquiry.product || "-"}</Descriptions.Item>
+              <Descriptions.Item label={tr("Quantity", "数量")}>{currentInquiry.quantity || "-"}</Descriptions.Item>
+              <Descriptions.Item label={tr("Destination", "目的地")}>{currentInquiry.destination || currentInquiry.country || "-"}</Descriptions.Item>
+              <Descriptions.Item label={tr("Packing", "包装")}>{currentInquiry.packing || "-"}</Descriptions.Item>
+              <Descriptions.Item label={tr("Status", "状态")}>
                 <Tag color={(currentInquiry.status || "new") === "new" ? "red" : currentInquiry.status === "contacted" ? "blue" : "green"}>{currentInquiry.status || "new"}</Tag>
               </Descriptions.Item>
-              <Descriptions.Item label="Created">{formatDate(currentInquiry.created_at)}</Descriptions.Item>
+              <Descriptions.Item label={tr("Created", "提交时间")}>{formatDate(currentInquiry.created_at)}</Descriptions.Item>
             </Descriptions>
-            <Card size="small" title="Message">
+            <Card size="small" title={tr("Message", "询盘内容")}>
               <div style={{ whiteSpace: "pre-wrap" }}>{currentInquiry.message || "-"}</div>
             </Card>
           </Space>

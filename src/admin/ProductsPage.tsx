@@ -28,6 +28,7 @@ import {
 } from "@ant-design/icons";
 import { supabase } from "../lib/supabase";
 import { imageSizeLabel, optimizeUploadImage } from "./imageUpload";
+import { useAdminLanguage } from "./AdminLanguage";
 
 type ProductStatus = "active" | "inactive";
 
@@ -101,6 +102,7 @@ function downloadCsv(filename: string, rows: string[][]) {
 }
 
 export default function ProductsPage() {
+  const { tr } = useAdminLanguage();
   const [form] = Form.useForm<ProductFormValues>();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
@@ -345,7 +347,7 @@ export default function ProductsPage() {
 
   const columns: ColumnsType<Product> = [
     {
-      title: "Image",
+      title: tr("Image", "图片"),
       dataIndex: "image_url",
       width: 84,
       render: (url: string | null) =>
@@ -356,7 +358,7 @@ export default function ProductsPage() {
         ),
     },
     {
-      title: "Product",
+      title: tr("Product", "产品"),
       dataIndex: "name",
       render: (_, record) => (
         <Space direction="vertical" size={2}>
@@ -364,29 +366,29 @@ export default function ProductsPage() {
           <Space wrap>
             {record.cas && <Tag>CAS {record.cas}</Tag>}
             {record.un_number && <Tag color="blue">UN {record.un_number}</Tag>}
-            {record.featured && <Tag color="gold" icon={<StarFilled />}>Featured</Tag>}
+            {record.featured && <Tag color="gold" icon={<StarFilled />}>{tr("Featured", "推荐")}</Tag>}
           </Space>
         </Space>
       ),
     },
-    { title: "Category", dataIndex: "category", width: 160 },
-    { title: "Packing", dataIndex: "packing", width: 160 },
-    { title: "Markets", dataIndex: "markets", width: 180 },
+    { title: tr("Category", "分类"), dataIndex: "category", width: 160 },
+    { title: tr("Packing", "包装"), dataIndex: "packing", width: 160 },
+    { title: tr("Markets", "目标市场"), dataIndex: "markets", width: 180 },
     {
-      title: "Status",
+      title: tr("Status", "状态"),
       dataIndex: "status",
       width: 110,
-      render: (status) => <Tag color={status === "active" ? "green" : "default"}>{status || "inactive"}</Tag>,
+      render: (status) => <Tag color={status === "active" ? "green" : "default"}>{status === "active" ? tr("Active", "启用") : tr("Inactive", "停用")}</Tag>,
     },
     {
-      title: "Actions",
+      title: tr("Actions", "操作"),
       width: 230,
       render: (_, record) => (
         <Space>
-          <Button size="small" onClick={() => openEditModal(record)}>Edit</Button>
+          <Button size="small" onClick={() => openEditModal(record)}>{tr("Edit", "编辑")}</Button>
           <Button size="small" icon={record.featured ? <StarFilled /> : <StarOutlined />} onClick={() => toggleFeatured(record)} />
-          <Popconfirm title="Delete this product?" onConfirm={() => deleteProduct(record.id)}>
-            <Button danger size="small">Delete</Button>
+          <Popconfirm title={tr("Delete this product?", "确定删除这个产品吗？")} onConfirm={() => deleteProduct(record.id)}>
+            <Button danger size="small">{tr("Delete", "删除")}</Button>
           </Popconfirm>
         </Space>
       ),
@@ -402,28 +404,28 @@ export default function ProductsPage() {
         <Card>
           <Space style={{ width: "100%", justifyContent: "space-between" }} align="center" wrap>
             <div>
-              <h2 style={{ margin: 0 }}>Products CMS</h2>
+              <h2 style={{ margin: 0 }}>{tr("Products CMS", "产品管理")}</h2>
               <p style={{ margin: "6px 0 0", color: "#64748b" }}>
-                Manage product library, images, CAS/UN, packing, markets, featured products and SEO.
+                {tr("Manage product library, images, CAS/UN, packing, markets, featured products and SEO.", "管理产品库、图片、CAS/UN、包装、目标市场、推荐产品和 SEO。")}
               </p>
             </div>
             <Space>
-              <Button onClick={exportProducts}>Export CSV</Button>
-              <Button type="primary" icon={<PlusOutlined />} onClick={openCreateModal}>Add Product</Button>
+              <Button onClick={exportProducts}>{tr("Export CSV", "导出 CSV")}</Button>
+              <Button type="primary" icon={<PlusOutlined />} onClick={openCreateModal}>{tr("Add Product", "新增产品")}</Button>
             </Space>
           </Space>
         </Card>
 
         <Space wrap>
-          <Card size="small"><strong>{products.length}</strong><div>Total Products</div></Card>
-          <Card size="small"><strong>{activeCount}</strong><div>Active</div></Card>
-          <Card size="small"><strong>{featuredCount}</strong><div>Featured</div></Card>
+          <Card size="small"><strong>{products.length}</strong><div>{tr("Total Products", "产品总数")}</div></Card>
+          <Card size="small"><strong>{activeCount}</strong><div>{tr("Active", "已启用")}</div></Card>
+          <Card size="small"><strong>{featuredCount}</strong><div>{tr("Featured", "已推荐")}</div></Card>
         </Space>
 
         <Card>
           <Space style={{ marginBottom: 16 }} wrap>
             <Input.Search
-              placeholder="Search name, CAS, UN, category, market"
+              placeholder={tr("Search name, CAS, UN, category, market", "搜索名称、CAS、UN、分类或市场")}
               allowClear
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
@@ -438,64 +440,65 @@ export default function ProductsPage() {
               }}
               style={{ width: 150 }}
               options={[
-                { label: "All Status", value: "all" },
-                { label: "Active", value: "active" },
-                { label: "Inactive", value: "inactive" },
+                { label: tr("All Status", "全部状态"), value: "all" },
+                { label: tr("Active", "启用"), value: "active" },
+                { label: tr("Inactive", "停用"), value: "inactive" },
               ]}
             />
-            <Button onClick={() => loadProducts(searchText, statusFilter)}>Refresh</Button>
+            <Button onClick={() => loadProducts(searchText, statusFilter)}>{tr("Refresh", "刷新")}</Button>
           </Space>
           <Table rowKey="id" loading={loading} columns={columns} dataSource={products} pagination={{ pageSize: 10 }} />
         </Card>
       </Space>
 
       <Modal
-        title={isEditing ? "Edit Product" : "Add Product"}
+        title={isEditing ? tr("Edit Product", "编辑产品") : tr("Add Product", "新增产品")}
         open={modalOpen}
         onCancel={() => setModalOpen(false)}
         onOk={saveProduct}
         confirmLoading={saving}
         width={980}
-        okText={isEditing ? "Update" : "Create"}
+        okText={isEditing ? tr("Update", "保存更新") : tr("Create", "创建")}
+        cancelText={tr("Cancel", "取消")}
       >
         <Form form={form} layout="vertical">
-          <Card size="small" title="Basic Information" style={{ marginBottom: 16 }}>
+          <Card size="small" title={tr("Basic Information", "基本信息")} style={{ marginBottom: 16 }}>
             <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: 16 }}>
-              <Form.Item name="name" label="Product Name" rules={[{ required: true, message: "Product name is required" }]}>
+              <Form.Item name="name" label={tr("Product Name", "产品名称")} rules={[{ required: true, message: tr("Product name is required", "请填写产品名称") }]}>
                 <Input placeholder="Methanol" />
               </Form.Item>
-              <Form.Item name="category" label="Category">
+              <Form.Item name="category" label={tr("Category", "产品分类")}>
                 <Input placeholder="Alcohols / Aromatic Solvents / Ketones" />
               </Form.Item>
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16 }}>
-              <Form.Item name="cas" label="CAS Number" extra="Format check: 67-56-1">
+              <Form.Item name="cas" label="CAS Number" extra={tr("Format check: 67-56-1", "格式示例：67-56-1")}>
                 <Input placeholder="67-56-1" />
               </Form.Item>
               <Form.Item name="un_number" label="UN Number">
                 <Input placeholder="1230" />
               </Form.Item>
-              <Form.Item name="specification" label="Specification / Purity">
+              <Form.Item name="specification" label={tr("Specification / Purity", "规格 / 纯度")}>
                 <Input placeholder="99.5% min" />
               </Form.Item>
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-              <Form.Item name="packing" label="Packing">
+              <Form.Item name="packing" label={tr("Packing", "包装方式")}>
                 <Input placeholder="Drums / ISO Tank / IBC" />
               </Form.Item>
-              <Form.Item name="markets" label="Target Markets">
+              <Form.Item name="markets" label={tr("Target Markets", "目标市场")}>
                 <Input placeholder="Middle East, Europe, Southeast Asia" />
               </Form.Item>
             </div>
-            <Form.Item name="description" label="Description">
+            <Form.Item name="description" label={tr("Description", "产品描述")}>
               <Input.TextArea rows={4} placeholder="Product application, export notes, documents, packing and shipment support." />
             </Form.Item>
           </Card>
 
-          <Card size="small" title="Images & Gallery" style={{ marginBottom: 16 }}>
+          <Card size="small" title={tr("Images & Gallery", "图片与图库")} style={{ marginBottom: 16 }}>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
               <div>
-                <Form.Item name="image_url" label="Main Image URL">
+                <Form.Item name="image_url" label={tr("Main Image URL", "主图地址")}>
                   <Input placeholder="https://..." />
                 </Form.Item>
                 <Upload
@@ -508,15 +511,15 @@ export default function ProductsPage() {
                     setFileList([]);
                   }}
                 >
-                  <Button loading={uploading} icon={<UploadOutlined />}>Upload Main Image</Button>
+                  <Button loading={uploading} icon={<UploadOutlined />}>{tr("Upload Main Image", "上传主图")}</Button>
                 </Upload>
               </div>
               <div>
-                <Form.Item name="image_gallery" label="Gallery URLs" extra="One URL per line. You can upload images or paste URLs manually.">
+                <Form.Item name="image_gallery" label={tr("Gallery URLs", "图库地址")} extra={tr("One URL per line. You can upload images or paste URLs manually.", "每行一个地址，也可以直接上传图片。")}>
                   <Input.TextArea rows={5} placeholder="https://...\nhttps://..." />
                 </Form.Item>
                 <Upload accept="image/*" showUploadList={false} beforeUpload={(file) => uploadFile(file, true)}>
-                  <Button loading={uploading} icon={<UploadOutlined />}>Add Gallery Image</Button>
+                  <Button loading={uploading} icon={<UploadOutlined />}>{tr("Add Gallery Image", "添加图库图片")}</Button>
                 </Upload>
               </div>
             </div>
@@ -538,8 +541,8 @@ export default function ProductsPage() {
                       <Button icon={<EyeOutlined />} onClick={() => setPreviewImage(url)} />
                       <Button icon={<ArrowUpOutlined />} onClick={() => moveGalleryImage(index, -1)} disabled={index === 0} />
                       <Button icon={<ArrowDownOutlined />} onClick={() => moveGalleryImage(index, 1)} disabled={index === galleryImages.length - 1} />
-                      <Button onClick={() => setGalleryAsMain(url)}>Set Main</Button>
-                      <Button danger onClick={() => updateGallery(galleryImages.filter((_, i) => i !== index))}>Remove</Button>
+                      <Button onClick={() => setGalleryAsMain(url)}>{tr("Set Main", "设为主图")}</Button>
+                      <Button danger onClick={() => updateGallery(galleryImages.filter((_, i) => i !== index))}>{tr("Remove", "移除")}</Button>
                     </Space>
                   </div>
                 ))}
@@ -547,23 +550,23 @@ export default function ProductsPage() {
             )}
           </Card>
 
-          <Card size="small" title="SEO & Publishing">
+          <Card size="small" title={tr("SEO & Publishing", "SEO 与发布设置")}>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-              <Form.Item name="seo_title" label="SEO Title">
+              <Form.Item name="seo_title" label={tr("SEO Title", "SEO 标题")}>
                 <Input placeholder="Methanol CAS 67-56-1 | ChinaChemExport" />
               </Form.Item>
-              <Form.Item name="status" label="Status" rules={[{ required: true }]}>
-                <Select options={[{ label: "Active", value: "active" }, { label: "Inactive", value: "inactive" }]} />
+              <Form.Item name="status" label={tr("Status", "状态")} rules={[{ required: true }]}>
+                <Select options={[{ label: tr("Active", "启用"), value: "active" }, { label: tr("Inactive", "停用"), value: "inactive" }]} />
               </Form.Item>
             </div>
-            <Form.Item name="seo_description" label="SEO Description">
+            <Form.Item name="seo_description" label={tr("SEO Description", "SEO 描述")}>
               <Input.TextArea rows={3} maxLength={160} showCount placeholder="Short search description, ideally under 160 characters." />
             </Form.Item>
             <Space>
               <Form.Item name="featured" valuePropName="checked" style={{ marginBottom: 0 }}>
-                <Checkbox>Featured on website</Checkbox>
+                <Checkbox>{tr("Featured on website", "推荐到网站首页")}</Checkbox>
               </Form.Item>
-              <Button onClick={generateSeo}>Generate SEO Draft</Button>
+              <Button onClick={generateSeo}>{tr("Generate SEO Draft", "自动生成 SEO")}</Button>
             </Space>
           </Card>
         </Form>
