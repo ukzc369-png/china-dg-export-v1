@@ -21,6 +21,11 @@ export function setAnalyticsConsent(granted: boolean) {
   if (granted) trackPageView(true);
 }
 
+export function openAnalyticsSettings() {
+  localStorage.removeItem(CONSENT_KEY);
+  window.location.reload();
+}
+
 export function trackPageView(force = false) {
   if (!window.gtag || window.location.pathname.startsWith("/admin")) return;
   const path = `${window.location.pathname}${window.location.search}`;

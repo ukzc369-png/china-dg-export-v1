@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import type { ReactElement } from "react";
 import "./HomePage.css";
+import { openAnalyticsSettings } from "./analytics";
 
 export type Lang = "en" | "zh";
 export type I18n = { en: string; zh: string };
@@ -12,7 +13,11 @@ export type Page =
   | "markets"
   | "cases"
   | "insights"
-  | "contact";
+  | "contact"
+  | "privacy"
+  | "terms"
+  | "cookies"
+  | "dangerous-goods";
 
 export type Product = {
   name: I18n;
@@ -380,7 +385,13 @@ export default function HomePage({ go, lang, products, articles, onOpenArticle }
 
         <div className="hp-shell hp-footer-bottom">
           <span>© 2026 ChinaChemExport. All Rights Reserved.</span>
-          <span>Privacy Policy&nbsp;&nbsp; | &nbsp;&nbsp;Terms of Use</span>
+          <div className="hp-legal-links">
+            <button type="button" onClick={() => go("privacy")}>Privacy</button>
+            <button type="button" onClick={() => go("terms")}>Terms</button>
+            <button type="button" onClick={() => go("cookies")}>Cookies</button>
+            <button type="button" onClick={() => go("dangerous-goods")}>DG Disclaimer</button>
+            <button type="button" onClick={openAnalyticsSettings}>Cookie Settings</button>
+          </div>
         </div>
       </footer>
     </main>

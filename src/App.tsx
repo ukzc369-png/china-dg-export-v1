@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import "./App.css";
 import AdminApp from "./admin/AdminApp";
-import { trackInquirySubmission, trackPageView } from "./analytics";
+import { openAnalyticsSettings, trackInquirySubmission, trackPageView } from "./analytics";
+import { legalDocuments, type LegalPageKey } from "./legalContent";
 import { supabase } from "./lib/supabase";
 import HomePage from "./HomePage";
 type Page =
@@ -12,7 +13,11 @@ type Page =
   | "markets"
   | "cases"
   | "insights"
-  | "contact";
+  | "contact"
+  | "privacy"
+  | "terms"
+  | "cookies"
+  | "dangerous-goods";
 type Lang = "en" | "zh";
 type I18n = { en: string; zh: string };
 type Product = {
@@ -614,6 +619,10 @@ function pathToPage(pathname: string): Page {
     "cases",
     "insights",
     "contact",
+    "privacy",
+    "terms",
+    "cookies",
+    "dangerous-goods",
   ].includes(key)
     ? key
     : "home";
@@ -737,6 +746,9 @@ useEffect(() => {
   />
 );
     if (page === "contact") return <ContactPage lang={lang} />;
+    if (["privacy", "terms", "cookies", "dangerous-goods"].includes(page)) {
+      return <LegalPage page={page as LegalPageKey} lang={lang} />;
+    }
     return (
       <HomePage
         go={go}
@@ -1408,6 +1420,31 @@ function InsightsPage({
             </details>
           ))}
         </div>
+      </section>
+    </main>
+  );
+}
+
+function LegalPage({ page, lang }: { page: LegalPageKey; lang: Lang }) {
+  const document = legalDocuments[page][lang];
+  return (
+    <main className="legal-page">
+      <section className="legal-hero">
+        <div className="container">
+          <span>{lang === "zh" ? "法律与合规" : "Legal & Compliance"}</span>
+          <h1>{document.title}</h1>
+          <p>{document.intro}</p>
+        </div>
+      </section>
+      <section className="container legal-content">
+        {document.sections.map((section) => (
+          <article key={section.heading}>
+            <h2>{section.heading}</h2>
+            {section.paragraphs.map((paragraph, index) => (
+              <p key={`${section.heading}-${index}`}>{paragraph}</p>
+            ))}
+          </article>
+        ))}
       </section>
     </main>
   );
@@ -2138,6 +2175,13 @@ function Footer({ go, lang }: { go: (page: Page) => void; lang: Lang }) {
               {tx(n.label, lang)}
             </button>
           ))}
+        </div>
+        <div className="footer-legal-links">
+          <button onClick={() => go("privacy")}>{tx(t("Privacy", "隐私政策"), lang)}</button>
+          <button onClick={() => go("terms")}>{tx(t("Terms", "使用条款"), lang)}</button>
+          <button onClick={() => go("cookies")}>{tx(t("Cookies", "Cookie 政策"), lang)}</button>
+          <button onClick={() => go("dangerous-goods")}>{tx(t("DG Disclaimer", "危险化学品声明"), lang)}</button>
+          <button onClick={openAnalyticsSettings}>{tx(t("Cookie Settings", "Cookie 设置"), lang)}</button>
         </div>
         <small>© 2026 ChinaChemExport. All rights reserved.</small>
       </div>
