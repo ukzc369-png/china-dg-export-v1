@@ -29,6 +29,7 @@ import {
 import { supabase } from "../lib/supabase";
 import { imageSizeLabel, optimizeUploadImage } from "./imageUpload";
 import { useAdminLanguage } from "./AdminLanguage";
+import { productCategoryZh, productNameZh } from "../productTranslations";
 
 type ProductStatus = "active" | "inactive";
 
@@ -102,7 +103,7 @@ function downloadCsv(filename: string, rows: string[][]) {
 }
 
 export default function ProductsPage() {
-  const { tr } = useAdminLanguage();
+  const { lang, tr } = useAdminLanguage();
   const [form] = Form.useForm<ProductFormValues>();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
@@ -362,7 +363,7 @@ export default function ProductsPage() {
       dataIndex: "name",
       render: (_, record) => (
         <Space direction="vertical" size={2}>
-          <strong>{record.name}</strong>
+          <strong>{lang === "zh" ? productNameZh[record.name] || record.name : record.name}</strong>
           <Space wrap>
             {record.cas && <Tag>CAS {record.cas}</Tag>}
             {record.un_number && <Tag color="blue">UN {record.un_number}</Tag>}
@@ -371,7 +372,12 @@ export default function ProductsPage() {
         </Space>
       ),
     },
-    { title: tr("Category", "分类"), dataIndex: "category", width: 160 },
+    {
+      title: tr("Category", "分类"),
+      dataIndex: "category",
+      width: 160,
+      render: (category: string | null) => lang === "zh" && category ? productCategoryZh[category] || category : category || "-",
+    },
     { title: tr("Packing", "包装"), dataIndex: "packing", width: 160 },
     { title: tr("Markets", "目标市场"), dataIndex: "markets", width: 180 },
     {
