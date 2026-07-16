@@ -573,10 +573,10 @@ const referenceSpecifications: Record<string, string> = {
 };
 
 const fallbackProductImages: Record<string, string> = {
-  "141-43-5": "/home-v4/product-1.svg", // MEA
-  "111-42-2": "/home-v4/product-2.svg", // DEA
-  "98-00-0": "/home-v4/product-3.svg", // Furfuryl alcohol
-  "584-84-9": "/home-v4/product-4.svg", // TDI 20/80
+  "141-43-5": "/home-v4/products-photo.webp", // MEA
+  "111-42-2": "/home-v4/hero-drums-photo.webp", // DEA
+  "98-00-0": "/home-v4/products-photo.webp", // Furfuryl alcohol
+  "584-84-9": "/home-v4/hero-drums-photo.webp", // TDI 20/80
 };
 
 function cmsProductToProduct(item: CmsProduct): Product {
