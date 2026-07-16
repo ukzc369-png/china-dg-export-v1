@@ -3,6 +3,7 @@ import "./App.css";
 import AdminApp from "./admin/AdminApp";
 import { openAnalyticsSettings, trackInquirySubmission, trackPageView } from "./analytics";
 import { legalDocuments, type LegalPageKey } from "./legalContent";
+import { articleTranslations } from "./articleTranslations";
 import { supabase } from "./lib/supabase";
 import HomePage from "./HomePage";
 type Page =
@@ -551,25 +552,27 @@ function cmsProductToProduct(item: CmsProduct): Product {
 }
 
 function cmsArticleToArticle(item: CmsArticle): Article {
+  const slug = item.slug || `article-${item.id}`;
+  const zh = articleTranslations[slug];
   return {
-    title: t(item.title || "Untitled Article", item.title || "未命名文章"),
+    title: t(item.title || "Untitled Article", zh?.title || item.title || "未命名文章"),
     tag: t("Chemical Export Insight", "化工出口知识"),
     text: t(
       item.seo_description || item.content || "Read this export guide and contact our team for shipment support.",
-      item.seo_description || item.content || "阅读出口指南，并联系我们获取出运支持。",
+      zh?.seoDescription || "阅读出口指南，并联系我们获取出运支持。",
     ),
-    slug: item.slug || `article-${item.id}`,
+    slug,
     content: t(
       item.content || item.seo_description || "Please contact our team for more details.",
-      item.content || item.seo_description || "请联系我们获取更多详情。",
+      zh?.content || "该文章的中文版本正在整理中，请联系我们获取更多详情。",
     ),
     seoTitle: t(
       item.seo_title || item.title || "Chemical Export Article",
-      item.seo_title || item.title || "化工出口文章",
+      zh?.seoTitle || zh?.title || "化工出口文章",
     ),
     seoDescription: t(
       item.seo_description || item.content || "Chemical export guide from ChinaChemExport.",
-      item.seo_description || item.content || "ChinaChemExport 化工品出口指南。",
+      zh?.seoDescription || "ChinaChemExport 化工品出口指南。",
     ),
     coverImage: item.cover_image || undefined,
   };
