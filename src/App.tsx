@@ -82,6 +82,19 @@ type CaseItem = {
 
 const tx = (v: I18n, lang: Lang) => v[lang];
 const t = (en: string, zh: string): I18n => ({ en, zh });
+function storedI18n(value: string | null | undefined, fallbackEn: string, fallbackZh: string): I18n {
+  if (value) {
+    try {
+      const parsed = JSON.parse(value) as Partial<I18n>;
+      if (parsed && typeof parsed === "object" && (parsed.en || parsed.zh)) {
+        return t(parsed.en || fallbackEn, parsed.zh || fallbackZh);
+      }
+    } catch {
+      // Existing records are plain English and remain fully compatible.
+    }
+  }
+  return t(value || fallbackEn, fallbackZh);
+}
 
 const nav: { label: I18n; page: Page }[] = [
   { label: t("Home", "首页"), page: "home" },
@@ -555,25 +568,13 @@ function cmsArticleToArticle(item: CmsArticle): Article {
   const slug = item.slug || `article-${item.id}`;
   const zh = articleTranslations[slug];
   return {
-    title: t(item.title || "Untitled Article", zh?.title || item.title || "未命名文章"),
+    title: storedI18n(item.title, "Untitled Article", zh?.title || item.title || "未命名文章"),
     tag: t("Chemical Export Insight", "化工出口知识"),
-    text: t(
-      item.seo_description || item.content || "Read this export guide and contact our team for shipment support.",
-      zh?.seoDescription || "阅读出口指南，并联系我们获取出运支持。",
-    ),
+    text: storedI18n(item.seo_description || item.content, "Read this export guide and contact our team for shipment support.", zh?.seoDescription || "阅读出口指南，并联系我们获取出运支持。"),
     slug,
-    content: t(
-      item.content || item.seo_description || "Please contact our team for more details.",
-      zh?.content || "该文章的中文版本正在整理中，请联系我们获取更多详情。",
-    ),
-    seoTitle: t(
-      item.seo_title || item.title || "Chemical Export Article",
-      zh?.seoTitle || zh?.title || "化工出口文章",
-    ),
-    seoDescription: t(
-      item.seo_description || item.content || "Chemical export guide from ChinaChemExport.",
-      zh?.seoDescription || "ChinaChemExport 化工品出口指南。",
-    ),
+    content: storedI18n(item.content || item.seo_description, "Please contact our team for more details.", zh?.content || "该文章的中文版本正在整理中，请联系我们获取更多详情。"),
+    seoTitle: storedI18n(item.seo_title || item.title, "Chemical Export Article", zh?.seoTitle || zh?.title || "化工出口文章"),
+    seoDescription: storedI18n(item.seo_description || item.content, "Chemical export guide from ChinaChemExport.", zh?.seoDescription || "ChinaChemExport 化工品出口指南。"),
     coverImage: item.cover_image || undefined,
   };
 }
