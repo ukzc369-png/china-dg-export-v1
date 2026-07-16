@@ -33,6 +33,8 @@ type Product = {
   icon: string;
   imageUrl?: string;
   imagePosition?: string;
+  seoTitle?: string;
+  seoDescription?: string;
 };
 type CmsProduct = {
   id: number;
@@ -43,6 +45,8 @@ type CmsProduct = {
   description: string | null;
   image_url: string | null;
   specification: string | null;
+  seo_title: string | null;
+  seo_description: string | null;
   status: string | null;
   created_at: string;
 };
@@ -557,6 +561,8 @@ function cmsProductToProduct(item: CmsProduct): Product {
     un: /^\d{4}$/.test(item.un_number?.trim() || "") ? item.un_number!.trim() : "",
     purity: item.specification || "To be confirmed",
     imageUrl: item.image_url || undefined,
+    seoTitle: item.seo_title || undefined,
+    seoDescription: item.seo_description || undefined,
     packing: t("Drums / ISO Tank / IBC", "桶装 / ISO罐 / IBC"),
     category: t(category, translateProductCategoryZh(category)),
     application: t(
@@ -703,6 +709,10 @@ useEffect(() => {
           )
         : `${tx(nav.find((n) => n.page === page)?.label || t(page, page), lang)} | ChinaChemExport`;
     const descriptions: Partial<Record<Page, I18n>> = {
+      products: t(
+        "Browse bulk chemicals, solvents and intermediates supplied from China with compliant packaging, export documentation and dangerous-goods logistics support.",
+        "浏览中国供应的大宗化工品、溶剂及中间体，并获取合规包装、出口单证与危险品物流支持。",
+      ),
       about: t(
         "ChinaChemExport supplies bulk chemicals from Dongying, China, backed by petrochemical industry resources and integrated dangerous-goods export support.",
         "ChinaChemExport立足中国东营供应大宗化工品，并依托炼化产业资源与危险品出口一站式配套支持全球采购商。",
@@ -864,6 +874,48 @@ function ProductsPage({ go, lang, products }: { go: (page: Page) => void; lang: 
     const slug = getProductSlug(window.location.pathname);
     if (slug) setSelectedProduct(products.find((product) => productSlug(product) === slug) || null);
   }, [products]);
+  useEffect(() => {
+    if (!selectedProduct) return;
+    const slug = productSlug(selectedProduct);
+    const url = `https://chinachemexport.com/products/${slug}`;
+    const name = tx(selectedProduct.name, lang);
+    const title = lang === "en"
+      ? selectedProduct.seoTitle || `${name} Supplier from China | ChinaChemExport`
+      : `${name}供应商与出口报价 | ChinaChemExport`;
+    const description = lang === "en"
+      ? selectedProduct.seoDescription || tx(selectedProduct.application, "en")
+      : `${name}（CAS ${selectedProduct.cas}）中国供应与出口服务，提供产品规格、合规包装、单证及危险品物流支持。`;
+    document.title = title;
+    document.querySelector('meta[name="description"]')?.setAttribute("content", description);
+    document.querySelector('link[rel="canonical"]')?.setAttribute("href", url);
+    document.querySelector('meta[property="og:url"]')?.setAttribute("content", url);
+    document.querySelector('meta[property="og:title"]')?.setAttribute("content", title);
+    document.querySelector('meta[property="og:description"]')?.setAttribute("content", description);
+    let script = document.querySelector<HTMLScriptElement>("#product-structured-data");
+    if (!script) {
+      script = document.createElement("script");
+      script.id = "product-structured-data";
+      script.type = "application/ld+json";
+      document.head.appendChild(script);
+    }
+    script.text = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Product",
+      name,
+      description,
+      image: selectedProduct.imageUrl ? [selectedProduct.imageUrl] : undefined,
+      sku: selectedProduct.cas,
+      url,
+      brand: { "@type": "Brand", name: "ChinaChemExport" },
+      additionalProperty: [
+        { "@type": "PropertyValue", name: "CAS Number", value: selectedProduct.cas },
+        selectedProduct.un ? { "@type": "PropertyValue", name: "UN Number", value: selectedProduct.un } : null,
+        { "@type": "PropertyValue", name: "Purity", value: selectedProduct.purity },
+        { "@type": "PropertyValue", name: "Packing", value: tx(selectedProduct.packing, lang) },
+      ].filter(Boolean),
+    });
+    return () => { document.querySelector("#product-structured-data")?.remove(); };
+  }, [selectedProduct, lang]);
   const categories = [
     "All Products",
     ...Array.from(new Set(products.map((p) => tx(p.category, "en")))),
@@ -894,6 +946,10 @@ function ProductsPage({ go, lang, products }: { go: (page: Page) => void; lang: 
       if (firstInput && product)
         firstInput.value = `${tx(product.name, lang)} / CAS ${product.cas}${product.un ? ` / UN ${product.un}` : ""}`;
     }, 120);
+  }
+  function openProduct(product: Product) {
+    window.history.pushState({}, "", `/products/${productSlug(product)}`);
+    setSelectedProduct(product);
   }
   return (
     <main className="page">
@@ -981,7 +1037,7 @@ function ProductsPage({ go, lang, products }: { go: (page: Page) => void; lang: 
                   key={p.cas}
                   product={p}
                   lang={lang}
-                  onView={() => setSelectedProduct(p)}
+                  onView={() => openProduct(p)}
                 />
               ))}
             </div>
@@ -999,7 +1055,20 @@ function ProductsPage({ go, lang, products }: { go: (page: Page) => void; lang: 
           lang={lang}
           onClose={() => {
             setSelectedProduct(null);
-            if (getProductSlug(window.location.pathname)) window.history.pushState({}, "", "/products");
+            if (getProductSlug(window.location.pathname)) {
+              window.history.pushState({}, "", "/products");
+              const title = `${tx(t("Products", "产品中心"), lang)} | ChinaChemExport`;
+              const description = tx(t(
+                "Browse bulk chemicals, solvents and intermediates supplied from China with compliant packaging, export documentation and dangerous-goods logistics support.",
+                "浏览中国供应的大宗化工品、溶剂及中间体，并获取合规包装、出口单证与危险品物流支持。",
+              ), lang);
+              document.title = title;
+              document.querySelector('meta[name="description"]')?.setAttribute("content", description);
+              document.querySelector('link[rel="canonical"]')?.setAttribute("href", "https://chinachemexport.com/products");
+              document.querySelector('meta[property="og:url"]')?.setAttribute("content", "https://chinachemexport.com/products");
+              document.querySelector('meta[property="og:title"]')?.setAttribute("content", title);
+              document.querySelector('meta[property="og:description"]')?.setAttribute("content", description);
+            }
           }}
           onQuote={() => requestQuote(selectedProduct)}
         />
