@@ -1,4 +1,5 @@
 const CONSENT_KEY = "chinachemexport-analytics-consent";
+const MEASUREMENT_ID = "G-LX6Z6RLDEP";
 
 declare global {
   interface Window {
@@ -18,7 +19,17 @@ export function setAnalyticsConsent(granted: boolean) {
   window.gtag?.("consent", "update", {
     analytics_storage: granted ? "granted" : "denied",
   });
-  if (granted) trackPageView(true);
+  if (granted) {
+    const path = `${window.location.pathname}${window.location.search}`;
+    // The initial config is queued while consent is denied. Re-configuring the
+    // destination after consent guarantees the first granted page view is sent.
+    window.gtag?.("config", MEASUREMENT_ID, {
+      page_title: document.title,
+      page_location: window.location.href,
+      page_path: path,
+    });
+    lastTrackedPath = path;
+  }
 }
 
 export function openAnalyticsSettings() {
