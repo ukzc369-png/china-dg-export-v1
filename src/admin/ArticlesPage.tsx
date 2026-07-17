@@ -45,11 +45,6 @@ type ArticleFormValues = {
   content?: string;
   seo_title?: string;
   seo_description?: string;
-  title_zh?: string;
-  content_zh?: string;
-  seo_title_zh?: string;
-  seo_description_zh?: string;
-  publish_chinese?: boolean;
   cover_image?: string;
   related_products?: string;
   publish_date?: string;
@@ -70,32 +65,6 @@ function readEnglish(value: string | null | undefined) {
     // Legacy articles contain plain English text.
   }
   return value;
-}
-
-function readChinese(value: string | null | undefined) {
-  if (!value) return "";
-  try {
-    const parsed = JSON.parse(value) as { zh?: string };
-    return parsed && typeof parsed === "object" ? parsed.zh || "" : "";
-  } catch {
-    return "";
-  }
-}
-
-function isChinesePublished(value: string | null | undefined) {
-  if (!value) return false;
-  try {
-    const parsed = JSON.parse(value) as { zh?: string; zhStatus?: string };
-    return Boolean(parsed.zh) && parsed.zhStatus !== "draft";
-  } catch {
-    return false;
-  }
-}
-
-function bilingualValue(en: string, zh: string | undefined, publishChinese: boolean) {
-  const cleanZh = zh?.trim();
-  if (!cleanZh) return en;
-  return JSON.stringify({ en, zh: cleanZh, zhStatus: publishChinese ? "published" : "draft" });
 }
 
 function createSlug(title: string) {
@@ -148,7 +117,6 @@ export default function ArticlesPage() {
   const [searchText, setSearchText] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [uploading, setUploading] = useState(false);
-  const [translating, setTranslating] = useState(false);
   const contentEditorRef = useRef<TextAreaRef>(null);
 
   const contentValue = Form.useWatch("content", form) || "";
@@ -191,7 +159,7 @@ export default function ArticlesPage() {
   function openCreateModal() {
     setEditingArticle(null);
     form.resetFields();
-    form.setFieldsValue({ status: "draft", publish_date: todayDate(), featured: false, publish_chinese: false });
+    form.setFieldsValue({ status: "draft", publish_date: todayDate(), featured: false });
     setModalOpen(true);
   }
 
@@ -203,11 +171,6 @@ export default function ArticlesPage() {
       content: readEnglish(article.content),
       seo_title: readEnglish(article.seo_title),
       seo_description: readEnglish(article.seo_description),
-      title_zh: readChinese(article.title),
-      content_zh: readChinese(article.content),
-      seo_title_zh: readChinese(article.seo_title),
-      seo_description_zh: readChinese(article.seo_description),
-      publish_chinese: isChinesePublished(article.content),
       cover_image: article.cover_image || "",
       related_products: article.related_products || "",
       publish_date: article.publish_date || article.created_at?.slice(0, 10) || todayDate(),
@@ -223,13 +186,12 @@ export default function ArticlesPage() {
       setSaving(true);
 
       const slug = values.slug || createSlug(values.title);
-      const publishChinese = Boolean(values.publish_chinese);
       const payload = {
-        title: bilingualValue(values.title, values.title_zh, publishChinese),
+        title: values.title,
         slug,
-        content: bilingualValue(values.content || "", values.content_zh, publishChinese),
-        seo_title: bilingualValue(values.seo_title || values.title, values.seo_title_zh, publishChinese),
-        seo_description: bilingualValue(values.seo_description || (values.content || "").slice(0, 155), values.seo_description_zh, publishChinese),
+        content: values.content || "",
+        seo_title: values.seo_title || values.title,
+        seo_description: values.seo_description || (values.content || "").slice(0, 155),
         cover_image: values.cover_image || "",
         related_products: values.related_products || "",
         publish_date: values.publish_date || todayDate(),
@@ -364,51 +326,6 @@ export default function ArticlesPage() {
     });
   }
 
-  async function generateChineseDraft() {
-    const title = form.getFieldValue("title")?.trim();
-    const content = form.getFieldValue("content")?.trim();
-    if (!title || !content) {
-      message.warning("请先填写英文标题和英文正文");
-      return;
-    }
-
-    setTranslating(true);
-    try {
-      const { data } = await supabase.auth.getSession();
-      const accessToken = data.session?.access_token;
-      if (!accessToken) throw new Error("登录状态已失效，请重新登录");
-
-      const response = await fetch("/api/translate-article", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify({
-          title,
-          content,
-          seoTitle: form.getFieldValue("seo_title") || title,
-          seoDescription: form.getFieldValue("seo_description") || content.slice(0, 155),
-        }),
-      });
-      const result = await response.json();
-      if (!response.ok) throw new Error(result.error || "中文草稿生成失败");
-
-      form.setFieldsValue({
-        title_zh: result.title,
-        content_zh: result.content,
-        seo_title_zh: result.seoTitle,
-        seo_description_zh: result.seoDescription,
-        publish_chinese: false,
-      });
-      message.success("中文草稿已生成，请检查后勾选发布");
-    } catch (error) {
-      message.error(error instanceof Error ? error.message : "中文草稿生成失败");
-    } finally {
-      setTranslating(false);
-    }
-  }
-
   function exportArticles() {
     const rows = [
       ["ID", "Title", "Slug", "Status", "Featured", "Publish Date"],
@@ -440,11 +357,6 @@ export default function ArticlesPage() {
           <Space wrap>
             {record.featured && <Tag color="gold" icon={<StarFilled />}>{tr("Featured", "推荐")}</Tag>}
             {record.related_products && <Tag>{record.related_products}</Tag>}
-            {readChinese(record.content) && (
-              <Tag color={isChinesePublished(record.content) ? "blue" : "orange"}>
-                {isChinesePublished(record.content) ? tr("Chinese published", "中文已发布") : tr("Chinese draft", "中文待审核")}
-              </Tag>
-            )}
           </Space>
         </Space>
       ),
@@ -594,37 +506,6 @@ export default function ArticlesPage() {
               <div style={{ marginBottom: 8, fontWeight: 600 }}>{tr("Article Preview", "文章预览")}</div>
               <div style={{ minHeight: 220, maxHeight: 520, overflow: "auto", border: "1px solid #e5e7eb", borderRadius: 8, padding: 18, background: "#fff" }}>{renderMarkdownPreview(contentValue)}</div>
             </div>
-          </Card>
-
-          <Card
-            size="small"
-            title={tr("Chinese Draft", "中文翻译草稿")}
-            extra={<Button type="primary" loading={translating} onClick={generateChineseDraft}>{tr("Generate Chinese Draft", "生成中文草稿")}</Button>}
-            style={{ marginBottom: 16 }}
-          >
-            <div style={{ marginBottom: 14, color: "#64748b" }}>
-              {tr(
-                "AI creates a draft while preserving Markdown and chemical terminology. Review it before enabling the Chinese version.",
-                "系统会保留 Markdown 排版并翻译化工专业术语。生成后请先检查，未勾选发布前不会在前台显示。",
-              )}
-            </div>
-            <Form.Item name="title_zh" label={tr("Chinese Title", "中文标题")}>
-              <Input placeholder="生成后可人工修改" />
-            </Form.Item>
-            <Form.Item name="content_zh" label={tr("Chinese Content", "中文正文（可人工修改）")}>
-              <Input.TextArea rows={16} placeholder="点击右上角“生成中文草稿”" style={{ fontSize: 15, lineHeight: 1.75 }} />
-            </Form.Item>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-              <Form.Item name="seo_title_zh" label={tr("Chinese SEO Title", "中文 SEO 标题")}>
-                <Input maxLength={70} showCount />
-              </Form.Item>
-              <Form.Item name="seo_description_zh" label={tr("Chinese SEO Description", "中文 SEO 描述")}>
-                <Input.TextArea rows={2} maxLength={160} showCount />
-              </Form.Item>
-            </div>
-            <Form.Item name="publish_chinese" valuePropName="checked" style={{ marginBottom: 0 }}>
-              <Checkbox>{tr("Publish the reviewed Chinese version", "我已检查译文，发布中文版")}</Checkbox>
-            </Form.Item>
           </Card>
 
           <Card size="small" title={tr("Search Engine Optimization (SEO)", "搜索引擎优化（SEO）")}>
