@@ -603,7 +603,10 @@ function cmsProductToProduct(item: CmsProduct): Product {
 
 function cmsArticleToArticle(item: CmsArticle): Article {
   const slug = item.slug || `article-${item.id}`;
-  const zh = articleTranslations[slug];
+  const zh = articleTranslations[slug]
+    || (/dichloromethane|methylene-chloride/i.test(`${slug} ${item.title}`)
+      ? articleTranslations["how-to-export-dichloromethane-from-china"]
+      : undefined);
   return {
     title: storedI18n(item.title, "Untitled Article", zh?.title || item.title || "未命名文章"),
     tag: t("Chemical Export Insight", "化工出口知识"),
