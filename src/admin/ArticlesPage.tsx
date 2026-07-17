@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Button,
   Card,
@@ -16,6 +16,7 @@ import {
   Upload,
 } from "antd";
 import type { ColumnsType } from "antd/es/table";
+import type { TextAreaRef } from "antd/es/input/TextArea";
 import { PlusOutlined, StarFilled, StarOutlined, UploadOutlined } from "@ant-design/icons";
 import { supabase } from "../lib/supabase";
 import { imageSizeLabel, optimizeUploadImage } from "./imageUpload";
@@ -116,6 +117,7 @@ export default function ArticlesPage() {
   const [searchText, setSearchText] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [uploading, setUploading] = useState(false);
+  const contentEditorRef = useRef<TextAreaRef>(null);
 
   const contentValue = Form.useWatch("content", form) || "";
   const coverImageValue = Form.useWatch("cover_image", form) || "";
@@ -294,7 +296,24 @@ export default function ArticlesPage() {
   }
 
   function insertContent(text: string) {
-    form.setFieldsValue({ content: `${form.getFieldValue("content") || ""}${text}` });
+    insertAtCursor(text);
+  }
+
+  function insertAtCursor(text: string, suffix = "", placeholder = "") {
+    const current = form.getFieldValue("content") || "";
+    const textarea = contentEditorRef.current?.resizableTextArea?.textArea;
+    const start = textarea?.selectionStart ?? current.length;
+    const end = textarea?.selectionEnd ?? current.length;
+    const selected = current.slice(start, end) || placeholder;
+    const next = `${current.slice(0, start)}${text}${selected}${suffix}${current.slice(end)}`;
+    const cursorStart = start + text.length;
+    const cursorEnd = cursorStart + selected.length;
+
+    form.setFieldValue("content", next);
+    window.setTimeout(() => {
+      textarea?.focus();
+      textarea?.setSelectionRange(cursorStart, cursorEnd);
+    }, 0);
   }
 
   function generateSlugAndSeo() {
@@ -468,17 +487,24 @@ export default function ArticlesPage() {
 
           <Card size="small" title={tr(`Content Editor (${wordCount} words)`, `英文正文编辑（约 ${wordCount} 词）`)} style={{ marginBottom: 16 }}>
             <Space style={{ marginBottom: 12 }} wrap>
-              <Button onClick={() => insertContent("\n## New Section\n")}>{tr("Insert Section", "插入章节")}</Button>
-              <Button onClick={() => insertContent("\n- Bullet point\n")}>{tr("Insert List", "插入列表")}</Button>
+              <Button onClick={() => insertAtCursor("\n\n", "\n\n", "Write paragraph here")}>{tr("Paragraph", "正文段落")}</Button>
+              <Button onClick={() => insertAtCursor("\n# ", "\n", "Article title")}>{tr("Title", "文章标题")}</Button>
+              <Button onClick={() => insertAtCursor("\n## ", "\n", "Section title")}>{tr("Section", "章节标题")}</Button>
+              <Button onClick={() => insertAtCursor("**", "**", "Bold text")}>{tr("Bold", "加粗")}</Button>
+              <Button onClick={() => insertAtCursor("\n- ", "\n", "List item")}>{tr("Bullet List", "项目列表")}</Button>
+              <Button onClick={() => insertAtCursor("\n1. ", "\n", "List item")}>{tr("Numbered List", "编号列表")}</Button>
+              <Button onClick={() => insertAtCursor("\n> ", "\n", "Important note")}>{tr("Quote", "重点说明")}</Button>
+              <Button onClick={() => insertAtCursor("[", "](https://example.com)", "Link text")}>{tr("Link", "插入链接")}</Button>
               <Upload accept="image/*" showUploadList={false} beforeUpload={uploadInlineImage}>
                 <Button loading={uploading} icon={<UploadOutlined />}>{tr("Insert Image", "插入图片")}</Button>
               </Upload>
             </Space>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-              <Form.Item name="content" label={tr("English Content (Markdown)", "英文正文（Markdown）")} rules={[{ required: true, message: tr("Enter article content", "请填写英文正文") }]}>
-                <Input.TextArea rows={18} placeholder="# Article title\n\n## Section\n\nWrite English content here..." />
-              </Form.Item>
-              <div><div style={{ marginBottom: 8, fontWeight: 600 }}>{tr("Live Preview", "实时预览")}</div><div style={{ minHeight: 360, maxHeight: 520, overflow: "auto", border: "1px solid #e5e7eb", borderRadius: 8, padding: 18, background: "#fff" }}>{renderMarkdownPreview(contentValue)}</div></div>
+            <Form.Item name="content" label={tr("English Content", "英文正文（可直接选择文字后使用上方工具）")} rules={[{ required: true, message: tr("Enter article content", "请填写英文正文") }]}>
+              <Input.TextArea ref={contentEditorRef} rows={22} placeholder="Click here to write or edit the English article. Select text, then use the formatting buttons above." style={{ fontSize: 15, lineHeight: 1.75 }} />
+            </Form.Item>
+            <div>
+              <div style={{ marginBottom: 8, fontWeight: 600 }}>{tr("Article Preview", "文章预览")}</div>
+              <div style={{ minHeight: 220, maxHeight: 520, overflow: "auto", border: "1px solid #e5e7eb", borderRadius: 8, padding: 18, background: "#fff" }}>{renderMarkdownPreview(contentValue)}</div>
             </div>
           </Card>
 
