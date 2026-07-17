@@ -41,3 +41,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# local release archives
+V1-archive-*/
+ChinaChemExport-V1-*.zip
