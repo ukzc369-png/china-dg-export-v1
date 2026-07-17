@@ -90,9 +90,10 @@ const t = (en: string, zh: string): I18n => ({ en, zh });
 function storedI18n(value: string | null | undefined, fallbackEn: string, fallbackZh: string): I18n {
   if (value) {
     try {
-      const parsed = JSON.parse(value) as Partial<I18n>;
+      const parsed = JSON.parse(value) as Partial<I18n> & { zhStatus?: "draft" | "published" };
       if (parsed && typeof parsed === "object" && (parsed.en || parsed.zh)) {
-        return t(parsed.en || fallbackEn, parsed.zh || fallbackZh);
+        const publishedZh = parsed.zhStatus === "draft" ? "" : parsed.zh;
+        return t(parsed.en || fallbackEn, publishedZh || fallbackZh);
       }
     } catch {
       // Existing records are plain English and remain fully compatible.
