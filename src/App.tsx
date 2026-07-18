@@ -729,8 +729,13 @@ useEffect(() => {
   }, []);
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
+    const activeArticle = currentArticleSlug
+      ? articles.find((article) => article.slug === currentArticleSlug)
+      : undefined;
     document.title =
-      page === "home"
+      activeArticle
+        ? `${tx(activeArticle.seoTitle, lang)} | ChinaChemExport`
+        : page === "home"
         ? tx(
             t(
               "China Chemical Supplier & Bulk Chemical Exporter | ChinaChemExport",
@@ -754,7 +759,11 @@ useEffect(() => {
       ),
     };
     const meta = document.querySelector('meta[name="description"]');
-    if (meta && descriptions[page]) meta.setAttribute("content", tx(descriptions[page]!, lang));
+    if (meta && activeArticle) {
+      meta.setAttribute("content", tx(activeArticle.seoDescription, lang));
+    } else if (meta && descriptions[page]) {
+      meta.setAttribute("content", tx(descriptions[page]!, lang));
+    }
     const canonicalUrl = `https://chinachemexport.com${window.location.pathname || "/"}`;
     const canonical = document.querySelector('link[rel="canonical"]');
     if (canonical) canonical.setAttribute("href", canonicalUrl);
