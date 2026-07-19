@@ -17,7 +17,15 @@ import {
 } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import type { TextAreaRef } from "antd/es/input/TextArea";
-import { PlusOutlined, StarFilled, StarOutlined, UploadOutlined } from "@ant-design/icons";
+import {
+  ArrowDownOutlined,
+  ArrowUpOutlined,
+  DeleteOutlined,
+  PlusOutlined,
+  StarFilled,
+  StarOutlined,
+  UploadOutlined,
+} from "@ant-design/icons";
 import { supabase } from "../lib/supabase";
 import { imageSizeLabel, optimizeUploadImage } from "./imageUpload";
 import { useAdminLanguage } from "./AdminLanguage";
@@ -106,6 +114,23 @@ function renderMarkdownPreview(content?: string) {
   });
 }
 
+type InlineArticleImage = {
+  alt: string;
+  url: string;
+  blockIndex: number;
+};
+
+function getContentBlocks(content: string) {
+  return content.split(/\n{2,}/).map((block) => block.trim()).filter(Boolean);
+}
+
+function getInlineArticleImages(content: string): InlineArticleImage[] {
+  return getContentBlocks(content).flatMap((block, blockIndex) => {
+    const match = block.match(/^!\[([^\]]*)\]\((https?:\/\/[^)]+)\)$/);
+    return match ? [{ alt: match[1] || "Article image", url: match[2], blockIndex }] : [];
+  });
+}
+
 export default function ArticlesPage() {
   const { tr } = useAdminLanguage();
   const [form] = Form.useForm<ArticleFormValues>();
@@ -117,6 +142,7 @@ export default function ArticlesPage() {
   const [searchText, setSearchText] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [uploading, setUploading] = useState(false);
+  const [editorMode, setEditorMode] = useState<"visual" | "source">("visual");
   const contentEditorRef = useRef<TextAreaRef>(null);
 
   const contentValue = Form.useWatch("content", form) || "";
@@ -124,6 +150,7 @@ export default function ArticlesPage() {
   const isEditing = Boolean(editingArticle);
 
   const wordCount = useMemo(() => contentValue.trim().split(/\s+/).filter(Boolean).length, [contentValue]);
+  const inlineImages = useMemo(() => getInlineArticleImages(contentValue), [contentValue]);
 
   useEffect(() => {
     loadArticles();
@@ -160,6 +187,7 @@ export default function ArticlesPage() {
     setEditingArticle(null);
     form.resetFields();
     form.setFieldsValue({ status: "draft", publish_date: todayDate(), featured: false });
+    setEditorMode("visual");
     setModalOpen(true);
   }
 
@@ -177,6 +205,7 @@ export default function ArticlesPage() {
       featured: Boolean(article.featured),
       status: (article.status as ArticleStatus) || "draft",
     });
+    setEditorMode("visual");
     setModalOpen(true);
   }
 
@@ -297,6 +326,27 @@ export default function ArticlesPage() {
 
   function insertContent(text: string) {
     insertAtCursor(text);
+  }
+
+  function moveInlineImage(blockIndex: number, direction: -1 | 1) {
+    const blocks = getContentBlocks(form.getFieldValue("content") || "");
+    const targetIndex = blockIndex + direction;
+    if (targetIndex < 0 || targetIndex >= blocks.length) return;
+    [blocks[blockIndex], blocks[targetIndex]] = [blocks[targetIndex], blocks[blockIndex]];
+    form.setFieldValue("content", blocks.join("\n\n"));
+  }
+
+  function removeInlineImage(blockIndex: number) {
+    const blocks = getContentBlocks(form.getFieldValue("content") || "");
+    blocks.splice(blockIndex, 1);
+    form.setFieldValue("content", blocks.join("\n\n"));
+    message.success(tr("Image removed from the article", "图片已从正文中删除"));
+  }
+
+  function updateContentBlock(blockIndex: number, value: string) {
+    const blocks = getContentBlocks(form.getFieldValue("content") || "");
+    blocks[blockIndex] = value;
+    form.setFieldValue("content", blocks.join("\n\n"));
   }
 
   function insertAtCursor(text: string, suffix = "", placeholder = "") {
@@ -499,9 +549,74 @@ export default function ArticlesPage() {
                 <Button loading={uploading} icon={<UploadOutlined />}>{tr("Insert Image", "插入图片")}</Button>
               </Upload>
             </Space>
-            <Form.Item name="content" label={tr("English Content", "英文正文（可直接选择文字后使用上方工具）")} rules={[{ required: true, message: tr("Enter article content", "请填写英文正文") }]}>
-              <Input.TextArea ref={contentEditorRef} rows={22} placeholder="Click here to write or edit the English article. Select text, then use the formatting buttons above." style={{ fontSize: 15, lineHeight: 1.75 }} />
+            <Form.Item name="content" hidden rules={[{ required: true, message: tr("Enter article content", "请填写英文正文") }]}>
+              <Input />
             </Form.Item>
+            <Space style={{ width: "100%", justifyContent: "space-between", marginBottom: 10 }} wrap>
+              <strong>{tr("English Content", "英文正文")}</strong>
+              <Space.Compact>
+                <Button type={editorMode === "visual" ? "primary" : "default"} onClick={() => setEditorMode("visual")}>
+                  {tr("Visual Editor", "可视化编辑")}
+                </Button>
+                <Button type={editorMode === "source" ? "primary" : "default"} onClick={() => setEditorMode("source")}>
+                  {tr("Markdown Source", "源码编辑")}
+                </Button>
+              </Space.Compact>
+            </Space>
+            {editorMode === "source" ? (
+              <Input.TextArea
+                ref={contentEditorRef}
+                rows={22}
+                value={contentValue}
+                onChange={(event) => form.setFieldValue("content", event.target.value)}
+                placeholder="Click here to write or edit the English article. Select text, then use the formatting buttons above."
+                style={{ marginBottom: 16, fontSize: 15, lineHeight: 1.75 }}
+              />
+            ) : (
+              <div style={{ marginBottom: 16, border: "1px solid #d9d9d9", borderRadius: 8, padding: 16, background: "#f8fafc" }}>
+                {getContentBlocks(contentValue).map((block, blockIndex) => {
+                  const image = inlineImages.find((item) => item.blockIndex === blockIndex);
+                  if (image) {
+                    return (
+                      <div key={`${image.url}-${blockIndex}`} style={{ margin: "12px 0", padding: 10, border: "1px solid #cbd5e1", borderRadius: 8, background: "#fff" }}>
+                        <Image src={image.url} alt={image.alt} width="100%" style={{ display: "block", maxHeight: 420, objectFit: "contain", borderRadius: 6 }} />
+                        <Space style={{ width: "100%", justifyContent: "space-between", marginTop: 8 }} wrap>
+                          <Input
+                            value={image.alt}
+                            onChange={(event) => updateContentBlock(blockIndex, `![${event.target.value}](${image.url})`)}
+                            prefix={tr("Caption:", "图片说明：")}
+                            style={{ width: 360 }}
+                          />
+                          <Space size={4}>
+                            <Button size="small" icon={<ArrowUpOutlined />} disabled={blockIndex === 0} onClick={() => moveInlineImage(blockIndex, -1)}>{tr("Up", "上移")}</Button>
+                            <Button size="small" icon={<ArrowDownOutlined />} disabled={blockIndex === getContentBlocks(contentValue).length - 1} onClick={() => moveInlineImage(blockIndex, 1)}>{tr("Down", "下移")}</Button>
+                            <Popconfirm title={tr("Remove this image from the article?", "从正文中删除这张图片？")} onConfirm={() => removeInlineImage(blockIndex)} okText={tr("Remove", "删除")} cancelText={tr("Cancel", "取消")}>
+                              <Button danger size="small" icon={<DeleteOutlined />}>{tr("Remove", "删除")}</Button>
+                            </Popconfirm>
+                          </Space>
+                        </Space>
+                      </div>
+                    );
+                  }
+                  return (
+                    <Input.TextArea
+                      key={`text-${blockIndex}`}
+                      autoSize={{ minRows: block.startsWith("#") ? 1 : 2, maxRows: 16 }}
+                      value={block}
+                      onChange={(event) => updateContentBlock(blockIndex, event.target.value)}
+                      style={{
+                        margin: "6px 0",
+                        border: "1px solid transparent",
+                        background: "#fff",
+                        fontSize: block.startsWith("# ") ? 23 : block.startsWith("## ") ? 19 : 15,
+                        fontWeight: block.startsWith("#") ? 700 : 400,
+                        lineHeight: 1.75,
+                      }}
+                    />
+                  );
+                })}
+              </div>
+            )}
             <div>
               <div style={{ marginBottom: 8, fontWeight: 600 }}>{tr("Article Preview", "文章预览")}</div>
               <div style={{ minHeight: 220, maxHeight: 520, overflow: "auto", border: "1px solid #e5e7eb", borderRadius: 8, padding: 18, background: "#fff" }}>{renderMarkdownPreview(contentValue)}</div>
