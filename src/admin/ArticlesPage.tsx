@@ -49,10 +49,14 @@ type Article = {
 
 type ArticleFormValues = {
   title: string;
+  title_zh?: string;
   slug?: string;
   content?: string;
+  content_zh?: string;
   seo_title?: string;
+  seo_title_zh?: string;
   seo_description?: string;
+  seo_description_zh?: string;
   cover_image?: string;
   related_products?: string;
   publish_date?: string;
@@ -114,6 +118,20 @@ function renderMarkdownPreview(content?: string) {
   });
 }
 
+function readChinese(value: string | null | undefined) {
+  if (!value) return "";
+  try {
+    const parsed = JSON.parse(value) as { zh?: string };
+    return parsed && typeof parsed === "object" ? parsed.zh || "" : "";
+  } catch {
+    return "";
+  }
+}
+
+function storeBilingual(english: string, chinese?: string) {
+  return chinese?.trim() ? JSON.stringify({ en: english, zh: chinese.trim() }) : english;
+}
+
 type InlineArticleImage = {
   alt: string;
   url: string;
@@ -142,6 +160,7 @@ export default function ArticlesPage() {
   const [searchText, setSearchText] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [uploading, setUploading] = useState(false);
+  const [translating, setTranslating] = useState(false);
   const [editorMode, setEditorMode] = useState<"visual" | "source">("visual");
   const contentEditorRef = useRef<TextAreaRef>(null);
 
@@ -195,10 +214,14 @@ export default function ArticlesPage() {
     setEditingArticle(article);
     form.setFieldsValue({
       title: readEnglish(article.title),
+      title_zh: readChinese(article.title),
       slug: article.slug || "",
       content: readEnglish(article.content),
+      content_zh: readChinese(article.content),
       seo_title: readEnglish(article.seo_title),
+      seo_title_zh: readChinese(article.seo_title),
       seo_description: readEnglish(article.seo_description),
+      seo_description_zh: readChinese(article.seo_description),
       cover_image: article.cover_image || "",
       related_products: article.related_products || "",
       publish_date: article.publish_date || article.created_at?.slice(0, 10) || todayDate(),
@@ -216,11 +239,11 @@ export default function ArticlesPage() {
 
       const slug = values.slug || createSlug(values.title);
       const payload = {
-        title: values.title,
+        title: storeBilingual(values.title, values.title_zh),
         slug,
-        content: values.content || "",
-        seo_title: values.seo_title || values.title,
-        seo_description: values.seo_description || (values.content || "").slice(0, 155),
+        content: storeBilingual(values.content || "", values.content_zh),
+        seo_title: storeBilingual(values.seo_title || values.title, values.seo_title_zh || values.title_zh),
+        seo_description: storeBilingual(values.seo_description || (values.content || "").slice(0, 155), values.seo_description_zh),
         cover_image: values.cover_image || "",
         related_products: values.related_products || "",
         publish_date: values.publish_date || todayDate(),
@@ -374,6 +397,56 @@ export default function ArticlesPage() {
       seo_title: `${title} | ChinaChemExport`,
       seo_description: content.replace(/[#*\-\n]/g, " ").replace(/\s+/g, " ").trim().slice(0, 155),
     });
+  }
+
+  async function generateChineseTranslation() {
+    const values = form.getFieldsValue();
+    if (!values.title?.trim() || !values.content?.trim()) {
+      message.warning(tr("Write the English title and content first", "请先填写英文标题和正文"));
+      return;
+    }
+
+    setTranslating(true);
+    try {
+      const { data } = await supabase.auth.getSession();
+      const accessToken = data.session?.access_token;
+      if (!accessToken) throw new Error(tr("Please log in again", "登录已失效，请重新登录"));
+
+      const response = await fetch("/api/translate-article", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({
+          title: values.title,
+          content: values.content,
+          seoTitle: values.seo_title || values.title,
+          seoDescription: values.seo_description || "",
+        }),
+      });
+      const result = await response.json() as {
+        success?: boolean;
+        error?: string;
+        titleZh?: string;
+        contentZh?: string;
+        seoTitleZh?: string;
+        seoDescriptionZh?: string;
+      };
+      if (!response.ok || !result.success) throw new Error(result.error || tr("Translation failed", "翻译失败"));
+
+      form.setFieldsValue({
+        title_zh: result.titleZh || "",
+        content_zh: result.contentZh || "",
+        seo_title_zh: result.seoTitleZh || "",
+        seo_description_zh: result.seoDescriptionZh || "",
+      });
+      message.success(tr("Chinese draft generated. Please review it before saving.", "中文初稿已生成，请检查专业术语后再保存。"));
+    } catch (error) {
+      message.error(error instanceof Error ? error.message : tr("Translation failed", "翻译失败"));
+    } finally {
+      setTranslating(false);
+    }
   }
 
   function exportArticles() {
@@ -621,6 +694,36 @@ export default function ArticlesPage() {
               <div style={{ marginBottom: 8, fontWeight: 600 }}>{tr("Article Preview", "文章预览")}</div>
               <div style={{ minHeight: 220, maxHeight: 520, overflow: "auto", border: "1px solid #e5e7eb", borderRadius: 8, padding: 18, background: "#fff" }}>{renderMarkdownPreview(contentValue)}</div>
             </div>
+          </Card>
+
+          <Card
+            size="small"
+            title={tr("Chinese Translation Review", "中文译文检查")}
+            extra={
+              <Button type="primary" loading={translating} onClick={generateChineseTranslation}>
+                {tr("Generate Chinese Translation", "一键生成中文译文")}
+              </Button>
+            }
+            style={{ marginBottom: 16 }}
+          >
+            <p style={{ marginTop: 0, color: "#64748b" }}>
+              {tr(
+                "AI creates a draft while preserving Markdown images. Review chemical names, regulations and logistics terms before saving.",
+                "系统会保留 Markdown 图片并生成中文初稿。保存前请重点检查化学品名称、法规和物流专业术语。",
+              )}
+            </p>
+            <Form.Item name="title_zh" label={tr("Chinese Title", "中文标题")}>
+              <Input placeholder="自动生成后可人工修改" />
+            </Form.Item>
+            <Form.Item name="content_zh" label={tr("Chinese Content", "中文正文")}>
+              <Input.TextArea rows={16} placeholder="点击“一键生成中文译文”，然后在这里检查和修改。" style={{ fontSize: 15, lineHeight: 1.75 }} />
+            </Form.Item>
+            <Form.Item name="seo_title_zh" label={tr("Chinese SEO Title", "中文 SEO 标题")}>
+              <Input maxLength={70} showCount />
+            </Form.Item>
+            <Form.Item name="seo_description_zh" label={tr("Chinese SEO Description", "中文 SEO 描述")}>
+              <Input.TextArea rows={3} maxLength={160} showCount />
+            </Form.Item>
           </Card>
 
           <Card size="small" title={tr("Search Engine Optimization (SEO)", "搜索引擎优化（SEO）")}>
