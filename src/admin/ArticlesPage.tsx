@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Button,
   Card,
@@ -16,19 +16,11 @@ import {
   Upload,
 } from "antd";
 import type { ColumnsType } from "antd/es/table";
-import type { TextAreaRef } from "antd/es/input/TextArea";
-import {
-  ArrowDownOutlined,
-  ArrowUpOutlined,
-  DeleteOutlined,
-  PlusOutlined,
-  StarFilled,
-  StarOutlined,
-  UploadOutlined,
-} from "@ant-design/icons";
+import { PlusOutlined, StarFilled, StarOutlined, UploadOutlined } from "@ant-design/icons";
 import { supabase } from "../lib/supabase";
 import { imageSizeLabel, optimizeUploadImage } from "./imageUpload";
 import { useAdminLanguage } from "./AdminLanguage";
+import WordArticleEditor, { WordArticlePreview } from "./WordArticleEditor";
 
 type ArticleStatus = "draft" | "published";
 
@@ -103,19 +95,8 @@ function downloadCsv(filename: string, rows: string[][]) {
 }
 
 function renderMarkdownPreview(content?: string) {
-  const blocks = (content || "").split("\n").filter((line) => line.trim());
-  if (!blocks.length) return <p style={{ color: "#94a3b8" }}>Preview will appear here.</p>;
-
-  return blocks.map((line, index) => {
-    if (line.startsWith("## ")) return <h3 key={index}>{line.replace(/^## /, "")}</h3>;
-    if (line.startsWith("# ")) return <h2 key={index}>{line.replace(/^# /, "")}</h2>;
-    if (line.startsWith("- ")) return <li key={index}>{line.replace(/^- /, "")}</li>;
-    if (line.startsWith("![") && line.includes("](") && line.endsWith(")")) {
-      const match = line.match(/!\[(.*?)\]\((.*?)\)/);
-      if (match) return <Image key={index} src={match[2]} alt={match[1]} style={{ maxWidth: "100%", borderRadius: 8 }} />;
-    }
-    return <p key={index}>{line}</p>;
-  });
+  if (!content?.trim()) return <p style={{ color: "#94a3b8" }}>Preview will appear here.</p>;
+  return <WordArticlePreview value={content} />;
 }
 
 function readChinese(value: string | null | undefined) {
@@ -132,23 +113,6 @@ function storeBilingual(english: string, chinese?: string) {
   return chinese?.trim() ? JSON.stringify({ en: english, zh: chinese.trim() }) : english;
 }
 
-type InlineArticleImage = {
-  alt: string;
-  url: string;
-  blockIndex: number;
-};
-
-function getContentBlocks(content: string) {
-  return content.split(/\n{2,}/).map((block) => block.trim()).filter(Boolean);
-}
-
-function getInlineArticleImages(content: string): InlineArticleImage[] {
-  return getContentBlocks(content).flatMap((block, blockIndex) => {
-    const match = block.match(/^!\[([^\]]*)\]\((https?:\/\/[^)]+)\)$/);
-    return match ? [{ alt: match[1] || "Article image", url: match[2], blockIndex }] : [];
-  });
-}
-
 export default function ArticlesPage() {
   const { tr } = useAdminLanguage();
   const [form] = Form.useForm<ArticleFormValues>();
@@ -162,14 +126,12 @@ export default function ArticlesPage() {
   const [uploading, setUploading] = useState(false);
   const [translating, setTranslating] = useState(false);
   const [editorMode, setEditorMode] = useState<"visual" | "source">("visual");
-  const contentEditorRef = useRef<TextAreaRef>(null);
 
   const contentValue = Form.useWatch("content", form) || "";
   const coverImageValue = Form.useWatch("cover_image", form) || "";
   const isEditing = Boolean(editingArticle);
 
   const wordCount = useMemo(() => contentValue.trim().split(/\s+/).filter(Boolean).length, [contentValue]);
-  const inlineImages = useMemo(() => getInlineArticleImages(contentValue), [contentValue]);
 
   useEffect(() => {
     loadArticles();
@@ -320,7 +282,7 @@ export default function ArticlesPage() {
     }
   }
 
-  async function uploadInlineImage(file: File) {
+  async function uploadArticleImage(file: File): Promise<string | null> {
     setUploading(true);
     try {
       const optimized = await optimizeUploadImage(file);
@@ -332,61 +294,18 @@ export default function ArticlesPage() {
 
       if (uploadError) {
         message.warning(`上传失败：${uploadError.message}。您也可以手动粘贴图片地址。`);
-        return false;
+        return null;
       }
 
       const { data } = supabase.storage.from(BUCKET_NAME).getPublicUrl(safeName);
-      insertContent(`\n![Article Image](${data.publicUrl})\n`);
       message.success(`图片已优化并插入正文（${imageSizeLabel(optimized.size)}）`);
-      return false;
+      return data.publicUrl;
     } catch (error) {
       message.error(error instanceof Error ? error.message : "图片处理失败");
-      return false;
+      return null;
     } finally {
       setUploading(false);
     }
-  }
-
-  function insertContent(text: string) {
-    insertAtCursor(text);
-  }
-
-  function moveInlineImage(blockIndex: number, direction: -1 | 1) {
-    const blocks = getContentBlocks(form.getFieldValue("content") || "");
-    const targetIndex = blockIndex + direction;
-    if (targetIndex < 0 || targetIndex >= blocks.length) return;
-    [blocks[blockIndex], blocks[targetIndex]] = [blocks[targetIndex], blocks[blockIndex]];
-    form.setFieldValue("content", blocks.join("\n\n"));
-  }
-
-  function removeInlineImage(blockIndex: number) {
-    const blocks = getContentBlocks(form.getFieldValue("content") || "");
-    blocks.splice(blockIndex, 1);
-    form.setFieldValue("content", blocks.join("\n\n"));
-    message.success(tr("Image removed from the article", "图片已从正文中删除"));
-  }
-
-  function updateContentBlock(blockIndex: number, value: string) {
-    const blocks = getContentBlocks(form.getFieldValue("content") || "");
-    blocks[blockIndex] = value;
-    form.setFieldValue("content", blocks.join("\n\n"));
-  }
-
-  function insertAtCursor(text: string, suffix = "", placeholder = "") {
-    const current = form.getFieldValue("content") || "";
-    const textarea = contentEditorRef.current?.resizableTextArea?.textArea;
-    const start = textarea?.selectionStart ?? current.length;
-    const end = textarea?.selectionEnd ?? current.length;
-    const selected = current.slice(start, end) || placeholder;
-    const next = `${current.slice(0, start)}${text}${selected}${suffix}${current.slice(end)}`;
-    const cursorStart = start + text.length;
-    const cursorEnd = cursorStart + selected.length;
-
-    form.setFieldValue("content", next);
-    window.setTimeout(() => {
-      textarea?.focus();
-      textarea?.setSelectionRange(cursorStart, cursorEnd);
-    }, 0);
   }
 
   function generateSlugAndSeo() {
@@ -609,19 +528,6 @@ export default function ArticlesPage() {
           </Card>
 
           <Card size="small" title={tr(`Content Editor (${wordCount} words)`, `英文正文编辑（约 ${wordCount} 词）`)} style={{ marginBottom: 16 }}>
-            <Space style={{ marginBottom: 12 }} wrap>
-              <Button onClick={() => insertAtCursor("\n\n", "\n\n", "Write paragraph here")}>{tr("Paragraph", "正文段落")}</Button>
-              <Button onClick={() => insertAtCursor("\n# ", "\n", "Article title")}>{tr("Title", "文章标题")}</Button>
-              <Button onClick={() => insertAtCursor("\n## ", "\n", "Section title")}>{tr("Section", "章节标题")}</Button>
-              <Button onClick={() => insertAtCursor("**", "**", "Bold text")}>{tr("Bold", "加粗")}</Button>
-              <Button onClick={() => insertAtCursor("\n- ", "\n", "List item")}>{tr("Bullet List", "项目列表")}</Button>
-              <Button onClick={() => insertAtCursor("\n1. ", "\n", "List item")}>{tr("Numbered List", "编号列表")}</Button>
-              <Button onClick={() => insertAtCursor("\n> ", "\n", "Important note")}>{tr("Quote", "重点说明")}</Button>
-              <Button onClick={() => insertAtCursor("[", "](https://example.com)", "Link text")}>{tr("Link", "插入链接")}</Button>
-              <Upload accept="image/*" showUploadList={false} beforeUpload={uploadInlineImage}>
-                <Button loading={uploading} icon={<UploadOutlined />}>{tr("Insert Image", "插入图片")}</Button>
-              </Upload>
-            </Space>
             <Form.Item name="content" hidden rules={[{ required: true, message: tr("Enter article content", "请填写英文正文") }]}>
               <Input />
             </Form.Item>
@@ -638,7 +544,6 @@ export default function ArticlesPage() {
             </Space>
             {editorMode === "source" ? (
               <Input.TextArea
-                ref={contentEditorRef}
                 rows={22}
                 value={contentValue}
                 onChange={(event) => form.setFieldValue("content", event.target.value)}
@@ -646,49 +551,13 @@ export default function ArticlesPage() {
                 style={{ marginBottom: 16, fontSize: 15, lineHeight: 1.75 }}
               />
             ) : (
-              <div style={{ marginBottom: 16, border: "1px solid #d9d9d9", borderRadius: 8, padding: 16, background: "#f8fafc" }}>
-                {getContentBlocks(contentValue).map((block, blockIndex) => {
-                  const image = inlineImages.find((item) => item.blockIndex === blockIndex);
-                  if (image) {
-                    return (
-                      <div key={`${image.url}-${blockIndex}`} style={{ margin: "12px 0", padding: 10, border: "1px solid #cbd5e1", borderRadius: 8, background: "#fff" }}>
-                        <Image src={image.url} alt={image.alt} width="100%" style={{ display: "block", maxHeight: 420, objectFit: "contain", borderRadius: 6 }} />
-                        <Space style={{ width: "100%", justifyContent: "space-between", marginTop: 8 }} wrap>
-                          <Input
-                            value={image.alt}
-                            onChange={(event) => updateContentBlock(blockIndex, `![${event.target.value}](${image.url})`)}
-                            prefix={tr("Caption:", "图片说明：")}
-                            style={{ width: 360 }}
-                          />
-                          <Space size={4}>
-                            <Button size="small" icon={<ArrowUpOutlined />} disabled={blockIndex === 0} onClick={() => moveInlineImage(blockIndex, -1)}>{tr("Up", "上移")}</Button>
-                            <Button size="small" icon={<ArrowDownOutlined />} disabled={blockIndex === getContentBlocks(contentValue).length - 1} onClick={() => moveInlineImage(blockIndex, 1)}>{tr("Down", "下移")}</Button>
-                            <Popconfirm title={tr("Remove this image from the article?", "从正文中删除这张图片？")} onConfirm={() => removeInlineImage(blockIndex)} okText={tr("Remove", "删除")} cancelText={tr("Cancel", "取消")}>
-                              <Button danger size="small" icon={<DeleteOutlined />}>{tr("Remove", "删除")}</Button>
-                            </Popconfirm>
-                          </Space>
-                        </Space>
-                      </div>
-                    );
-                  }
-                  return (
-                    <Input.TextArea
-                      key={`text-${blockIndex}`}
-                      autoSize={{ minRows: block.startsWith("#") ? 1 : 2, maxRows: 16 }}
-                      value={block}
-                      onChange={(event) => updateContentBlock(blockIndex, event.target.value)}
-                      style={{
-                        margin: "6px 0",
-                        border: "1px solid transparent",
-                        background: "#fff",
-                        fontSize: block.startsWith("# ") ? 23 : block.startsWith("## ") ? 19 : 15,
-                        fontWeight: block.startsWith("#") ? 700 : 400,
-                        lineHeight: 1.75,
-                      }}
-                    />
-                  );
-                })}
-              </div>
+              <WordArticleEditor
+                value={contentValue}
+                onChange={(nextValue) => form.setFieldValue("content", nextValue)}
+                uploadImage={uploadArticleImage}
+                uploading={uploading}
+                tr={tr}
+              />
             )}
             <div>
               <div style={{ marginBottom: 8, fontWeight: 600 }}>{tr("Article Preview", "文章预览")}</div>

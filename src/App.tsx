@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import type { ReactNode } from "react";
 import "./App.css";
 import AdminApp from "./admin/AdminApp";
 import { openAnalyticsSettings, trackInquirySubmission, trackPageView } from "./analytics";
@@ -1392,19 +1393,34 @@ function CasesPage({ go, lang }: { go: (page: Page) => void; lang: Lang }) {
   );
 }
 
+function renderArticleInline(content: string): ReactNode[] {
+  const tokenPattern = /(\*\*[^*]+\*\*|\[size=(?:12|14|16|18|22|26|32)\][\s\S]*?\[\/size\]|\[[^\]]+\]\((?:https?:\/\/|mailto:)[^)]+\))/g;
+  const parts = content.split(tokenPattern).filter(Boolean);
+
+  return parts.map((part, index) => {
+    const bold = part.match(/^\*\*([\s\S]+)\*\*$/);
+    if (bold) return <strong key={index}>{renderArticleInline(bold[1])}</strong>;
+    const sized = part.match(/^\[size=(12|14|16|18|22|26|32)\]([\s\S]*)\[\/size\]$/);
+    if (sized) return <span key={index} style={{ fontSize: `${sized[1]}px` }}>{renderArticleInline(sized[2])}</span>;
+    const link = part.match(/^\[([^\]]+)\]\(((?:https?:\/\/|mailto:)[^)]+)\)$/);
+    if (link) return <a key={index} href={link[2]} target={link[2].startsWith("http") ? "_blank" : undefined} rel="noreferrer">{link[1]}</a>;
+    return part;
+  });
+}
+
 function renderArticleContent(content: string) {
   return content.split("\n").map((rawLine, index) => {
     const line = rawLine.trim();
     if (!line) return null;
     const image = line.match(/^!\[([^\]]*)\]\((https?:\/\/[^)]+)\)$/);
     if (image) return <figure className="article-body-image" key={index}><img src={image[2]} alt={image[1] || "Article illustration"} loading="lazy" /><figcaption>{image[1]}</figcaption></figure>;
-    if (line.startsWith("### ")) return <h3 key={index}>{line.slice(4)}</h3>;
-    if (line.startsWith("## ")) return <h2 key={index}>{line.slice(3)}</h2>;
-    if (line.startsWith("# ")) return <h2 key={index}>{line.slice(2)}</h2>;
-    if (/^[-*] /.test(line)) return <ul className="article-single-list" key={index}><li>{line.slice(2)}</li></ul>;
-    if (/^\d+\. /.test(line)) return <ol className="article-single-list" key={index}><li>{line.replace(/^\d+\. /, "")}</li></ol>;
-    if (line.startsWith("> ")) return <blockquote key={index}>{line.slice(2)}</blockquote>;
-    return <p key={index}>{line}</p>;
+    if (line.startsWith("### ")) return <h3 key={index}>{renderArticleInline(line.slice(4))}</h3>;
+    if (line.startsWith("## ")) return <h2 key={index}>{renderArticleInline(line.slice(3))}</h2>;
+    if (line.startsWith("# ")) return <h2 key={index}>{renderArticleInline(line.slice(2))}</h2>;
+    if (/^[-*] /.test(line)) return <ul className="article-single-list" key={index}><li>{renderArticleInline(line.slice(2))}</li></ul>;
+    if (/^\d+\. /.test(line)) return <ol className="article-single-list" key={index}><li>{renderArticleInline(line.replace(/^\d+\. /, ""))}</li></ol>;
+    if (line.startsWith("> ")) return <blockquote key={index}>{renderArticleInline(line.slice(2))}</blockquote>;
+    return <p key={index}>{renderArticleInline(line)}</p>;
   });
 }
 
