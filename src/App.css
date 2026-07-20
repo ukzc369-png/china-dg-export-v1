@@ -738,6 +738,8 @@ button {
 .article-body h2 { margin:42px 0 16px; padding-bottom:10px; border-bottom:1px solid #e4ebf3; color:#08275a; font-size:28px; }
 .article-body h3 { margin:32px 0 12px; color:#0d4f91; font-size:21px; }
 .article-body p { margin:0 0 20px; }
+.article-body,.article-body p,.article-body li,.article-body blockquote { min-width:0; overflow-wrap:anywhere; word-break:break-word; }
+.article-body a { color:#0674e8; text-decoration:underline; text-underline-offset:3px; overflow-wrap:anywhere; word-break:break-all; }
 .article-body blockquote { margin:28px 0; padding:18px 22px; border-left:4px solid #168bff; border-radius:0 8px 8px 0; background:#edf6ff; color:#274667; }
 .article-single-list { margin:0 !important; padding-left:26px !important; }
 .article-body-image { margin:34px 0 26px; }
@@ -757,6 +759,8 @@ button {
 .word-article-canvas ul,.word-article-canvas ol { margin:0 0 20px; padding-left:30px; }
 .word-article-canvas blockquote { margin:22px 0; padding:12px 18px; border-left:4px solid #1677ff; background:#f3f7fc; color:#40536b; }
 .word-article-canvas a { color:#0969da; text-decoration:underline; }
+.word-article-canvas,.word-article-canvas p,.word-article-canvas li,.word-article-preview,.word-article-preview p,.word-article-preview li { min-width:0; overflow-wrap:anywhere; word-break:break-word; }
+.word-article-canvas a,.word-article-preview a { overflow-wrap:anywhere; word-break:break-all; }
 .word-article-canvas figure { margin:28px 0; padding:10px; border:1px solid #dce5ef; border-radius:10px; background:#f8fafc; }
 .word-article-canvas figure img { display:block; width:100%; max-height:440px; object-fit:contain; border-radius:7px; }
 .word-article-canvas figcaption { min-height:24px; padding:8px 6px 0; color:#66758a; font-size:13px; text-align:center; }
