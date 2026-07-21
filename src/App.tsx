@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import "./App.css";
-import AdminApp from "./admin/AdminApp";
 import { openAnalyticsSettings, trackInquirySubmission, trackPageView } from "./analytics";
 import { legalDocuments, type LegalPageKey } from "./legalContent";
 import { articleTranslations } from "./articleTranslations";
@@ -677,9 +676,6 @@ function pageToPath(page: Page) {
 }
 
 export default function App() {
-if (window.location.pathname.startsWith("/admin")) {
-  return <AdminApp />;
-}
   const [page, setPage] = useState<Page>(() =>
     pathToPage(window.location.pathname),
   );
