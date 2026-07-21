@@ -365,7 +365,7 @@ export default function HomePage({ go, lang, products, articles, onOpenArticle }
               <a href="#" aria-label="LinkedIn">in</a>
               <a href="#" aria-label="Facebook">f</a>
               <a href="#" aria-label="X">𝕏</a>
-              <a href="https://wa.me/8618678695200" aria-label="WhatsApp">◉</a>
+              <a href="#wechat-contact" aria-label="WeChat">◉</a>
               <a href="mailto:18678695200@163.com" aria-label="Email">✉</a>
             </div>
           </div>
@@ -374,11 +374,11 @@ export default function HomePage({ go, lang, products, articles, onOpenArticle }
           <FooterColumn title="Services" go={go} items={[["Order Support", "services"], ["Quality Control", "services"], ["Documentation", "services"], ["DG Logistics", "services"], ["Export Process", "services"]]} />
           <FooterColumn title="Company" go={go} items={[["About Us", "about"], ["Our Advantages", "about"], ["Insights", "insights"], ["Markets", "markets"], ["Contact Us", "contact"]]} />
 
-          <div className="hp-contact">
+          <div className="hp-contact" id="wechat-contact">
             <h3>Contact Us</h3>
             <p>◉&nbsp; <a href="mailto:18678695200@163.com">Email: 18678695200@163.com</a></p>
             <p>◉&nbsp; <a href="tel:+8618678695200">Tel: +86 186 7869 5200</a></p>
-            <p>◉&nbsp; <a href="https://wa.me/8618678695200">WhatsApp: +86 186 7869 5200</a></p>
+            <p>◉&nbsp; WeChat: KPWE8888</p>
             <p>◉&nbsp; Address: Dongying, Shandong, China</p>
           </div>
         </div>

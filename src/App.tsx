@@ -1709,7 +1709,7 @@ return (
                 value={formData.contact}
                 onChange={handleChange}
                 placeholder={tx(
-                  t("WhatsApp / WeChat / Phone", "WhatsApp / 微信 / 电话"),
+                  t("WeChat / Phone", "微信 / 电话"),
                   lang
                 )}
               />
