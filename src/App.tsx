@@ -5,7 +5,6 @@ import { openAnalyticsSettings, trackInquirySubmission, trackPageView } from "./
 import { legalDocuments, type LegalPageKey } from "./legalContent";
 import { articleTranslations } from "./articleTranslations";
 import { translateProductCategoryZh, translateProductNameZh } from "./productTranslations";
-import { supabase } from "./lib/supabase";
 import HomePage from "./HomePage";
 type Page =
   | "home"
@@ -693,6 +692,7 @@ const [articles, setArticles] = useState<Article[]>(
 
 useEffect(() => {
   async function loadCmsData() {
+    const { supabase } = await import("./lib/supabase");
     const { data: productData } = await supabase
       .from("products")
       .select("*")
