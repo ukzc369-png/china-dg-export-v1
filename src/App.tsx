@@ -492,6 +492,23 @@ const cases: CaseItem[] = [
       "为南美大宗液体化工买家制定结构化报价与出运方案。",
     ),
   },
+  {
+    product: t("Methylene Chloride Export To Vietnam", "二氯甲烷出口越南"),
+    volume: "By Order / 按订单确认",
+    packing: t("UN Drums / ISO Tank", "UN桶装 / ISO罐"),
+    port: "Ho Chi Minh / Hai Phong",
+    country: t("Vietnam", "越南"),
+    route: t("China Port → Vietnam", "中国港口 → 越南"),
+    timeline: "Per Order / 按订单确认",
+    scope: t(
+      "Product Supply + MSDS / COA + DG Export Coordination",
+      "产品供应 + MSDS / COA + 危险品出口协调",
+    ),
+    result: t(
+      "A Vietnam-focused sourcing route for methylene chloride, with grade, packing, documents and final port plan confirmed for each shipment.",
+      "面向越南市场的二氯甲烷寻源与出运路线，具体牌号、包装、单证及最终港口方案按每票货物确认。",
+    ),
+  },
 ];
 
 const fallbackArticles = [
