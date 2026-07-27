@@ -1107,6 +1107,13 @@ footer small {
 .about-advantage-grid b { color: #0b7cff; font-size: 14px; letter-spacing: .12em; }
 .about-advantage-grid h3 { margin: 34px 0 14px; color: #08265a; font-size: 21px; }
 .about-advantage-grid p { color: #5b6c81; line-height: 1.75; }
+.about-network-lead { max-width: 900px; margin: 24px 0 34px; color: #53657d; font-size: 16px; line-height: 1.85; }
+.about-network-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.about-network-grid article { padding: 28px; border: 1px solid #d7e3ef; border-radius: 14px; background: #f8fbff; }
+.about-network-grid span { color: #0b7cff; font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.about-network-grid h3 { margin: 15px 0 12px; color: #08265a; font-size: 20px; line-height: 1.35; }
+.about-network-grid p { margin: 0; color: #5b6c81; line-height: 1.75; }
+.about-network-note { margin-top: 24px; padding: 18px 20px; border-left: 3px solid #0b7cff; color: #607186; line-height: 1.75; background: #f4f8fc; }
 .about-capability-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 78px; align-items: center; }
 .about-capabilities .blue-btn { margin-top: 22px; }
 .about-checklist { display: grid; gap: 14px; }
@@ -1118,7 +1125,7 @@ footer small {
 
 @media (max-width: 920px) {
   .about-intro-grid, .about-capability-grid { grid-template-columns: 1fr; gap: 34px; }
-  .about-advantage-grid { grid-template-columns: 1fr; }
+  .about-advantage-grid, .about-network-grid { grid-template-columns: 1fr; }
 }
 
 .mobile-menu-toggle span {

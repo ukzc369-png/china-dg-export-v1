@@ -1126,6 +1126,57 @@ function AboutPage({ go, lang }: { go: (page: Page) => void; lang: Lang }) {
     [t("Inland Port & Warehousing", "内陆港与仓储集散"), t("Cargo can be stored, consolidated, prepared and coordinated before port departure.", "货物可在出港前完成仓储、集散、备货及运输协调。")],
     [t("One-stop Export Execution", "一站式出口执行"), t("We coordinate documentation, packaging, declaration and international logistics under one workflow.", "统一协调单证、包装、申报及国际物流，减少多方衔接成本。")],
   ] as const;
+  const regionalSupplyNetwork = [
+    [
+      t("Shandong Jinling Group", "山东金岭集团"),
+      t(
+        "A major Dongying producer with product lines covering chlor-alkali chemicals, methane chlorides, propylene oxide and aniline-related products. We have established local supply coordination for selected products, subject to specification, availability and order review.",
+        "东营本地重要生产企业，产品涉及氯碱、甲烷氯化物、环氧丙烷及苯胺等系列。我们已就部分产品建立本地供应协同，具体以规格、库存及订单审核结果为准。",
+      ),
+    ],
+    [
+      t("Lihuayi Group", "利华益集团"),
+      t(
+        "A representative Dongying industrial group with refining, high-end chemicals and new-material operations. Its industrial chain illustrates the depth of the local petrochemical supply base available for product matching.",
+        "东营具有代表性的炼化产业集团，业务覆盖石油加工、高端化学品及新材料等领域，体现了本地石化产业链在产品匹配方面的深度。",
+      ),
+    ],
+    [
+      t("Wanda Petrochemical Group", "万达石化集团"),
+      t(
+        "Located in the Dongying Port Economic Development Zone, with an integrated refining, chemical and materials industry layout that strengthens the region's port-side supply and logistics resources.",
+        "位于东营港经济技术开发区，形成炼化、化工及材料产业协同布局，为区域临港供货与物流资源提供产业支撑。",
+      ),
+    ],
+    [
+      t("Qicheng Holding / Qicheng Petrochemical", "齐成控股 / 齐成石化"),
+      t(
+        "A Dongying-based energy and chemical group with an industrial chain extending from crude-oil processing to refined products and chemical products, adding breadth to local sourcing options.",
+        "东营本地能源化工企业，产业链由原油加工延伸至成品油及系列化工产品，为本地采购提供更广泛的产品选择。",
+      ),
+    ],
+    [
+      t("Dongying Qirun Chemical", "东营齐润化工"),
+      t(
+        "A local refining and petrochemical producer whose publicly listed product range includes refinery streams, aromatics and related chemical products. Supply feasibility is checked against the exact grade and end use.",
+        "本地炼化及石化产品生产企业，公开产品范围涉及炼厂产品、芳烃及相关化工品。实际供货需根据具体牌号、用途和合规要求逐单确认。",
+      ),
+    ],
+    [
+      t("Dongying Huatai Chemical Group", "东营华泰化工集团"),
+      t(
+        "Part of Dongying's established chemical manufacturing base, with chemical production connected to the wider Huatai industrial chain. It is one of the regional supply channels considered during product sourcing.",
+        "东营成熟化工制造体系的重要组成部分，化工生产与华泰产业链形成协同，是我们进行产品寻源时关注的区域供应渠道之一。",
+      ),
+    ],
+    [
+      t("Shandong Jinmao Chemical", "山东金茂化工"),
+      t(
+        "A Dongying chemical producer associated with chlor-alkali, aniline and related chemical products. Product source, specification and documentation are verified before any export quotation is confirmed.",
+        "东营化工生产企业，涉及氯碱、苯胺及相关化工产品。任何出口报价确认前，我们都会核实货源、规格及配套单证。",
+      ),
+    ],
+  ] as const;
   return (
     <main className="page about-page">
       <PageHero
@@ -1159,6 +1210,36 @@ function AboutPage({ go, lang }: { go: (page: Page) => void; lang: Lang }) {
               </article>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section className="section about-supply-network">
+        <div className="container">
+          <SectionTop
+            kicker={tx(t("Dongying Supply Network", "东营供应网络"), lang)}
+            title={tx(t("Close to producers. Better positioned to verify and coordinate supply.", "贴近生产企业，更高效地核实并协调货源。"), lang)}
+          />
+          <p className="about-network-lead">
+            {tx(t(
+              "Our location in Dongying gives us practical access to one of Shandong's most concentrated refining and chemical manufacturing regions. According to product, specification and destination, we coordinate with qualified local producers and supply channels, including the following representative enterprises.",
+              "我们位于东营，能够连接山东高度集中的炼化与化工制造资源。根据产品、规格和目的国要求，我们与具备相应条件的本地生产企业及供应渠道协调货源，其中包括以下代表性企业。",
+            ), lang)}
+          </p>
+          <div className="about-network-grid">
+            {regionalSupplyNetwork.map(([name, description]) => (
+              <article key={name.en}>
+                <span>{tx(t("Regional Supply Resource", "区域供应资源"), lang)}</span>
+                <h3>{tx(name, lang)}</h3>
+                <p>{tx(description, lang)}</p>
+              </article>
+            ))}
+          </div>
+          <p className="about-network-note">
+            {tx(t(
+              "Supplier names are shown to explain the regional industrial and sourcing context. ChinaChemExport is an independent supply and export coordination platform, not an authorized representative of every company listed above. The actual manufacturer, specification, availability and export route are confirmed transaction by transaction.",
+              "以上企业名称用于说明区域产业与寻源背景。ChinaChemExport是独立的供应与出口协调平台，并非上述所有企业的授权代理。实际生产商、规格、库存及出口路径均按每笔订单单独确认。",
+            ), lang)}
+          </p>
         </div>
       </section>
 
