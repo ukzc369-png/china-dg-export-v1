@@ -1176,6 +1176,20 @@ function AboutPage({ go, lang }: { go: (page: Page) => void; lang: Lang }) {
         "东营化工生产企业，涉及氯碱、苯胺及相关化工产品。任何出口报价确认前，我们都会核实货源、规格及配套单证。",
       ),
     ],
+    [
+      t("Shandong Huaxing Petrochemical", "山东华星石化"),
+      t(
+        "A representative Dongying refining and petrochemical enterprise with oil processing, chemical products and downstream processing capabilities. Its location in Guangrao adds another important supply channel within the local industrial belt.",
+        "东营具有代表性的炼化及石化企业，业务涉及石油加工、化工产品及下游深加工。其位于广饶，为东营本地产业带增加了重要供应渠道。",
+      ),
+    ],
+    [
+      t("Zhenghe Petrochemical", "正和石化"),
+      t(
+        "A long-established Dongying refining and chemical enterprise within the regional supply base. We consider its product availability and route feasibility when matching suitable grades for export orders.",
+        "东营本地具有较长发展历史的炼化及化工企业，是区域供应基础的一部分。在匹配出口订单时，我们会结合具体牌号、货源状态和运输路径进行核实。",
+      ),
+    ],
   ] as const;
   return (
     <main className="page about-page">
