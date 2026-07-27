@@ -105,7 +105,6 @@ const nav: { label: I18n; page: Page }[] = [
   { label: t("Products", "产品"), page: "products" },
   { label: t("Export Services", "出口服务"), page: "services" },
   { label: t("Markets", "市场"), page: "markets" },
-  { label: t("Cases", "案例"), page: "cases" },
   { label: t("Insights", "知识"), page: "insights" },
   { label: t("About Us", "关于我们"), page: "about" },
   { label: t("Contact", "联系"), page: "contact" },
@@ -653,13 +652,16 @@ function productSlug(product: Product) {
 function pathToPage(pathname: string): Page {
   if (getArticleSlug(pathname)) return "insights";
   if (getProductSlug(pathname)) return "products";
+  if (pathname === "/cases") {
+    window.history.replaceState({}, "", "/markets");
+    return "markets";
+  }
   const key = pathname.replace("/", "") as Page;
   return [
     "products",
     "about",
     "services",
     "markets",
-    "cases",
     "insights",
     "contact",
     "privacy",
@@ -790,7 +792,6 @@ useEffect(() => {
     if (page === "about") return <AboutPage go={go} lang={lang} />;
     if (page === "services") return <ServicesPage go={go} lang={lang} />;
     if (page === "markets") return <MarketsPage go={go} lang={lang} />;
-    if (page === "cases") return <CasesPage go={go} lang={lang} />;
     if (page === "insights") return (
   <InsightsPage
     go={go}
@@ -1483,6 +1484,8 @@ function CasesPage({ go, lang }: { go: (page: Page) => void; lang: Lang }) {
     </main>
   );
 }
+
+void CasesPage;
 
 function renderArticleInline(content: string): ReactNode[] {
   const tokenPattern = /(\*\*[^*]+\*\*|\[size=(?:12|14|16|18|22|26|32)\][\s\S]*?\[\/size\]|\[[^\]]+\]\((?:https?:\/\/|mailto:)[^)]+\))/g;
