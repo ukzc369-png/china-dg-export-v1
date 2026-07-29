@@ -588,10 +588,15 @@ const referenceSpecifications: Record<string, string> = {
 };
 
 const fallbackProductImages: Record<string, string> = {
-  "141-43-5": "/home-v4/products-photo.webp", // MEA
-  "111-42-2": "/home-v4/hero-drums-photo.webp", // DEA
-  "98-00-0": "/home-v4/products-photo.webp", // Furfuryl alcohol
-  "584-84-9": "/home-v4/hero-drums-photo.webp", // TDI 20/80
+  "108-88-3": "/product-images/toluene-tol-108-88-3.webp",
+  "1330-20-7": "/product-images/xylene-1330-20-7.webp",
+  "67-56-1": "/product-images/methanol-67-56-1.webp",
+  "67-64-1": "/product-images/acetone-ac-67-64-1.webp",
+  "75-09-2": "/product-images/methylene-chloride-dcm-75-09-2.webp",
+  "67-66-3": "/product-images/trichloromethane-tcm-67-66-3.webp",
+  "616-38-6": "/product-images/dimethyl-carbonate-dmc-616-38-6.webp",
+  "62-53-3": "/product-images/aniline-62-53-3.webp",
+  "79-01-6": "/product-images/trichloroethylene-tce-79-01-6.webp",
 };
 
 function cmsProductToProduct(item: CmsProduct): Product {
