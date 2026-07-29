@@ -2349,6 +2349,29 @@ function ProductDetailModal({
             </button>
           </div>
         </div>
+        <section className="product-proof-section">
+          <div className="product-proof-grid">
+            <div>
+              <h3>{tx(t("How to choose this product", "如何选择这款产品"), lang)}</h3>
+              <ul>
+                <li>{tx(t("Confirm grade and purity for the intended application.", "先确认应用场景所需的牌号与纯度。"), lang)}</li>
+                <li>{tx(t("Choose drums, ISO Tank or other compliant packing by volume and route.", "根据数量与运输路线选择桶装、ISO Tank 等合规包装。"), lang)}</li>
+                <li>{tx(t("Confirm destination port, import documents and dangerous-goods requirements.", "确认目的港、进口单证与危险品运输要求。"), lang)}</li>
+              </ul>
+            </div>
+            <div>
+              <h3>{tx(t("Common questions", "常见问题"), lang)}</h3>
+              <details>
+                <summary>{tx(t("Can you provide MSDS and COA?", "可以提供 MSDS 和 COA 吗？"), lang)}</summary>
+                <p>{tx(t("Yes. Documents are prepared or confirmed according to the final grade and shipment.", "可以。单证会根据最终牌号与出运批次准备或核实。"), lang)}</p>
+              </details>
+              <details>
+                <summary>{tx(t("Can you quote CFR or CIF?", "可以报 CFR 或 CIF 吗？"), lang)}</summary>
+                <p>{tx(t("Yes. Please send destination port, quantity, packing and trade-term requirements.", "可以。请提供目的港、数量、包装和贸易条款要求。"), lang)}</p>
+              </details>
+            </div>
+          </div>
+        </section>
       </div>
     </div>
   );
