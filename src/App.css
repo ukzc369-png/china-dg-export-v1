@@ -535,6 +535,124 @@ button {
 .catalog-section {
   background: #fff;
 }
+.availability-panel {
+  margin-bottom: 24px;
+  padding: 22px;
+  border: 1px solid #dce6f1;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #f8fbff 0%, #ffffff 72%);
+  box-shadow: 0 14px 40px rgba(8, 32, 70, 0.04);
+}
+.availability-panel-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 17px;
+}
+.availability-panel-head .eyebrow {
+  margin: 0 0 7px;
+  color: #0b7cff;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.availability-panel-head h2 {
+  margin: 0;
+  color: #092452;
+  font-size: 20px;
+  letter-spacing: -.025em;
+}
+.availability-note {
+  flex: 0 0 auto;
+  margin-top: 3px;
+  padding: 7px 10px;
+  border: 1px solid #dce6f1;
+  border-radius: 999px;
+  color: #536479;
+  background: #fff;
+  font-size: 10px;
+  font-weight: 700;
+}
+.availability-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+.availability-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 125px;
+  padding: 13px;
+  border: 1px solid #dce6f1;
+  border-radius: 10px;
+  background: #fff;
+  color: #092452;
+  text-align: left;
+  cursor: pointer;
+  transition: .18s;
+}
+.availability-card:hover {
+  border-color: #9cc9f7;
+  box-shadow: 0 12px 24px rgba(8, 32, 70, .07);
+  transform: translateY(-2px);
+}
+.availability-status {
+  align-self: flex-start;
+  margin-bottom: 11px;
+  padding: 4px 7px;
+  border-radius: 999px;
+  color: #057a62;
+  background: #e7f8f3;
+  font-size: 9px;
+  font-weight: 800;
+}
+.availability-card strong {
+  min-height: 32px;
+  font-size: 13px;
+  line-height: 1.3;
+}
+.availability-card small {
+  margin-top: 5px;
+  color: #718096;
+  font-size: 10px;
+}
+.availability-card em {
+  margin-top: auto;
+  color: #536479;
+  font-size: 9px;
+  font-style: normal;
+  line-height: 1.4;
+}
+.availability-disclaimer {
+  margin: 15px 0 0;
+  color: #718096;
+  font-size: 10px;
+  line-height: 1.6;
+}
+@media (max-width: 900px) {
+  .availability-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (max-width: 600px) {
+  .availability-panel-head {
+    flex-direction: column;
+  }
+  .availability-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 420px) {
+  .availability-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.home-v3-hero-image,
+.hp-hero-bg {
+  background-image: linear-gradient(90deg, rgba(1, 15, 34, .98) 0%, rgba(2, 18, 39, .88) 36%, rgba(2, 18, 39, .18) 68%, rgba(2, 18, 39, .03) 100%), url('/home-v4/hero-refinery.png') !important;
+}
 .catalog-layout {
   display: grid;
   grid-template-columns: 250px 1fr;

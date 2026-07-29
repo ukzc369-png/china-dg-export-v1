@@ -1063,6 +1063,45 @@ function ProductsPage({ go, lang, products }: { go: (page: Page) => void; lang: 
             </div>
           </aside>
           <div className="catalog-main">
+            <section className="availability-panel" aria-labelledby="availability-title">
+              <div className="availability-panel-head">
+                <div>
+                  <p className="eyebrow">{tx(t("Current Supply Availability", "当前供应状态"), lang)}</p>
+                  <h2 id="availability-title">{tx(t("Supply channels reviewed for export orders.", "面向出口订单核实的供应渠道"), lang)}</h2>
+                </div>
+                <span className="availability-note">{tx(t("Final quantity and batch confirmed per order", "数量与批次按订单确认"), lang)}</span>
+              </div>
+              <div className="availability-grid">
+                {[
+                  ["75-09-2", "Methylene Chloride", "Regular Supply", "稳定供应"],
+                  ["67-66-3", "Chloroform", "Regular Supply", "稳定供应"],
+                  ["616-38-6", "Dimethyl Carbonate", "Available for Confirmation", "可确认供应"],
+                  ["62-53-3", "Aniline", "Regular Supply", "稳定供应"],
+                  ["79-01-6", "Trichloroethylene", "Available for Confirmation", "可确认供应"],
+                ].map(([cas, name, statusEn, statusZh]) => {
+                  const product = products.find((item) => item.cas === cas);
+                  return (
+                    <button
+                      type="button"
+                      className="availability-card"
+                      key={cas}
+                      onClick={() => product && openProduct(product)}
+                    >
+                      <span className="availability-status">{tx(t(statusEn, statusZh), lang)}</span>
+                      <strong>{product ? tx(product.name, lang) : name}</strong>
+                      <small>CAS {cas}</small>
+                      <em>{tx(t("Verify grade · packing · loading window", "核实牌号 · 包装 · 装运窗口"), lang)}</em>
+                    </button>
+                  );
+                })}
+              </div>
+              <p className="availability-disclaimer">
+                {tx(t(
+                  "Status describes an established supply channel, not an unconditional warehouse-stock promise. We recheck manufacturer, specification, documentation and loading schedule before quotation.",
+                  "状态表示已建立供应渠道，并不等同于无条件的自有库存承诺。报价前我们会重新核实生产商、规格、单证与装运计划。",
+                ), lang)}
+              </p>
+            </section>
             <div className="catalog-toolbar">
               <label className="search-box">
                 <span>⌕</span>
