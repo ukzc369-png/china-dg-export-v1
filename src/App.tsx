@@ -759,13 +759,17 @@ useEffect(() => {
         : page === "home"
         ? tx(
             t(
-              "China Chemical Supplier & Bulk Chemical Exporter | ChinaChemExport",
+              "China Chemical Supplier for Asia, India & Middle East | ChinaChemExport",
               "中国化工品供应商与大宗化工品出口商 | ChinaChemExport",
             ),
             lang,
           )
         : `${tx(nav.find((n) => n.page === page)?.label || t(page, page), lang)} | ChinaChemExport`;
     const descriptions: Partial<Record<Page, I18n>> = {
+      home: t(
+        "Bulk chemical supply from Dongying, China for Southeast Asia, India, Africa, Japan, South Korea, Russia and Middle East buyers, with compliant documents and dangerous-goods export support.",
+        "ChinaChemExport面向东南亚、印度、非洲、日本、韩国、俄罗斯及中东买家，提供来自中国东营的化工产品供应、合规单证和危险品出口支持。",
+      ),
       products: t(
         "Browse bulk chemicals, solvents and intermediates supplied from China with compliant packaging, export documentation and dangerous-goods logistics support.",
         "浏览中国供应的大宗化工品、溶剂及中间体，并获取合规包装、出口单证与危险品物流支持。",
