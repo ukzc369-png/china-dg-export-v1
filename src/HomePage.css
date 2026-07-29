@@ -241,6 +241,13 @@ body.home-page-active #root > footer:not(.hp-footer) { display: none !important;
   background: url("/home-v4/hero-drums-photo.webp") center / cover no-repeat;
 }
 
+/* The active homepage uses hp-hero-art; keep the refinery photo above legacy rules. */
+.hp-hero-art {
+  background-image: url("/home-v4/hero-refinery.png") !important;
+  background-position: center right !important;
+  background-size: cover !important;
+}
+
 .hp-hero-overlay {
   background:
     linear-gradient(90deg, rgba(0,20,49,.98) 0%, rgba(0,24,58,.88) 34%, rgba(0,27,64,.3) 62%, rgba(0,20,48,.05) 100%),
