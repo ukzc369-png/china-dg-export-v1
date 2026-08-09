@@ -3,7 +3,9 @@ import ReactDOM from 'react-dom/client';
 import './App.css';
 
 async function renderApplication() {
-  const root = ReactDOM.createRoot(document.getElementById('root')!);
+  const rootElement = document.getElementById('root')!;
+  if (rootElement.querySelector('[data-prerendered]')) rootElement.replaceChildren();
+  const root = ReactDOM.createRoot(rootElement);
 
   if (window.location.pathname.startsWith('/admin')) {
     await import('antd/dist/reset.css');

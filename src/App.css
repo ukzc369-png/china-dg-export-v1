@@ -589,6 +589,7 @@ button {
   border-radius: 10px;
   background: #fff;
   color: #092452;
+  text-decoration: none;
   text-align: left;
   cursor: pointer;
   transition: .18s;
@@ -802,7 +803,7 @@ button {
   font-size: 12px;
   margin: 6px 0;
 }
-.catalog-card button {
+.catalog-card a {
   border: 0;
   background: transparent;
   color: #0b7cff;
@@ -812,6 +813,7 @@ button {
   padding-top: 18px;
   align-self: flex-start;
   font-size: 13px;
+  text-decoration: none;
 }
 
 .article-detail article {

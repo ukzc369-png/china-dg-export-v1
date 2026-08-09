@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { buildSitemap } from "../scripts/generate-sitemap.mjs";
+import { productRoutes, insightRoutes } from "../scripts/site-routes.mjs";
 
 test("sitemap includes priority and generic product detail pages", () => {
   const xml = buildSitemap();
@@ -15,4 +16,6 @@ test("sitemap preserves established insight URLs and has no duplicate locations"
   assert.match(xml, /\/insights\/how-to-export-dichloromethane-from-china<\/loc>/);
   const locations = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
   assert.equal(new Set(locations).size, locations.length);
+  assert.equal(locations.filter((url) => url.includes("/products/")).length, productRoutes.length);
+  assert.equal(locations.filter((url) => url.includes("/insights/")).length, insightRoutes.length);
 });

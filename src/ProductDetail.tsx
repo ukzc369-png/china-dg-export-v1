@@ -1,6 +1,8 @@
 import { useEffect, useMemo } from "react";
+import type { MouseEvent } from "react";
 import "./product-detail.css";
 import { buildProductDetail, productSlug, type Lang, type ProductSource } from "./productDetails";
+import { productPath } from "./productRouting";
 import { buildProductSeo } from "./productSeo";
 import { Applications } from "./components/product/Applications";
 import { Documents } from "./components/product/Documents";
@@ -33,7 +35,7 @@ export default function ProductDetailPage({ product, products, lang, onBack, onO
     return () => { script.remove(); };
   }, [detail, lang]);
   return <main className="pd-page">
-    <nav className="container pd-breadcrumb" aria-label="Breadcrumb"><button onClick={() => onBack()}>{lang === "en" ? "Products" : "产品"}</button><span>/</span><span aria-current="page">{product.name[lang]}</span></nav>
+    <nav className="container pd-breadcrumb" aria-label="Breadcrumb"><a href="/products" onClick={(event) => { if (isPlainLeftClick(event)) { event.preventDefault(); onBack(); } }}>{lang === "en" ? "Products" : "产品"}</a><span>/</span><span aria-current="page">{product.name[lang]}</span></nav>
     <ProductHero detail={detail} lang={lang} onQuote={onQuote} onDocuments={requestDocuments} />
     <ProductOverview detail={detail} lang={lang} />
     <SpecificationTable detail={detail} lang={lang} />
@@ -42,8 +44,12 @@ export default function ProductDetailPage({ product, products, lang, onBack, onO
     <ExportSupport lang={lang} />
     <Documents detail={detail} lang={lang} onRequest={onQuote} />
     <FAQ detail={detail} lang={lang} />
-    {related.length > 0 && <section className="pd-section pd-related"><div className="container"><p className="pd-kicker">{lang === "en" ? "Related Products" : "相关产品"}</p><h2>{lang === "en" ? "Explore related chemicals" : "浏览相关化工品"}</h2><div className="pd-related-grid">{related.map((item) => <button key={item.cas} onClick={() => onOpenProduct(item)}><span>{item.category[lang]}</span><strong>{item.name[lang]}</strong><small>CAS {item.cas}</small><em>{lang === "en" ? "View Product →" : "查看产品 →"}</em></button>)}</div></div></section>}
+    {related.length > 0 && <section className="pd-section pd-related"><div className="container"><p className="pd-kicker">{lang === "en" ? "Related Products" : "相关产品"}</p><h2>{lang === "en" ? "Explore related chemicals" : "浏览相关化工品"}</h2><div className="pd-related-grid">{related.map((item) => <a key={item.cas} href={productPath(productSlug(item))} onClick={(event) => { if (isPlainLeftClick(event)) { event.preventDefault(); onOpenProduct(item); } }}><span>{item.category[lang]}</span><strong>{item.name[lang]}</strong><small>CAS {item.cas}</small><em>{lang === "en" ? "View Product →" : "查看产品 →"}</em></a>)}</div></div></section>}
     <QuoteCTA detail={detail} lang={lang} onQuote={onQuote} />
     <span className="pd-route-marker" hidden>{productSlug(product)}</span>
   </main>;
+}
+
+function isPlainLeftClick(event: MouseEvent<HTMLAnchorElement>) {
+  return event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey;
 }

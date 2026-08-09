@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "node scripts/generate-sitemap.mjs && tsc -b && vite build",
+    "build": "node scripts/generate-sitemap.mjs && tsc -b && vite build && node scripts/prerender-products.mjs",
     "test": "node --test tests/*.test.ts tests/*.test.mjs",
     "sitemap": "node scripts/generate-sitemap.mjs",
     "indexnow": "node scripts/submit-indexnow.mjs",

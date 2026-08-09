@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
-import type { ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import type { MouseEvent, ReactNode } from "react";
 import "./App.css";
 import { openAnalyticsSettings, trackInquirySubmission, trackPageView } from "./analytics";
 import { legalDocuments, type LegalPageKey } from "./legalContent";
@@ -9,6 +9,7 @@ import HomePage from "./HomePage";
 import ProductDetailPage from "./ProductDetail";
 import { productSlug, type I18n, type Lang, type ProductDetailContent, type ProductSource as Product } from "./productDetails";
 import { getProductSlug, productPath } from "./productRouting";
+import { formatInquiryProduct } from "./inquiryPrefill";
 type Page =
   | "home"
   | "products"
@@ -695,6 +696,7 @@ export default function App() {
     getArticleSlug(window.location.pathname),
   );
   const [products, setProducts] = useState<Product[]>(fallbackProducts);
+  const [inquiryProduct, setInquiryProduct] = useState("");
 const [articles, setArticles] = useState<Article[]>(
   fallbackArticles.map(fallbackArticleToArticle),
 );
@@ -790,11 +792,20 @@ useEffect(() => {
     setMobileMenuOpen(false);
   }, [lang]);
   function go(next: Page) {
+    if (next === "contact") setInquiryProduct("");
     window.history.pushState({}, "", pageToPath(next));
     setPage(next);
     setCurrentArticleSlug(null);
     setMobileMenuOpen(false);
   }
+
+  const openProductInquiry = useCallback((product: Product) => {
+    setInquiryProduct(formatInquiryProduct(product, lang));
+    window.history.pushState({}, "", "/contact");
+    setPage("contact");
+    setCurrentArticleSlug(null);
+    setMobileMenuOpen(false);
+  }, [lang]);
 
   function openArticle(slug: string) {
     window.history.pushState({}, "", `/insights/${slug}`);
@@ -803,7 +814,7 @@ useEffect(() => {
     setMobileMenuOpen(false);
   }
   const content = useMemo(() => {
-    if (page === "products") return <ProductsPage go={go} lang={lang} products={products} />;
+    if (page === "products") return <ProductsPage lang={lang} products={products} onRequestQuote={openProductInquiry} />;
     if (page === "about") return <AboutPage go={go} lang={lang} />;
     if (page === "services") return <ServicesPage go={go} lang={lang} />;
     if (page === "markets") return <MarketsPage go={go} lang={lang} />;
@@ -815,7 +826,7 @@ useEffect(() => {
     currentArticleSlug={currentArticleSlug}
   />
 );
-    if (page === "contact") return <ContactPage lang={lang} />;
+    if (page === "contact") return <ContactPage lang={lang} initialProduct={inquiryProduct} />;
     if (["privacy", "terms", "cookies", "dangerous-goods"].includes(page)) {
       return <LegalPage page={page as LegalPageKey} lang={lang} />;
     }
@@ -828,7 +839,7 @@ useEffect(() => {
         onOpenArticle={openArticle}
       />
     );
- }, [page, lang, products, articles, currentArticleSlug]);
+ }, [page, lang, products, articles, currentArticleSlug, inquiryProduct, openProductInquiry]);
   return (
     <>
       <header className="header">
@@ -919,7 +930,7 @@ useEffect(() => {
   );
 }
 
-function ProductsPage({ go, lang, products }: { go: (page: Page) => void; lang: Lang; products: Product[] }) {
+function ProductsPage({ lang, products, onRequestQuote }: { lang: Lang; products: Product[]; onRequestQuote: (product: Product) => void }) {
   const [category, setCategory] = useState("All Products");
   const [query, setQuery] = useState("");
   const [currentSlug, setCurrentSlug] = useState<string | null>(() => getProductSlug(window.location.pathname));
@@ -951,16 +962,6 @@ function ProductsPage({ go, lang, products }: { go: (page: Page) => void; lang: 
           .toLowerCase()
           .includes(query.trim().toLowerCase())),
   );
-  function requestQuote(product?: Product) {
-    go("contact");
-    setTimeout(() => {
-      const firstInput = document.querySelector<HTMLInputElement>(
-        ".contact-card input",
-      );
-      if (firstInput && product)
-        firstInput.value = `${tx(product.name, lang)} / CAS ${product.cas}${product.un ? ` / UN ${product.un}` : ""}`;
-    }, 120);
-  }
   function openProduct(product: Product) {
     const slug = productSlug(product);
     window.history.pushState({}, "", productPath(slug));
@@ -971,7 +972,7 @@ function ProductsPage({ go, lang, products }: { go: (page: Page) => void; lang: 
     if (!selectedProduct) {
       return <main className="page"><section className="pd-section"><div className="container pd-narrow"><p className="pd-kicker">404</p><h1>{tx(t("Product not found", "未找到该产品"), lang)}</h1><p className="pd-body-copy">{tx(t("This product URL is not available. Browse the active product catalog or contact us with the product name and CAS number.", "该产品地址当前不可用。请浏览启用的产品目录，或携产品名称与 CAS 号联系我们。"), lang)}</p><button className="blue-btn" onClick={() => { window.history.pushState({}, "", "/products"); setCurrentSlug(null); }}>{tx(t("Back to Products", "返回产品目录"), lang)}</button></div></section></main>;
     }
-    return <ProductDetailPage product={selectedProduct} products={products} lang={lang} onBack={() => { window.history.pushState({}, "", "/products"); setCurrentSlug(null); }} onOpenProduct={openProduct} onQuote={() => requestQuote(selectedProduct)} />;
+    return <ProductDetailPage product={selectedProduct} products={products} lang={lang} onBack={() => { window.history.pushState({}, "", "/products"); setCurrentSlug(null); }} onOpenProduct={openProduct} onQuote={() => onRequestQuote(selectedProduct)} />;
   }
   return (
     <main className="page">
@@ -1048,17 +1049,22 @@ function ProductsPage({ go, lang, products }: { go: (page: Page) => void; lang: 
                 ].map(([cas, name, statusEn, statusZh]) => {
                   const product = products.find((item) => item.cas === cas);
                   return (
-                    <button
-                      type="button"
+                    <a
+                      href={product ? productPath(productSlug(product)) : "/products"}
                       className="availability-card"
                       key={cas}
-                      onClick={() => product && openProduct(product)}
+                      onClick={(event) => {
+                        if (product && isPlainLeftClick(event)) {
+                          event.preventDefault();
+                          openProduct(product);
+                        }
+                      }}
                     >
                       <span className="availability-status">{tx(t(statusEn, statusZh), lang)}</span>
                       <strong>{product ? tx(product.name, lang) : name}</strong>
                       <small>CAS {cas}</small>
                       <em>{tx(t("Verify grade · packing · loading window", "核实牌号 · 包装 · 装运窗口"), lang)}</em>
-                    </button>
+                    </a>
                   );
                 })}
               </div>
@@ -1675,13 +1681,13 @@ function LegalPage({ page, lang }: { page: LegalPageKey; lang: Lang }) {
   );
 }
 
-function ContactPage({ lang }: { lang: Lang }) {
+function ContactPage({ lang, initialProduct }: { lang: Lang; initialProduct: string }) {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     company: "",
     contact: "",
-    product: "",
+    product: initialProduct,
     quantity: "",
     destination: "",
     packing: "",
@@ -1691,6 +1697,11 @@ function ContactPage({ lang }: { lang: Lang }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState(false);
+
+  useEffect(() => {
+    if (!initialProduct) return;
+    setFormData((current) => ({ ...current, product: initialProduct }));
+  }, [initialProduct]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -2215,12 +2226,24 @@ function CatalogCard({
       <p>
         {tx(t("Packing:", "包装："), lang)} {tx(product.packing, lang)}
       </p>
-      <button onClick={onView}>
+      <a
+        href={productPath(productSlug(product))}
+        onClick={(event) => {
+          if (isPlainLeftClick(event)) {
+            event.preventDefault();
+            onView();
+          }
+        }}
+      >
         {tx(t("View Product →", "查看产品 →"), lang)}
-      </button>
+      </a>
     </article>
   );
 }
+function isPlainLeftClick(event: MouseEvent<HTMLAnchorElement>) {
+  return event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey;
+}
+
 function Info({ label, value }: { label: string; value: string }) {
   return (
     <div className="info">
