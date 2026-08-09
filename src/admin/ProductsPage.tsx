@@ -30,6 +30,8 @@ import { supabase } from "../lib/supabase";
 import { imageSizeLabel, optimizeUploadImage } from "./imageUpload";
 import { useAdminLanguage } from "./AdminLanguage";
 import { translateProductCategoryZh, translateProductNameZh } from "../productTranslations";
+import type { ProductDetailContent } from "../productDetails";
+import { detailContentFromForm, detailFormFromContent, type ProductDetailFormFields } from "../productAdminDetail";
 
 type ProductStatus = "active" | "inactive";
 
@@ -48,11 +50,13 @@ type Product = {
   featured?: boolean | null;
   seo_title?: string | null;
   seo_description?: string | null;
+  slug?: string | null;
+  detail_content?: ProductDetailContent | null;
   status: ProductStatus | string | null;
   created_at: string;
 };
 
-type ProductFormValues = {
+type ProductFormValues = ProductDetailFormFields & {
   name: string;
   cas?: string;
   un_number?: string;
@@ -66,6 +70,7 @@ type ProductFormValues = {
   featured?: boolean;
   seo_title?: string;
   seo_description?: string;
+  slug?: string;
   status: ProductStatus;
 };
 
@@ -78,6 +83,10 @@ function normalizeCas(value?: string) {
 function isValidCas(value?: string) {
   const cas = normalizeCas(value);
   return !cas || /^\d{2,7}-\d{2}-\d$/.test(cas);
+}
+
+function isValidSlug(value?: string) {
+  return !value?.trim() || /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(value.trim());
 }
 
 function splitGallery(value?: string) {
@@ -175,6 +184,8 @@ export default function ProductsPage() {
       featured: Boolean(product.featured),
       seo_title: product.seo_title || "",
       seo_description: product.seo_description || "",
+      slug: product.slug || "",
+      ...detailFormFromContent(product.detail_content),
       status: (product.status as ProductStatus) || "active",
     });
 
@@ -203,6 +214,11 @@ export default function ProductsPage() {
         return;
       }
 
+      if (!isValidSlug(values.slug)) {
+        message.error("URL slug may contain lowercase letters, numbers and hyphens only");
+        return;
+      }
+
       setSaving(true);
 
       const payload = {
@@ -219,6 +235,8 @@ export default function ProductsPage() {
         featured: Boolean(values.featured),
         seo_title: values.seo_title || values.name,
         seo_description: values.seo_description || values.description || "",
+        slug: values.slug?.trim() || null,
+        detail_content: detailContentFromForm(values),
         status: values.status,
       };
 
@@ -499,6 +517,37 @@ export default function ProductsPage() {
             <Form.Item name="description" label={tr("Description", "产品描述")}>
               <Input.TextArea rows={4} placeholder="Product application, export notes, documents, packing and shipment support." />
             </Form.Item>
+          </Card>
+
+          <Card size="small" title={tr("Product Detail Page", "产品详情页")} style={{ marginBottom: 16 }}>
+            <p style={{ marginTop: 0, color: "#64748b" }}>{tr("All fields are optional. Empty fields keep the safe website template; saved values override it.", "所有字段均可选。留空时沿用网站安全模板，填写后覆盖模板内容。")}</p>
+            <Form.Item name="slug" label={tr("URL Slug", "产品 URL 标识")} extra="Example: methylene-chloride-dcm (changing it changes the product URL)"><Input placeholder="methylene-chloride-dcm" /></Form.Item>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+              <Form.Item name="detail_h1" label="Page H1"><Input placeholder="Methylene Chloride Supplier China" /></Form.Item>
+              <Form.Item name="detail_subtitle" label={tr("Subtitle", "副标题")}><Input /></Form.Item>
+            </div>
+            <Form.Item name="detail_overview" label={tr("Product Overview", "产品概述")}><Input.TextArea rows={4} /></Form.Item>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 16 }}>
+              <Form.Item name="detail_formula" label={tr("Formula", "分子式")}><Input /></Form.Item>
+              <Form.Item name="detail_hs_code" label="HS Code"><Input /></Form.Item>
+              <Form.Item name="detail_appearance" label={tr("Appearance", "外观")}><Input /></Form.Item>
+              <Form.Item name="detail_storage" label={tr("Storage", "储存")}><Input /></Form.Item>
+            </div>
+            <Form.Item name="detail_applications" label={tr("Applications", "应用领域")} extra={tr("One application per line.", "每行一个应用领域。")}><Input.TextArea rows={4} /></Form.Item>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16 }}>
+              <Form.Item name="detail_overview_image" label={tr("Overview Image URL", "概述图片 URL")}><Input placeholder="https://..." /></Form.Item>
+              <Form.Item name="detail_packaging_image" label={tr("Packaging Image URL", "包装图片 URL")}><Input placeholder="https://..." /></Form.Item>
+              <Form.Item name="detail_bulk_image" label={tr("Bulk Image URL", "散装运输图片 URL")}><Input placeholder="https://..." /></Form.Item>
+            </div>
+            <Form.Item name="detail_documents" label={tr("Documents", "文件")} extra={tr("One per line: Name | Note | URL. URL is optional.", "每行一个：名称 | 说明 | URL，URL 可留空。")}><Input.TextArea rows={4} placeholder="MSDS | Confirm per order | https://...\nCOA | Confirm per batch" /></Form.Item>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+              <Form.Item name="detail_faq_questions" label={tr("FAQ Questions", "常见问题")} extra={tr("One question per line.", "每行一个问题。")}><Input.TextArea rows={5} /></Form.Item>
+              <Form.Item name="detail_faq_answers" label={tr("FAQ Answers", "问题答案")} extra={tr("One answer per line, matching question order.", "每行一个答案，与问题顺序对应。")}><Input.TextArea rows={5} /></Form.Item>
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+              <Form.Item name="detail_cta_title" label={tr("CTA Title", "询盘区标题")}><Input /></Form.Item>
+              <Form.Item name="detail_cta_text" label={tr("CTA Description", "询盘区说明")}><Input /></Form.Item>
+            </div>
           </Card>
 
           <Card size="small" title={tr("Images & Gallery", "图片与图库")} style={{ marginBottom: 16 }}>

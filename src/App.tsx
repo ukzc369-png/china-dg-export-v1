@@ -6,6 +6,9 @@ import { legalDocuments, type LegalPageKey } from "./legalContent";
 import { articleTranslations } from "./articleTranslations";
 import { translateProductCategoryZh, translateProductNameZh } from "./productTranslations";
 import HomePage from "./HomePage";
+import ProductDetailPage from "./ProductDetail";
+import { productSlug, type I18n, type Lang, type ProductDetailContent, type ProductSource as Product } from "./productDetails";
+import { getProductSlug, productPath } from "./productRouting";
 type Page =
   | "home"
   | "products"
@@ -19,22 +22,6 @@ type Page =
   | "terms"
   | "cookies"
   | "dangerous-goods";
-type Lang = "en" | "zh";
-type I18n = { en: string; zh: string };
-type Product = {
-  name: I18n;
-  cas: string;
-  un: string;
-  purity: string;
-  packing: I18n;
-  category: I18n;
-  application: I18n;
-  icon: string;
-  imageUrl?: string;
-  imagePosition?: string;
-  seoTitle?: string;
-  seoDescription?: string;
-};
 type CmsProduct = {
   id: number;
   name: string;
@@ -44,8 +31,11 @@ type CmsProduct = {
   description: string | null;
   image_url: string | null;
   specification: string | null;
+  packing?: string | null;
   seo_title: string | null;
   seo_description: string | null;
+  slug?: string | null;
+  detail_content?: ProductDetailContent | null;
   status: string | null;
   created_at: string;
 };
@@ -611,7 +601,9 @@ function cmsProductToProduct(item: CmsProduct): Product {
     imageUrl: item.image_url?.trim() || fallbackProductImages[cas] || undefined,
     seoTitle: item.seo_title || undefined,
     seoDescription: item.seo_description || undefined,
-    packing: t("Drums / ISO Tank / IBC", "桶装 / ISO罐 / IBC"),
+    slug: item.slug?.trim() || undefined,
+    detailContent: item.detail_content || undefined,
+    packing: storedI18n(item.packing, "Packing to be confirmed", "包装待确认"),
     category: t(category, translateProductCategoryZh(category)),
     application: t(
       item.description || "Please contact us for product specification, documents and export quotation.",
@@ -663,13 +655,6 @@ function fallbackArticleToArticle(item: {
 function getArticleSlug(pathname: string) {
   const match = pathname.match(/^\/insights\/([^/]+)$/);
   return match ? decodeURIComponent(match[1]) : null;
-}
-function getProductSlug(pathname: string) {
-  const match = pathname.match(/^\/products\/([^/]+)$/);
-  return match ? decodeURIComponent(match[1]) : null;
-}
-function productSlug(product: Product) {
-  return product.name.en.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 }
 function pathToPage(pathname: string): Page {
   if (getArticleSlug(pathname)) return "insights";
@@ -753,6 +738,10 @@ useEffect(() => {
     const activeArticle = currentArticleSlug
       ? articles.find((article) => article.slug === currentArticleSlug)
       : undefined;
+    if (getProductSlug(window.location.pathname)) {
+      trackPageView();
+      return;
+    }
     document.title =
       activeArticle
         ? `${tx(activeArticle.seoTitle, lang)} | ChinaChemExport`
@@ -933,53 +922,15 @@ useEffect(() => {
 function ProductsPage({ go, lang, products }: { go: (page: Page) => void; lang: Lang; products: Product[] }) {
   const [category, setCategory] = useState("All Products");
   const [query, setQuery] = useState("");
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [currentSlug, setCurrentSlug] = useState<string | null>(() => getProductSlug(window.location.pathname));
   useEffect(() => {
-    const slug = getProductSlug(window.location.pathname);
-    if (slug) setSelectedProduct(products.find((product) => productSlug(product) === slug) || null);
-  }, [products]);
-  useEffect(() => {
-    if (!selectedProduct) return;
-    const slug = productSlug(selectedProduct);
-    const url = `https://chinachemexport.com/products/${slug}`;
-    const name = tx(selectedProduct.name, lang);
-    const title = lang === "en"
-      ? selectedProduct.seoTitle || `${name} Supplier from China | ChinaChemExport`
-      : `${name}供应商与出口报价 | ChinaChemExport`;
-    const description = lang === "en"
-      ? selectedProduct.seoDescription || tx(selectedProduct.application, "en")
-      : `${name}（CAS ${selectedProduct.cas}）中国供应与出口服务，提供产品规格、合规包装、单证及危险品物流支持。`;
-    document.title = title;
-    document.querySelector('meta[name="description"]')?.setAttribute("content", description);
-    document.querySelector('link[rel="canonical"]')?.setAttribute("href", url);
-    document.querySelector('meta[property="og:url"]')?.setAttribute("content", url);
-    document.querySelector('meta[property="og:title"]')?.setAttribute("content", title);
-    document.querySelector('meta[property="og:description"]')?.setAttribute("content", description);
-    let script = document.querySelector<HTMLScriptElement>("#product-structured-data");
-    if (!script) {
-      script = document.createElement("script");
-      script.id = "product-structured-data";
-      script.type = "application/ld+json";
-      document.head.appendChild(script);
-    }
-    script.text = JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "Product",
-      name,
-      description,
-      image: selectedProduct.imageUrl ? [selectedProduct.imageUrl] : undefined,
-      sku: selectedProduct.cas,
-      url,
-      brand: { "@type": "Brand", name: "ChinaChemExport" },
-      additionalProperty: [
-        { "@type": "PropertyValue", name: "CAS Number", value: selectedProduct.cas },
-        selectedProduct.un ? { "@type": "PropertyValue", name: "UN Number", value: selectedProduct.un } : null,
-        { "@type": "PropertyValue", name: "Purity", value: selectedProduct.purity },
-        { "@type": "PropertyValue", name: "Packing", value: tx(selectedProduct.packing, lang) },
-      ].filter(Boolean),
-    });
-    return () => { document.querySelector("#product-structured-data")?.remove(); };
-  }, [selectedProduct, lang]);
+    const onPop = () => setCurrentSlug(getProductSlug(window.location.pathname));
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, []);
+  const selectedProduct = currentSlug
+    ? products.find((product) => productSlug(product) === currentSlug) || null
+    : null;
   const categories = [
     "All Products",
     ...Array.from(new Set(products.map((p) => tx(p.category, "en")))),
@@ -1001,7 +952,6 @@ function ProductsPage({ go, lang, products }: { go: (page: Page) => void; lang: 
           .includes(query.trim().toLowerCase())),
   );
   function requestQuote(product?: Product) {
-    setSelectedProduct(null);
     go("contact");
     setTimeout(() => {
       const firstInput = document.querySelector<HTMLInputElement>(
@@ -1012,8 +962,16 @@ function ProductsPage({ go, lang, products }: { go: (page: Page) => void; lang: 
     }, 120);
   }
   function openProduct(product: Product) {
-    window.history.pushState({}, "", `/products/${productSlug(product)}`);
-    setSelectedProduct(product);
+    const slug = productSlug(product);
+    window.history.pushState({}, "", productPath(slug));
+    setCurrentSlug(slug);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+  if (currentSlug) {
+    if (!selectedProduct) {
+      return <main className="page"><section className="pd-section"><div className="container pd-narrow"><p className="pd-kicker">404</p><h1>{tx(t("Product not found", "未找到该产品"), lang)}</h1><p className="pd-body-copy">{tx(t("This product URL is not available. Browse the active product catalog or contact us with the product name and CAS number.", "该产品地址当前不可用。请浏览启用的产品目录，或携产品名称与 CAS 号联系我们。"), lang)}</p><button className="blue-btn" onClick={() => { window.history.pushState({}, "", "/products"); setCurrentSlug(null); }}>{tx(t("Back to Products", "返回产品目录"), lang)}</button></div></section></main>;
+    }
+    return <ProductDetailPage product={selectedProduct} products={products} lang={lang} onBack={() => { window.history.pushState({}, "", "/products"); setCurrentSlug(null); }} onOpenProduct={openProduct} onQuote={() => requestQuote(selectedProduct)} />;
   }
   return (
     <main className="page">
@@ -1152,30 +1110,6 @@ function ProductsPage({ go, lang, products }: { go: (page: Page) => void; lang: 
           </div>
         </div>
       </section>
-      {selectedProduct && (
-        <ProductDetailModal
-          product={selectedProduct}
-          lang={lang}
-          onClose={() => {
-            setSelectedProduct(null);
-            if (getProductSlug(window.location.pathname)) {
-              window.history.pushState({}, "", "/products");
-              const title = `${tx(t("Products", "产品中心"), lang)} | ChinaChemExport`;
-              const description = tx(t(
-                "Browse bulk chemicals, solvents and intermediates supplied from China with compliant packaging, export documentation and dangerous-goods logistics support.",
-                "浏览中国供应的大宗化工品、溶剂及中间体，并获取合规包装、出口单证与危险品物流支持。",
-              ), lang);
-              document.title = title;
-              document.querySelector('meta[name="description"]')?.setAttribute("content", description);
-              document.querySelector('link[rel="canonical"]')?.setAttribute("href", "https://chinachemexport.com/products");
-              document.querySelector('meta[property="og:url"]')?.setAttribute("content", "https://chinachemexport.com/products");
-              document.querySelector('meta[property="og:title"]')?.setAttribute("content", title);
-              document.querySelector('meta[property="og:description"]')?.setAttribute("content", description);
-            }
-          }}
-          onQuote={() => requestQuote(selectedProduct)}
-        />
-      )}
     </main>
   );
 }
@@ -2282,156 +2216,10 @@ function CatalogCard({
         {tx(t("Packing:", "包装："), lang)} {tx(product.packing, lang)}
       </p>
       <button onClick={onView}>
-        {tx(t("View Details →", "查看详情 →"), lang)}
+        {tx(t("View Product →", "查看产品 →"), lang)}
       </button>
     </article>
   );
-}
-function ProductDetailModal({
-  product,
-  lang,
-  onClose,
-  onQuote,
-}: {
-  product: Product;
-  lang: Lang;
-  onClose: () => void;
-  onQuote: () => void;
-}) {
-  const sheet = productDataSheet(product, lang);
-  return (
-    <div
-      className="modal-backdrop"
-      role="dialog"
-      aria-modal="true"
-      aria-label={`${tx(product.name, lang)} product details`}
-    >
-      <div className="product-modal">
-        <button
-          className="modal-close"
-          onClick={onClose}
-          aria-label="Close product details"
-        >
-          ×
-        </button>
-        <div className="modal-head">
-          {product.imageUrl ? <img className="product-modal-photo" src={product.imageUrl} alt={tx(product.name, lang)} /> : <div className="catalog-icon">{product.icon}</div>}
-          <div>
-            <p className="eyebrow">
-              {tx(t("Product Detail", "产品详情"), lang)}
-            </p>
-            <h2>{tx(product.name, lang)}</h2>
-            <div className="chip-row">
-              <span>CAS {product.cas}</span>
-              {/^\d{4}$/.test(product.un.trim()) && <span>UN {product.un}</span>}
-              <span>{tx(product.category, lang)}</span>
-            </div>
-          </div>
-        </div>
-        <div className="modal-grid">
-          <div className="detail-panel">
-            <h3>{tx(t("Product Information", "产品信息"), lang)}</h3>
-            {sheet.map((item) => (
-              <Info key={item.label} label={item.label} value={item.value} />
-            ))}
-          </div>
-          <div className="detail-panel dark-panel">
-            <h3>{tx(t("Export Support", "出口支持"), lang)}</h3>
-            <p>{tx(product.application, lang)}</p>
-            <div className="document-list">
-              {[
-                "MSDS",
-                "COA",
-                "TDS",
-                tx(t("DG Declaration Support", "危申报支持"), lang),
-              ].map((doc) => (
-                <div key={doc}>
-                  <b>{doc}</b>
-                  <span>
-                    {tx(t("Available Upon Request", "可按需提供"), lang)}
-                  </span>
-                </div>
-              ))}
-            </div>
-            <button className="blue-btn" onClick={onQuote}>
-              {tx(t("Request Quote For This Product", "获取该产品报价"), lang)}
-            </button>
-          </div>
-        </div>
-        <section className="product-proof-section">
-          <div className="product-proof-grid">
-            <div>
-              <h3>{tx(t("How to choose this product", "如何选择这款产品"), lang)}</h3>
-              <ul>
-                <li>{tx(t("Confirm grade and purity for the intended application.", "先确认应用场景所需的牌号与纯度。"), lang)}</li>
-                <li>{tx(t("Choose drums, ISO Tank or other compliant packing by volume and route.", "根据数量与运输路线选择桶装、ISO Tank 等合规包装。"), lang)}</li>
-                <li>{tx(t("Confirm destination port, import documents and dangerous-goods requirements.", "确认目的港、进口单证与危险品运输要求。"), lang)}</li>
-              </ul>
-            </div>
-            <div>
-              <h3>{tx(t("Common questions", "常见问题"), lang)}</h3>
-              <details>
-                <summary>{tx(t("Can you provide MSDS and COA?", "可以提供 MSDS 和 COA 吗？"), lang)}</summary>
-                <p>{tx(t("Yes. Documents are prepared or confirmed according to the final grade and shipment.", "可以。单证会根据最终牌号与出运批次准备或核实。"), lang)}</p>
-              </details>
-              <details>
-                <summary>{tx(t("Can you quote CFR or CIF?", "可以报 CFR 或 CIF 吗？"), lang)}</summary>
-                <p>{tx(t("Yes. Please send destination port, quantity, packing and trade-term requirements.", "可以。请提供目的港、数量、包装和贸易条款要求。"), lang)}</p>
-              </details>
-            </div>
-          </div>
-        </section>
-      </div>
-    </div>
-  );
-}
-function productDataSheet(product: Product, lang: Lang) {
-  const hsByCategory: Record<string, string> = {
-    "Aromatic Solvents": "2902.30 / 2902.44",
-    Alcohols: "2905.11 / 2905.12",
-    Esters: "2915.31 / 2915.33",
-    Ketones: "2914.11 / 2914.12",
-    Feedstocks: "2902.20 / 2902.50",
-    Amides: "2924.19",
-  };
-  const tankOnly =
-    tx(product.packing, "en").includes("ISO Tank") &&
-    !tx(product.packing, "en").includes("Drums");
-  return [
-    { label: tx(t("CAS Number", "CAS号"), lang), value: product.cas },
-    { label: tx(t("UN Number", "UN编号"), lang), value: product.un },
-    {
-      label: tx(t("HS Code", "HS编码"), lang),
-      value:
-        hsByCategory[tx(product.category, "en")] ||
-        tx(t("To be confirmed", "待确认"), lang),
-    },
-    {
-      label: tx(t("Appearance", "外观"), lang),
-      value: tx(t("Refer to product specification", "请参考产品规格"), lang),
-    },
-    { label: tx(t("Purity", "纯度"), lang), value: /to be confirmed/i.test(product.purity) ? tx(t("Available upon request", "可按需确认"), lang) : `≥ ${product.purity}` },
-    { label: tx(t("Packing", "包装"), lang), value: tx(product.packing, lang) },
-    {
-      label: tx(t("Shelf Life", "保质期"), lang),
-      value: tx(
-        t("12 months under proper storage", "规范储存条件下12个月"),
-        lang,
-      ),
-    },
-    {
-      label: tx(t("Loading Qty", "装载量"), lang),
-      value: tankOnly
-        ? "20–24 MT / ISO Tank"
-        : tx(
-            t(
-              "16–22 MT / 20GP, subject to packing",
-              "16–22吨 / 20GP，视包装而定",
-            ),
-            lang,
-          ),
-    },
-  ];
 }
 function Info({ label, value }: { label: string; value: string }) {
   return (
