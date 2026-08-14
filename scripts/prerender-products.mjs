@@ -1,52 +1,198 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { productRoutes } from "./site-routes.mjs";
+import { coreRoutes, insightRouteDetails, productRoutes } from "./site-routes.mjs";
 
-const siteUrl = "https://chinachemexport.com";
-const escapeHtml = (value) => value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;");
+const SITE_URL = "https://chinachemexport.com";
+
+const escapeHtml = (value = "") =>
+  String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+
 const escapeJson = (value) => JSON.stringify(value).replaceAll("<", "\\u003c");
 
-function replaceMeta(html, selector, replacement) {
-  return html.replace(selector, replacement);
+const canonicalFor = (path) => `${SITE_URL}${path === "/" ? "/" : path}`;
+
+const replaceOrInsertHead = (html, pattern, replacement) =>
+  pattern.test(html)
+    ? html.replace(pattern, replacement)
+    : html.replace("</head>", `  ${replacement}\n</head>`);
+
+function applyMetadata(shell, { title, description, path }) {
+  const canonical = canonicalFor(path);
+  let html = replaceOrInsertHead(shell, /<title>[\s\S]*?<\/title>/i, `<title>${escapeHtml(title)}</title>`);
+  html = replaceOrInsertHead(
+    html,
+    /<meta\s+name=["']description["'][^>]*>/i,
+    `<meta name="description" content="${escapeHtml(description)}">`,
+  );
+  html = replaceOrInsertHead(
+    html,
+    /<link\s+rel=["']canonical["'][^>]*>/i,
+    `<link rel="canonical" href="${escapeHtml(canonical)}">`,
+  );
+  html = replaceOrInsertHead(
+    html,
+    /<meta\s+property=["']og:title["'][^>]*>/i,
+    `<meta property="og:title" content="${escapeHtml(title)}">`,
+  );
+  html = replaceOrInsertHead(
+    html,
+    /<meta\s+property=["']og:description["'][^>]*>/i,
+    `<meta property="og:description" content="${escapeHtml(description)}">`,
+  );
+  return replaceOrInsertHead(
+    html,
+    /<meta\s+property=["']og:url["'][^>]*>/i,
+    `<meta property="og:url" content="${escapeHtml(canonical)}">`,
+  );
+}
+
+const schemaScript = (schema) =>
+  `<script type="application/ld+json">${escapeJson(schema)}</script>`;
+
+function breadcrumbSchema(path, title) {
+  const items = [{ "@type": "ListItem", position: 1, name: "Home", item: `${SITE_URL}/` }];
+  if (path.startsWith("/products/")) {
+    items.push({ "@type": "ListItem", position: 2, name: "Products", item: `${SITE_URL}/products` });
+  } else if (path.startsWith("/insights/")) {
+    items.push({ "@type": "ListItem", position: 2, name: "Insights", item: `${SITE_URL}/insights` });
+  }
+  if (path !== "/") {
+    items.push({ "@type": "ListItem", position: items.length + 1, name: title, item: canonicalFor(path) });
+  }
+  return { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: items };
+}
+
+function normalizeLinks(links = []) {
+  return links.map((link) =>
+    Array.isArray(link) ? { href: link[0], label: link[1] } : link,
+  );
+}
+
+function fallbackMarkup({ kind, heading, description, links, schemas }) {
+  const linkMarkup = normalizeLinks(links)
+    .map(({ href, label }) => `<a href="${escapeHtml(href)}">${escapeHtml(label)}</a>`)
+    .join(" ");
+  return `<main data-prerendered="${escapeHtml(kind)}"><nav aria-label="Related pages">${linkMarkup}</nav><article><h1>${escapeHtml(heading)}</h1><p>${escapeHtml(description)}</p></article>${schemas.map(schemaScript).join("")}</main>`;
+}
+
+function injectFallback(html, markup) {
+  return html.replace(/<div\s+id=["']root["']>\s*<\/div>/i, `<div id="root">${markup}</div>`);
+}
+
+export function buildRouteHtml(shell, route) {
+  const kind = route.kind ?? (route.path === "/" ? "home" : "core");
+  const title = `${route.title} | ChinaChemExport`;
+  const canonical = canonicalFor(route.path);
+  const schemas = [];
+
+  if (kind === "home") {
+    schemas.push(
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        name: "ChinaChemExport",
+        url: `${SITE_URL}/`,
+        description: route.description,
+        address: { "@type": "PostalAddress", addressLocality: "Dongying", addressCountry: "CN" },
+        contactPoint: { "@type": "ContactPoint", contactType: "sales", availableLanguage: ["English", "Chinese"] },
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        name: "ChinaChemExport",
+        url: `${SITE_URL}/`,
+      },
+    );
+  } else if (kind === "insight") {
+    schemas.push(
+      {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        headline: route.heading,
+        description: route.description,
+        mainEntityOfPage: canonical,
+        publisher: { "@type": "Organization", name: "ChinaChemExport", url: `${SITE_URL}/` },
+      },
+      breadcrumbSchema(route.path, route.heading),
+    );
+  } else {
+    schemas.push(
+      {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        name: route.heading,
+        description: route.description,
+        url: canonical,
+      },
+      breadcrumbSchema(route.path, route.heading),
+    );
+  }
+
+  const metadata = applyMetadata(shell, { title, description: route.description, path: route.path });
+  return injectFallback(
+    metadata,
+    fallbackMarkup({ kind, heading: route.heading, description: route.description, links: route.links, schemas }),
+  );
 }
 
 export function buildProductHtml(shell, product) {
-  const canonical = `${siteUrl}/products/${product.slug}`;
-  const title = `${product.name} Supplier from China | ChinaChemExport`;
-  const description = `Source ${product.name} (CAS ${product.cas}) from China with specification review, compliant packaging, export documents and dangerous-goods shipping coordination.`;
-  const schema = {
-    "@context": "https://schema.org",
-    "@type": "Product",
-    name: product.name,
-    sku: product.slug,
-    category: product.category,
-    description,
-    url: canonical,
-    brand: { "@type": "Brand", name: "ChinaChemExport" },
-    additionalProperty: [{ "@type": "PropertyValue", name: "CAS Number", value: product.cas }],
-  };
-  const fallback = `<main data-prerendered="product"><nav><a href="/products">Products</a></nav><article><p>${escapeHtml(product.category)}</p><h1>${escapeHtml(product.name)}</h1><p>CAS ${escapeHtml(product.cas)}</p><p>${escapeHtml(description)}</p><a href="/contact">Request a quotation</a></article></main><script type="application/ld+json">${escapeJson(schema)}</script>`;
-
-  let html = replaceMeta(shell, /<title>[\s\S]*?<\/title>/i, `<title>${escapeHtml(title)}</title>`);
-  html = replaceMeta(html, /<meta\s+name="description"[^>]*>/i, `<meta name="description" content="${escapeHtml(description)}" />`);
-  html = replaceMeta(html, /<link\s+rel="canonical"[^>]*>/i, `<link rel="canonical" href="${canonical}" />`);
-  html = replaceMeta(html, /<meta\s+property="og:title"[^>]*>/i, `<meta property="og:title" content="${escapeHtml(title)}" />`);
-  html = replaceMeta(html, /<meta\s+property="og:description"[^>]*>/i, `<meta property="og:description" content="${escapeHtml(description)}" />`);
-  html = replaceMeta(html, /<meta\s+property="og:url"[^>]*>/i, `<meta property="og:url" content="${canonical}" />`);
-  return html.replace('<div id="root"></div>', `<div id="root">${fallback}</div>`);
+  const path = `/products/${product.slug}`;
+  const heading = `${product.name} Supplier from China`;
+  const title = `${heading} | ChinaChemExport`;
+  const description = `Source ${product.name} (${product.cas}) from China with specification review, export documentation, packaging and shipment coordination.`;
+  const schemas = [
+    {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      name: product.name,
+      description,
+      sku: product.cas,
+      brand: { "@type": "Brand", name: "ChinaChemExport" },
+      url: canonicalFor(path),
+    },
+    breadcrumbSchema(path, product.name),
+  ];
+  const metadata = applyMetadata(shell, { title, description, path });
+  return injectFallback(
+    metadata,
+    fallbackMarkup({
+      kind: "product",
+      heading,
+      description,
+      links: [["/products", "Browse all chemicals"], ["/contact", "Request a quote"]],
+      schemas,
+    }),
+  );
 }
 
-export async function prerenderProducts(distDirectory = fileURLToPath(new URL("../dist", import.meta.url))) {
-  const shell = await readFile(`${distDirectory}/index.html`, "utf8");
-  await Promise.all(productRoutes.map(async (product) => {
-    const directory = `${distDirectory}/products/${product.slug}`;
-    await mkdir(directory, { recursive: true });
-    await writeFile(`${directory}/index.html`, buildProductHtml(shell, product), "utf8");
-  }));
-  return productRoutes.length;
+async function writeRoute(distDir, path, html) {
+  if (path === "/") {
+    await writeFile(join(distDir, "index.html"), html, "utf8");
+    return;
+  }
+  const routeDir = join(distDir, ...path.replace(/^\//, "").split("/"));
+  await mkdir(routeDir, { recursive: true });
+  await writeFile(join(routeDir, "index.html"), html, "utf8");
+}
+
+export async function prerenderProducts(distDir = fileURLToPath(new URL("../dist", import.meta.url))) {
+  const shell = await readFile(join(distDir, "index.html"), "utf8");
+  const tasks = [
+    ...coreRoutes.map((route) => writeRoute(distDir, route.path, buildRouteHtml(shell, route))),
+    ...insightRouteDetails.map((route) => writeRoute(distDir, route.path, buildRouteHtml(shell, route))),
+    ...productRoutes.map((product) => writeRoute(distDir, `/products/${product.slug}`, buildProductHtml(shell, product))),
+  ];
+  await Promise.all(tasks);
+  return tasks.length;
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const count = await prerenderProducts();
-  console.log(`Prerendered ${count} product routes.`);
+  console.log(`Prerendered ${count} public routes.`);
 }

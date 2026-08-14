@@ -35,15 +35,38 @@ export const productRoutes = [
   ["xylene", "Xylene", "1330-20-7", "Aromatic Solvents"],
 ].map(([slug, name, cas, category]) => ({ slug, name, cas, category }));
 
-export const insightRoutes = [
-  "how-to-export-dichloromethane-from-china",
-  "one-stop-chemical-export-compliance-services-from-china",
-  "inland-port-chemical-export-services-china",
-  "dongying-strategic-gateway-chemical-exports-china",
-  "factory-to-port-chemical-export-compliance-workflow-china",
-  "how-to-export-dangerous-goods-from-china",
-  "dimethyl-carbonate-supplier-china-export-guide",
-  "dimethyl-carbonate-vietnam-china-supplier-guide",
-  "methylene-chloride-india-dcm-msds-china-supply-guide",
+export const coreRoutes = [
+  { path: "/", title: "Chemical Export Services from China", description: "ChinaChemExport coordinates chemical sourcing, specifications, packaging, export documentation and international shipping from Dongying, China.", heading: "Chemical Export Services from China", links: [["/products", "Browse chemical products"], ["/contact", "Request a quotation"]] },
+  { path: "/products", title: "Bulk Chemical Products from China", description: "Browse bulk solvents, intermediates, alcohols, glycols, acids and amines supplied from China with export documentation and shipping coordination.", heading: "Bulk Chemical Products from China", links: [["/services", "View export services"], ["/contact", "Ask about a product"]] },
+  { path: "/about", title: "About ChinaChemExport", description: "Learn how ChinaChemExport coordinates chemical supply and export execution from the Dongying petrochemical region in China.", heading: "About ChinaChemExport", links: [["/services", "Our services"], ["/contact", "Contact us"]] },
+  { path: "/services", title: "Chemical Export Services", description: "Chemical sourcing, specification review, packaging, documentation, dangerous-goods handling and international shipping coordination from China.", heading: "Chemical Export Services", links: [["/products", "Browse products"], ["/contact", "Request a shipping review"]] },
+  { path: "/markets", title: "Chemical Export Markets", description: "Chemical supply and export coordination for buyers in Southeast Asia, India, the Middle East, Russia, Africa and South America.", heading: "Chemical Export Markets", links: [["/insights", "Read market guides"], ["/contact", "Discuss your destination"]] },
+  { path: "/insights", title: "Chemical Export Insights", description: "Practical guides on chemical sourcing, compliance, documentation, packaging and shipping from China.", heading: "Chemical Export Insights", links: [["/products", "Browse products"], ["/contact", "Contact our export team"]] },
+  { path: "/contact", title: "Contact ChinaChemExport", description: "Send your product, specification, quantity, packaging and destination requirements for a chemical supply and shipping review.", heading: "Contact ChinaChemExport", links: [["/products", "Browse products"], ["/services", "Review our services"]] },
+  { path: "/dangerous-goods", title: "Dangerous Goods Chemical Export", description: "Review dangerous-goods packaging, documentation, declaration and shipping coordination for chemical exports from China.", heading: "Dangerous Goods Chemical Export", links: [["/services", "Export services"], ["/contact", "Request a review"]] },
+  { path: "/privacy", title: "Privacy Policy", description: "Privacy policy for ChinaChemExport website visitors and inquiry submissions.", heading: "Privacy Policy", links: [["/", "Home"], ["/contact", "Contact us"]] },
+  { path: "/terms", title: "Terms of Use", description: "Terms governing use of the ChinaChemExport website and its informational content.", heading: "Terms of Use", links: [["/", "Home"], ["/contact", "Contact us"]] },
+  { path: "/cookies", title: "Cookie Policy", description: "Information about cookies and analytics used on the ChinaChemExport website.", heading: "Cookie Policy", links: [["/privacy", "Privacy policy"], ["/contact", "Contact us"]] },
 ];
 
+export const insightRouteDetails = [
+  ["how-to-export-dichloromethane-from-china", "How to Export Dichloromethane from China", "A practical guide to dichloromethane sourcing, documents, packaging and dangerous-goods shipping from China."],
+  ["one-stop-chemical-export-compliance-services-from-china", "One-stop Chemical Export Compliance Services from China", "How chemical buyers can coordinate sourcing, compliance documents, packaging and export shipping through one workflow."],
+  ["inland-port-chemical-export-services-china", "Inland Port Chemical Export Services in China", "How inland-port warehousing, consolidation, repacking and customs coordination support chemical exports from China."],
+  ["dongying-strategic-gateway-chemical-exports-china", "Dongying: A Strategic Gateway for Chemical Exports from China", "An introduction to Dongying's petrochemical supply base and its role in chemical sourcing and export coordination."],
+  ["factory-to-port-chemical-export-compliance-workflow-china", "Factory-to-Port Chemical Export Compliance Workflow", "A step-by-step overview of supplier checks, specifications, documents, packaging and port execution for chemical exports."],
+  ["how-to-export-dangerous-goods-from-china", "How to Export Dangerous Goods from China", "A buyer-focused guide to dangerous-goods classification, packaging, labels, declarations and shipping from China."],
+  ["dimethyl-carbonate-supplier-china-export-guide", "Dimethyl Carbonate Supplier and Export Guide from China", "How to source dimethyl carbonate from China, compare specifications, confirm packaging and prepare export documents."],
+  ["dimethyl-carbonate-vietnam-china-supplier-guide", "Dimethyl Carbonate Supply from China to Vietnam", "A Vietnam-focused guide to DMC sourcing, specifications, packaging, documents and shipping coordination from China."],
+  ["methylene-chloride-india-dcm-msds-china-supply-guide", "Methylene Chloride Supply from China to India", "An India-focused guide to methylene chloride sourcing, MSDS review, packaging and shipping coordination from China."],
+].map(([slug, title, description]) => ({
+  kind: "insight",
+  slug,
+  path: `/insights/${slug}`,
+  title,
+  description,
+  heading: title,
+  links: [["/insights", "More export insights"], ["/contact", "Request a supply review"]],
+}));
+
+export const insightRoutes = insightRouteDetails.map(({ slug }) => slug);

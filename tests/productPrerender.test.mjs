@@ -16,8 +16,10 @@ test("product prerender creates route-specific crawlable HTML", () => {
   assert.match(html, /<title>Methylene Chloride \(DCM\) Supplier from China/);
   assert.match(html, /name="description" content="[^"]*Methylene Chloride/);
   assert.match(html, /rel="canonical" href="https:\/\/chinachemexport\.com\/products\/methylene-chloride-dcm"/);
-  assert.match(html, /<h1>Methylene Chloride \(DCM\)<\/h1>/);
+  assert.match(html, /<h1>Methylene Chloride \(DCM\) Supplier from China<\/h1>/);
   assert.match(html, /"@type":"Product"/);
+  assert.match(html, /"@type":"BreadcrumbList"/);
   assert.match(html, /data-prerendered="product"/);
+  assert.ok(html.indexOf('<div id="root">') < html.indexOf('data-prerendered="product"'));
+  assert.ok(html.indexOf('data-prerendered="product"') < html.indexOf('</div><script type="module"'));
 });
-
