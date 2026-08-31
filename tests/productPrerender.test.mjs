@@ -23,3 +23,17 @@ test("product prerender creates route-specific crawlable HTML", () => {
   assert.ok(html.indexOf('<div id="root">') < html.indexOf('data-prerendered="product"'));
   assert.ok(html.indexOf('data-prerendered="product"') < html.indexOf('</div><script type="module"'));
 });
+
+test("aniline prerender targets industrial procurement and export intent", () => {
+  const html = buildProductHtml(shell, {
+    slug: "aniline",
+    name: "Aniline",
+    cas: "62-53-3",
+    category: "Amines",
+  });
+  assert.match(html, /<title>Aniline Supplier China \| CAS 62-53-3 Export<\/title>/);
+  assert.match(html, /<h1>Aniline Supplier from China for Industrial Buyers<\/h1>/);
+  assert.match(html, /UN 1547 documentation/);
+  assert.match(html, /href="\/dangerous-goods"/);
+  assert.match(html, /Request an aniline quotation/);
+});

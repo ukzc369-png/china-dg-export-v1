@@ -70,7 +70,7 @@ const bi = (en: string, zh: string): I18n => ({ en, zh });
 type PriorityContent = Pick<
   ProductDetailModel,
   "subtitle" | "overview" | "applications" | "faqs"
-> & Partial<Pick<ProductDetailModel, "formula" | "hsCode" | "appearance" | "storage">>;
+> & Partial<Pick<ProductDetailModel, "h1" | "formula" | "hsCode" | "appearance" | "storage">>;
 
 const commonFaqs = (name: string, zhName: string): ProductFaq[] => [
   {
@@ -167,10 +167,43 @@ const priorityByCas: Record<string, PriorityContent> = {
     "Aniline",
     "苯胺",
     bi(
-      "Aniline is a chemical intermediate supplied for qualified industrial manufacturing. ChinaChemExport coordinates specification review, batch-document confirmation, suitable packing and dangerous-goods export logistics according to the order and destination.",
-      "苯胺是一种面向合格工业生产用途供应的化工中间体。ChinaChemExport 根据订单和目的地协调规格审核、批次文件确认、适用包装及危险品出口物流。",
+      "Aniline (CAS 62-53-3), also called aminobenzene or phenylamine, is an aromatic-amine intermediate used by qualified industrial manufacturers. From Dongying, ChinaChemExport coordinates regional supply channels, required specification and batch COA review, compatible packing, SDS and dangerous-goods export planning. The producer, availability and shipment route are confirmed for each order rather than assumed in advance.",
+      "苯胺（CAS 62-53-3）又称氨基苯或苯基胺，是面向合格工业制造企业供应的芳香胺中间体。ChinaChemExport 立足东营，按订单协调区域供应渠道、指标与批次 COA 审核、相容包装、SDS 及危险品出口方案；生产企业、货源和运输路线均需逐单确认。",
     ),
-    [bi("Chemical intermediates", "化工中间体"), bi("Dye manufacturing", "染料生产"), bi("Industrial synthesis", "工业合成")],
+    [
+      bi("MDI and polyurethane-material production", "MDI 与聚氨酯材料生产"),
+      bi("Rubber chemicals and processing additives", "橡胶助剂与加工添加剂"),
+      bi("Dyes, pigments and color intermediates", "染料、颜料及着色中间体"),
+      bi("Agrochemical, pharmaceutical and industrial synthesis", "农化、医药及工业合成"),
+    ],
+    {
+      h1: bi("Aniline Supplier from China for Industrial Buyers", "中国苯胺供应与工业出口服务"),
+      formula: "C₆H₇N",
+      appearance: bi("Clear to slightly yellow liquid; final acceptance follows the agreed specification and batch COA", "无色至微黄色液体；最终验收以约定规格和批次 COA 为准"),
+      storage: bi("Use controlled storage and handling conditions stated in the current shipment SDS; protect product quality from unsuitable exposure", "按照本批次 SDS 规定的受控条件储存和操作，并避免不当暴露影响产品质量"),
+      faqs: [
+        {
+          question: bi("What information is required for an aniline quotation?", "苯胺询价需要提供哪些信息？"),
+          answer: bi("Provide the required specification, application, quantity, packing preference, destination port, requested documents and shipment window. We then confirm the suitable supply and export route.", "请提供所需指标、用途、数量、包装偏好、目的港、文件要求和出运时间，我们再确认适用货源与出口路线。"),
+        },
+        {
+          question: bi("Can you provide the SDS and batch COA for aniline?", "可以提供苯胺 SDS 和批次 COA 吗？"),
+          answer: bi("The applicable SDS and batch COA are confirmed against the selected producer, grade and shipment before order execution.", "执行订单前，将根据选定生产企业、牌号和具体批次确认适用的 SDS 与 COA。"),
+        },
+        {
+          question: bi("How is aniline classified for international transport?", "苯胺国际运输如何分类？"),
+          answer: bi("Aniline is commonly identified as UN 1547, Class 6.1, Packing Group II. The current SDS, transport assessment, carrier rules and destination requirements must be checked for each shipment.", "苯胺通常按 UN 1547、6.1 类、包装等级 II 识别；每票货物仍需核对当前 SDS、运输鉴定、承运人规则及目的地要求。"),
+        },
+        {
+          question: bi("Which packing can be used for aniline export?", "苯胺出口可以采用哪些包装？"),
+          answer: bi("Packing is selected only after reviewing quantity, product compatibility, route, carrier acceptance and destination rules. The final approved packing governs the shipment.", "需结合数量、材料相容性、路线、承运人接受条件和目的地规则选择包装，最终以审核确认的包装方案为准。"),
+        },
+        {
+          question: bi("Can you ship aniline to India, Vietnam or Indonesia?", "可以向印度、越南或印度尼西亚供应苯胺吗？"),
+          answer: bi("Potential shipments are reviewed order by order. Importer qualifications, end use, local permits, carrier acceptance, documents and the destination port must be confirmed before quotation.", "潜在订单均需逐单审核，报价前应确认进口商资质、最终用途、当地许可、承运人接受条件、文件及目的港。"),
+        },
+      ],
+    },
   ),
 };
 
@@ -213,13 +246,13 @@ function buildTemplateProductDetail(source: ProductSource): ProductDetailModel {
     source,
     slug,
     priority: Boolean(priority),
-    h1: bi(`${nameEn} Supplier China`, `${nameZh}中国供应与出口服务`),
+    h1: priority?.h1 || bi(`${nameEn} Supplier China`, `${nameZh}中国供应与出口服务`),
     subtitle: priority?.subtitle || bi("Industrial sourcing, documentation and export coordination", "工业采购、单证与出口协调"),
     overview,
-    seoTitle: bi(source.seoTitle || `${nameEn} Supplier China | ChinaChemExport`, `${nameZh}中国供应商 | ChinaChemExport`),
+    seoTitle: bi(source.seoTitle || (source.cas === "62-53-3" ? "Aniline Supplier China | CAS 62-53-3 Export" : `${nameEn} Supplier China | ChinaChemExport`), source.cas === "62-53-3" ? "苯胺中国供应与出口 | CAS 62-53-3" : `${nameZh}中国供应商 | ChinaChemExport`),
     seoDescription: bi(
-      source.seoDescription || `Source ${nameEn} from China with specification confirmation, compliant packing, export documentation and international logistics coordination.`,
-      `${nameZh}中国供应服务，按订单确认规格、合规包装、出口单证及国际物流方案。`,
+      source.seoDescription || (source.cas === "62-53-3" ? "Source aniline (CAS 62-53-3) from China with specification and COA review, SDS, compatible packing, UN 1547 documentation and export coordination." : `Source ${nameEn} from China with specification confirmation, compliant packing, export documentation and international logistics coordination.`),
+      source.cas === "62-53-3" ? "苯胺（CAS 62-53-3）中国供应与出口协调，涵盖规格及 COA 审核、SDS、相容包装、UN 1547 文件与危险品运输方案。" : `${nameZh}中国供应服务，按订单确认规格、合规包装、出口单证及国际物流方案。`,
     ),
     formula: priority?.formula,
     hsCode: priority?.hsCode,

@@ -143,9 +143,12 @@ export function buildRouteHtml(shell, route) {
 
 export function buildProductHtml(shell, product) {
   const path = `/products/${product.slug}`;
-  const heading = `${product.name} Supplier from China`;
-  const title = `${heading} | ChinaChemExport`;
-  const description = `Source ${product.name} (${product.cas}) from China with specification review, export documentation, packaging and shipment coordination.`;
+  const isAniline = product.slug === "aniline";
+  const heading = isAniline ? "Aniline Supplier from China for Industrial Buyers" : `${product.name} Supplier from China`;
+  const title = isAniline ? "Aniline Supplier China | CAS 62-53-3 Export" : `${heading} | ChinaChemExport`;
+  const description = isAniline
+    ? "Source aniline (CAS 62-53-3) from China with specification and COA review, SDS, compatible packing, UN 1547 documentation and export coordination."
+    : `Source ${product.name} (${product.cas}) from China with specification review, export documentation, packaging and shipment coordination.`;
   const schemas = [
     {
       "@context": "https://schema.org",
@@ -159,7 +162,9 @@ export function buildProductHtml(shell, product) {
     breadcrumbSchema(path, product.name),
   ];
   const metadata = applyMetadata(shell, { title, description, path });
-  const topicLinks = product.slug === "dimethyl-carbonate-dmc"
+  const topicLinks = product.slug === "aniline"
+    ? [["/insights", "Review chemical export guides"], ["/dangerous-goods", "Review dangerous-goods export support"], ["/contact", "Request an aniline quotation"]]
+    : product.slug === "dimethyl-carbonate-dmc"
     ? [
         ["/insights/dimethyl-carbonate-supplier-china-export-guide", "Read the DMC China export guide"],
         ["/insights/dimethyl-carbonate-vietnam-china-supplier-guide", "Read the DMC Vietnam supply guide"],
