@@ -42,4 +42,5 @@ test("article UI uses href links and accepts root-relative markdown links", asyn
   assert.match(source, /canonicalPath\(window\.location\.pathname\)/);
   assert.match(source, /article-topic-links/);
   assert.match(productSource, /pd-guides/);
+  assert.match(productSource, /pd-buyer-checklist/);
 });

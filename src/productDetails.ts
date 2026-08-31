@@ -235,6 +235,12 @@ function buildTemplateProductDetail(source: ProductSource): ProductDetailModel {
     { label: bi("CAS Number", "CAS 号"), value: bi(source.cas, source.cas) },
   ];
   if (validValue(source.un)) specifications.push({ label: bi("UN Number", "UN 编号"), value: bi(source.un, source.un) });
+  if (source.cas === "62-53-3") {
+    specifications.push(
+      { label: bi("Transport Class", "运输类别"), value: bi("Class 6.1 (confirm for shipment)", "6.1 类（按具体出运确认）") },
+      { label: bi("Packing Group", "包装等级"), value: bi("II (confirm for shipment)", "II（按具体出运确认）") },
+    );
+  }
   if (priority?.formula) specifications.push({ label: bi("Formula", "分子式"), value: bi(priority.formula, priority.formula) });
   if (validValue(source.purity)) specifications.push({ label: bi("Specification / Purity", "规格 / 纯度"), value: bi(source.purity, source.purity) });
   if (priority?.appearance) specifications.push({ label: bi("Appearance", "外观"), value: priority.appearance });

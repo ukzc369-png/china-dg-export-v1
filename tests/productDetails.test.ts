@@ -38,6 +38,21 @@ test("enriches all five priority products with reviewed landing-page modules", (
   }
 });
 
+test("adds shipment-specific transport facts to the aniline product", () => {
+  const detail = buildProductDetail({
+    name: { en: "Aniline", zh: "苯胺" },
+    cas: "62-53-3",
+    un: "1547",
+    purity: "Final COA governs",
+    packing: { en: "Confirm per shipment", zh: "按出运确认" },
+    category: { en: "Amines", zh: "胺类" },
+    application: { en: "Industrial intermediate", zh: "工业中间体" },
+    icon: "⬡",
+  });
+  assert.equal(detail.specifications.find((fact) => fact.label.en === "Transport Class")?.value.en, "Class 6.1 (confirm for shipment)");
+  assert.equal(detail.specifications.find((fact) => fact.label.en === "Packing Group")?.value.en, "II (confirm for shipment)");
+});
+
 test("generic products omit facts not present in the CMS source", () => {
   const detail = buildProductDetail({
     ...baseProduct,
