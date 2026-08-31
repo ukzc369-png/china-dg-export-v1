@@ -159,13 +159,26 @@ export function buildProductHtml(shell, product) {
     breadcrumbSchema(path, product.name),
   ];
   const metadata = applyMetadata(shell, { title, description, path });
+  const topicLinks = product.slug === "dimethyl-carbonate-dmc"
+    ? [
+        ["/insights/dimethyl-carbonate-supplier-china-export-guide", "Read the DMC China export guide"],
+        ["/insights/dimethyl-carbonate-vietnam-china-supplier-guide", "Read the DMC Vietnam supply guide"],
+        ["/contact", "Request a DMC quote"],
+      ]
+    : product.slug === "methylene-chloride-dcm"
+      ? [
+          ["/insights/how-to-export-dichloromethane-from-china", "Read the DCM export compliance guide"],
+          ["/insights/methylene-chloride-india-dcm-msds-china-supply-guide", "Read the DCM India supply guide"],
+          ["/contact", "Request a DCM quote"],
+        ]
+      : [["/products", "Browse all chemicals"], ["/contact", "Request a quote"]];
   return injectFallback(
     metadata,
     fallbackMarkup({
       kind: "product",
       heading,
       description,
-      links: [["/products", "Browse all chemicals"], ["/contact", "Request a quote"]],
+      links: topicLinks,
       schemas,
     }),
   );

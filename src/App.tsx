@@ -657,6 +657,10 @@ function getArticleSlug(pathname: string) {
   const match = pathname.match(/^\/insights\/([^/]+)$/);
   return match ? decodeURIComponent(match[1]) : null;
 }
+function canonicalPath(pathname: string) {
+  if (!pathname || pathname === "/") return "/";
+  return pathname.replace(/\/+$/, "");
+}
 function pathToPage(pathname: string): Page {
   if (getArticleSlug(pathname)) return "insights";
   if (getProductSlug(pathname)) return "products";
@@ -780,7 +784,7 @@ useEffect(() => {
     } else if (meta && descriptions[page]) {
       meta.setAttribute("content", tx(descriptions[page]!, lang));
     }
-    const canonicalUrl = `https://chinachemexport.com${window.location.pathname || "/"}`;
+    const canonicalUrl = `https://chinachemexport.com${canonicalPath(window.location.pathname)}`;
     const canonical = document.querySelector('link[rel="canonical"]');
     if (canonical) canonical.setAttribute("href", canonicalUrl);
     const openGraphUrl = document.querySelector('meta[property="og:url"]');
@@ -1493,7 +1497,7 @@ function CasesPage({ go, lang }: { go: (page: Page) => void; lang: Lang }) {
 void CasesPage;
 
 function renderArticleInline(content: string): ReactNode[] {
-  const tokenPattern = /(\*\*[^*]+\*\*|\[size=(?:12|14|16|18|22|26|32)\][\s\S]*?\[\/size\]|\[[^\]]+\]\((?:https?:\/\/|mailto:)[^)]+\))/g;
+  const tokenPattern = /(\*\*[^*]+\*\*|\[size=(?:12|14|16|18|22|26|32)\][\s\S]*?\[\/size\]|\[[^\]]+\]\((?:https?:\/\/|mailto:|\/)[^)]+\))/g;
   const parts = content.split(tokenPattern).filter(Boolean);
 
   return parts.map((part, index) => {
@@ -1501,8 +1505,8 @@ function renderArticleInline(content: string): ReactNode[] {
     if (bold) return <strong key={index}>{renderArticleInline(bold[1])}</strong>;
     const sized = part.match(/^\[size=(12|14|16|18|22|26|32)\]([\s\S]*)\[\/size\]$/);
     if (sized) return <span key={index} style={{ fontSize: `${sized[1]}px` }}>{renderArticleInline(sized[2])}</span>;
-    const link = part.match(/^\[([^\]]+)\]\(((?:https?:\/\/|mailto:)[^)]+)\)$/);
-    if (link) return <a key={index} href={link[2]} target={link[2].startsWith("http") ? "_blank" : undefined} rel="noreferrer">{link[1]}</a>;
+    const link = part.match(/^\[([^\]]+)\]\(((?:https?:\/\/|mailto:|\/)[^)]+)\)$/);
+    if (link) return <a key={index} href={link[2]} target={link[2].startsWith("http") ? "_blank" : undefined} rel={link[2].startsWith("http") ? "noreferrer" : undefined}>{link[1]}</a>;
     return part;
   });
 }
@@ -1530,6 +1534,28 @@ function articleFallbackImage(article: Article) {
   return "/home-v4/cta-ship-photo.webp";
 }
 
+function articleTopicLinks(slug: string, lang: Lang) {
+  const links: Record<string, Array<{ href: string; label: I18n }>> = {
+    "dimethyl-carbonate-supplier-china-export-guide": [
+      { href: "/products/dimethyl-carbonate-dmc", label: t("Dimethyl Carbonate product details", "碳酸二甲酯产品详情") },
+      { href: "/insights/dimethyl-carbonate-vietnam-china-supplier-guide", label: t("DMC supply guide for Vietnam", "DMC 越南供应指南") },
+    ],
+    "dimethyl-carbonate-vietnam-china-supplier-guide": [
+      { href: "/products/dimethyl-carbonate-dmc", label: t("Dimethyl Carbonate product details", "碳酸二甲酯产品详情") },
+      { href: "/insights/dimethyl-carbonate-supplier-china-export-guide", label: t("DMC supplier and export guide from China", "DMC 中国供应与出口指南") },
+    ],
+    "methylene-chloride-india-dcm-msds-china-supply-guide": [
+      { href: "/products/methylene-chloride-dcm", label: t("Methylene Chloride product details", "二氯甲烷产品详情") },
+      { href: "/insights/how-to-export-dichloromethane-from-china", label: t("DCM export compliance guide", "二氯甲烷出口合规指南") },
+    ],
+    "how-to-export-dichloromethane-from-china": [
+      { href: "/products/methylene-chloride-dcm", label: t("Methylene Chloride product details", "二氯甲烷产品详情") },
+      { href: "/insights/methylene-chloride-india-dcm-msds-china-supply-guide", label: t("DCM supply guide for India", "二氯甲烷印度供应指南") },
+    ],
+  };
+  return (links[slug] || []).map((link) => ({ href: link.href, text: tx(link.label, lang) }));
+}
+
 function InsightsPage({
   go,
   lang,
@@ -1546,6 +1572,7 @@ function InsightsPage({
     : null;
 
   if (currentArticleSlug && currentArticle) {
+    const topicLinks = articleTopicLinks(currentArticle.slug, lang);
     return (
       <main className="page">
         <PageHero
@@ -1563,6 +1590,7 @@ function InsightsPage({
             <article>
               <img className="article-cover" src={currentArticle.coverImage || articleFallbackImage(currentArticle)} alt={tx(currentArticle.title, lang)} onError={(event) => { event.currentTarget.onerror = null; event.currentTarget.src = articleFallbackImage(currentArticle); }} />
               <div className="article-body">{renderArticleContent(tx(currentArticle.content, lang))}</div>
+              {topicLinks.length > 0 && <nav className="article-topic-links" aria-label={tx(t("Related product and guides", "相关产品与指南"), lang)}>{topicLinks.map((link) => <a key={link.href} href={link.href}>{link.text} →</a>)}</nav>}
             </article>
 
             <div className="article-cta">
@@ -1611,15 +1639,18 @@ function InsightsPage({
                 <span>{tx(a.tag, lang)}</span>
                 <h3>{tx(a.title, lang)}</h3>
                 <p>{tx(a.text, lang)}</p>
-                <button
-                  onClick={() => {
+                <a
+                  href={`/insights/${a.slug}`}
+                  onClick={(event) => {
+                    if (!isPlainLeftClick(event)) return;
+                    event.preventDefault();
                     window.history.pushState({}, "", `/insights/${a.slug}`);
                     window.dispatchEvent(new PopStateEvent("popstate"));
                     window.scrollTo({ top: 0, behavior: "smooth" });
                   }}
                 >
                   {tx(t("Read More →", "阅读全文 →"), lang)}
-                </button>
+                </a>
               </article>
             ))}
           </div>

@@ -69,4 +69,31 @@ export const insightRouteDetails = [
   links: [["/insights", "More export insights"], ["/contact", "Request a supply review"]],
 }));
 
+const insightLinksBySlug = {
+  "dimethyl-carbonate-supplier-china-export-guide": [
+    ["/products/dimethyl-carbonate-dmc", "View Dimethyl Carbonate product details"],
+    ["/insights/dimethyl-carbonate-vietnam-china-supplier-guide", "Read the DMC Vietnam supply guide"],
+    ["/contact", "Request a DMC supply review"],
+  ],
+  "dimethyl-carbonate-vietnam-china-supplier-guide": [
+    ["/products/dimethyl-carbonate-dmc", "View Dimethyl Carbonate product details"],
+    ["/insights/dimethyl-carbonate-supplier-china-export-guide", "Read the DMC China export guide"],
+    ["/contact", "Request a DMC supply review"],
+  ],
+  "methylene-chloride-india-dcm-msds-china-supply-guide": [
+    ["/products/methylene-chloride-dcm", "View Methylene Chloride product details"],
+    ["/insights/how-to-export-dichloromethane-from-china", "Read the DCM export compliance guide"],
+    ["/contact", "Request a DCM supply review"],
+  ],
+  "how-to-export-dichloromethane-from-china": [
+    ["/products/methylene-chloride-dcm", "View Methylene Chloride product details"],
+    ["/insights/methylene-chloride-india-dcm-msds-china-supply-guide", "Read the DCM India supply guide"],
+    ["/contact", "Request a DCM supply review"],
+  ],
+};
+
+for (const route of insightRouteDetails) {
+  route.links = insightLinksBySlug[route.slug] ?? route.links;
+}
+
 export const insightRoutes = insightRouteDetails.map(({ slug }) => slug);
