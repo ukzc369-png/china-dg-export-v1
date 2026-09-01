@@ -146,13 +146,46 @@ const priorityByCas: Record<string, PriorityContent> = {
     [bi("Coatings and solvents", "涂料与溶剂"), bi("Chemical intermediates", "化工中间体"), bi("Industrial synthesis", "工业合成")],
   ),
   "67-66-3": priorityContent(
-    "Trichloromethane (TCM)",
-    "三氯甲烷（TCM）",
+    "Chloroform (Trichloromethane)",
+    "氯仿（三氯甲烷）",
     bi(
-      "Trichloromethane (TCM), also known as chloroform, is sourced for qualified industrial applications. Each inquiry is reviewed for grade, documentation, compliant packaging and destination-specific shipping requirements before quotation.",
-      "三氯甲烷（TCM，又称氯仿）面向合格工业用途供应。报价前将逐单核实牌号、文件、合规包装及目的地运输要求。",
+      "Chloroform (CAS 67-66-3), also known as trichloromethane, is supplied for qualified industrial processing and chemical-manufacturing requirements. ChinaChemExport reviews the required grade and stabilizer, batch COA, SDS, compatible packing, importer information and destination route before quotation. The producer, availability and shipment plan are confirmed order by order.",
+      "氯仿（CAS 67-66-3）又称三氯甲烷，面向合格的工业加工与化工生产用途供应。ChinaChemExport 在报价前审核所需牌号及稳定剂、批次 COA、SDS、相容包装、进口商信息和目的地路线；生产企业、货源与出运方案均逐单确认。",
     ),
-    [bi("Chemical processing", "化工加工"), bi("Industrial solvent use", "工业溶剂用途"), bi("Intermediate manufacturing", "中间体生产")],
+    [
+      bi("Chemical synthesis and intermediate production", "化学合成与中间体生产"),
+      bi("Fluorochemical manufacturing value chains", "含氟化学品制造链"),
+      bi("Qualified pharmaceutical processing", "合格医药加工用途"),
+      bi("Industrial solvent and process use", "工业溶剂与工艺用途"),
+    ],
+    {
+      h1: bi("Chloroform (Trichloromethane) Supplier from China", "中国氯仿（三氯甲烷）供应与出口服务"),
+      formula: "CHCl₃",
+      appearance: bi("Clear, colorless liquid; final acceptance follows the agreed specification and batch COA", "澄清无色液体；最终验收以约定规格和批次 COA 为准"),
+      storage: bi("Follow the current shipment SDS and approved storage controls; protect the product from unsuitable heat, light and exposure", "按照本批次 SDS 与核准储存条件操作，避免不当受热、光照和暴露"),
+      faqs: [
+        {
+          question: bi("What information is required for a chloroform quotation?", "氯仿询价需要提供哪些信息？"),
+          answer: bi("Provide the required grade and specification, stabilizer requirement if applicable, industrial end use, quantity, packing preference, destination port, importer details, requested documents and shipment window.", "请提供所需牌号与指标、适用时的稳定剂要求、工业最终用途、数量、包装偏好、目的港、进口商信息、文件要求和出运时间。"),
+        },
+        {
+          question: bi("Can you provide the SDS and batch COA for chloroform?", "可以提供氯仿 SDS 和批次 COA 吗？"),
+          answer: bi("The applicable SDS, specification and batch COA are confirmed against the selected producer, grade and shipment before order execution.", "订单执行前，将根据选定生产企业、牌号和具体批次确认适用的 SDS、规格与 COA。"),
+        },
+        {
+          question: bi("How is chloroform classified for international transport?", "氯仿国际运输如何分类？"),
+          answer: bi("Chloroform is commonly identified as UN 1888, Class 6.1, Packing Group III. The current SDS, transport assessment, carrier rules and destination requirements must still be checked for each shipment.", "氯仿通常按 UN 1888、6.1 类、包装等级 III 识别；每票货物仍需核对当前 SDS、运输鉴定、承运人规则及目的地要求。"),
+        },
+        {
+          question: bi("Which packing can be used for chloroform export?", "氯仿出口可以采用哪些包装？"),
+          answer: bi("Packing is selected after reviewing grade, quantity, material compatibility, route, carrier acceptance and destination rules. The final approved packing governs the shipment.", "需结合牌号、数量、材料相容性、路线、承运人接受条件和目的地规则选择包装，最终以审核确认的包装方案为准。"),
+        },
+        {
+          question: bi("Can you ship chloroform to Vietnam, India or Indonesia?", "可以向越南、印度或印度尼西亚供应氯仿吗？"),
+          answer: bi("Potential shipments are reviewed order by order. Importer qualifications, declared end use, local permits, carrier acceptance, documents and destination port must be confirmed before quotation.", "潜在订单均需逐单审核，报价前应确认进口商资质、申报最终用途、当地许可、承运人接受条件、文件及目的港。"),
+        },
+      ],
+    },
   ),
   "1330-20-7": priorityContent(
     "Xylene",
@@ -235,10 +268,15 @@ function buildTemplateProductDetail(source: ProductSource): ProductDetailModel {
     { label: bi("CAS Number", "CAS 号"), value: bi(source.cas, source.cas) },
   ];
   if (validValue(source.un)) specifications.push({ label: bi("UN Number", "UN 编号"), value: bi(source.un, source.un) });
-  if (source.cas === "62-53-3") {
+  const transportFacts = source.cas === "62-53-3"
+    ? ["II (confirm for shipment)", "II（按具体出运确认）"]
+    : source.cas === "67-66-3"
+      ? ["III (confirm for shipment)", "III（按具体出运确认）"]
+      : undefined;
+  if (transportFacts) {
     specifications.push(
       { label: bi("Transport Class", "运输类别"), value: bi("Class 6.1 (confirm for shipment)", "6.1 类（按具体出运确认）") },
-      { label: bi("Packing Group", "包装等级"), value: bi("II (confirm for shipment)", "II（按具体出运确认）") },
+      { label: bi("Packing Group", "包装等级"), value: bi(transportFacts[0], transportFacts[1]) },
     );
   }
   if (priority?.formula) specifications.push({ label: bi("Formula", "分子式"), value: bi(priority.formula, priority.formula) });
@@ -255,10 +293,10 @@ function buildTemplateProductDetail(source: ProductSource): ProductDetailModel {
     h1: priority?.h1 || bi(`${nameEn} Supplier China`, `${nameZh}中国供应与出口服务`),
     subtitle: priority?.subtitle || bi("Industrial sourcing, documentation and export coordination", "工业采购、单证与出口协调"),
     overview,
-    seoTitle: bi(source.seoTitle || (source.cas === "62-53-3" ? "Aniline Supplier China | CAS 62-53-3 Export" : `${nameEn} Supplier China | ChinaChemExport`), source.cas === "62-53-3" ? "苯胺中国供应与出口 | CAS 62-53-3" : `${nameZh}中国供应商 | ChinaChemExport`),
+    seoTitle: bi(source.seoTitle || (source.cas === "62-53-3" ? "Aniline Supplier China | CAS 62-53-3 Export" : source.cas === "67-66-3" ? "Chloroform Supplier China | CAS 67-66-3 Export" : `${nameEn} Supplier China | ChinaChemExport`), source.cas === "62-53-3" ? "苯胺中国供应与出口 | CAS 62-53-3" : source.cas === "67-66-3" ? "氯仿中国供应与出口 | CAS 67-66-3" : `${nameZh}中国供应商 | ChinaChemExport`),
     seoDescription: bi(
-      source.seoDescription || (source.cas === "62-53-3" ? "Source aniline (CAS 62-53-3) from China with specification and COA review, SDS, compatible packing, UN 1547 documentation and export coordination." : `Source ${nameEn} from China with specification confirmation, compliant packing, export documentation and international logistics coordination.`),
-      source.cas === "62-53-3" ? "苯胺（CAS 62-53-3）中国供应与出口协调，涵盖规格及 COA 审核、SDS、相容包装、UN 1547 文件与危险品运输方案。" : `${nameZh}中国供应服务，按订单确认规格、合规包装、出口单证及国际物流方案。`,
+      source.seoDescription || (source.cas === "62-53-3" ? "Source aniline (CAS 62-53-3) from China with specification and COA review, SDS, compatible packing, UN 1547 documentation and export coordination." : source.cas === "67-66-3" ? "Source chloroform (trichloromethane, CAS 67-66-3) from China with SDS and COA review, UN 1888 packing and export coordination." : `Source ${nameEn} from China with specification confirmation, compliant packing, export documentation and international logistics coordination.`),
+      source.cas === "62-53-3" ? "苯胺（CAS 62-53-3）中国供应与出口协调，涵盖规格及 COA 审核、SDS、相容包装、UN 1547 文件与危险品运输方案。" : source.cas === "67-66-3" ? "氯仿（三氯甲烷，CAS 67-66-3）中国供应与出口协调，涵盖 SDS 与 COA 审核、UN 1888 包装和出运方案。" : `${nameZh}中国供应服务，按订单确认规格、合规包装、出口单证及国际物流方案。`,
     ),
     formula: priority?.formula,
     hsCode: priority?.hsCode,

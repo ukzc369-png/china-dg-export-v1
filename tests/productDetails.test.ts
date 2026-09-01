@@ -53,6 +53,21 @@ test("adds shipment-specific transport facts to the aniline product", () => {
   assert.equal(detail.specifications.find((fact) => fact.label.en === "Packing Group")?.value.en, "II (confirm for shipment)");
 });
 
+test("adds reviewed chloroform identity, transport and procurement content", () => {
+  const detail = buildProductDetail({
+    ...baseProduct,
+    name: { en: "Trichloromethane (TCM)", zh: "三氯甲烷" },
+    cas: "67-66-3",
+    un: "1888",
+  });
+  assert.equal(detail.h1.en, "Chloroform (Trichloromethane) Supplier from China");
+  assert.equal(detail.formula, "CHCl₃");
+  assert.equal(detail.specifications.find((fact) => fact.label.en === "Transport Class")?.value.en, "Class 6.1 (confirm for shipment)");
+  assert.equal(detail.specifications.find((fact) => fact.label.en === "Packing Group")?.value.en, "III (confirm for shipment)");
+  assert.match(detail.seoDescription.en, /UN 1888/);
+  assert.match(detail.faqs[0].answer.en, /stabilizer requirement/);
+});
+
 test("generic products omit facts not present in the CMS source", () => {
   const detail = buildProductDetail({
     ...baseProduct,

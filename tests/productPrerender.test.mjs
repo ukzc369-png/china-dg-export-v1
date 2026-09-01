@@ -37,3 +37,17 @@ test("aniline prerender targets industrial procurement and export intent", () =>
   assert.match(html, /href="\/dangerous-goods"/);
   assert.match(html, /Request an aniline quotation/);
 });
+
+test("chloroform prerender targets product, identity and export intent", () => {
+  const html = buildProductHtml(shell, {
+    slug: "trichloromethane-tcm",
+    name: "Trichloromethane (TCM)",
+    cas: "67-66-3",
+    category: "Chlorinated Solvents",
+  });
+  assert.match(html, /<title>Chloroform Supplier China \| CAS 67-66-3 Export<\/title>/);
+  assert.match(html, /<h1>Chloroform \(Trichloromethane\) Supplier from China<\/h1>/);
+  assert.match(html, /UN 1888 packing/);
+  assert.match(html, /href="\/dangerous-goods"/);
+  assert.match(html, /Request a chloroform quotation/);
+});
