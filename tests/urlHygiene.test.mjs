@@ -15,7 +15,10 @@ test("Vercel serves a real 404, preserves admin SPA routes and redirects the ret
   assert.match(notFound, /name="robots" content="noindex, follow"/);
   assert.equal(config.trailingSlash, false);
   assert.deepEqual(config.redirects, [{ source: "/cases", destination: "/markets", permanent: true }]);
-  assert.deepEqual(config.rewrites, [{ source: "/admin/:path*", destination: "/index.html" }]);
+  assert.deepEqual(config.rewrites, [
+    { source: "/admin", destination: "/" },
+    { source: "/admin/:path*", destination: "/" },
+  ]);
 });
 
 test("DMC prerender pages expose reciprocal topic links", () => {
