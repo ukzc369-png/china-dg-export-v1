@@ -8,5 +8,11 @@
       "destination": "/markets",
       "permanent": true
     }
+  ],
+  "rewrites": [
+    {
+      "source": "/admin/:path*",
+      "destination": "/index.html"
+    }
   ]
 }
