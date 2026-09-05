@@ -77,6 +77,281 @@ type CaseItem = {
 
 const tx = (v: I18n, lang: Lang) => v[lang];
 const t = (en: string, zh: string): I18n => ({ en, zh });
+
+const chloroformVietnamArticle: Article = {
+  slug: "chloroform-supplier-china-vietnam-import-guide",
+  title: t("Chloroform Supplier China to Vietnam: 2026 Import & Shipping Guide", "中国氯仿供应至越南：2026 进口与运输指南"),
+  tag: t("Vietnam Supply Guide", "越南供应指南"),
+  text: t("A buyer-focused guide to chloroform specifications, China export controls, Vietnam import checks, SDS, COA, UN 1888 packing and shipment review.", "面向越南工业买家的氯仿规格、中国出口管制、越南进口核查、SDS、COA、UN 1888 包装及出运指南。"),
+  seoTitle: t("Chloroform Supplier China to Vietnam | 2026 Guide", "中国氯仿供应至越南 | 2026 进口与运输指南"),
+  seoDescription: t("Source chloroform (CAS 67-66-3) from China to Vietnam. Review grade, SDS, COA, UN 1888 packing, precursor controls and importer checks before quotation.", "从中国采购氯仿（CAS 67-66-3）至越南：报价前核查牌号、SDS、COA、UN 1888 包装、易制毒管制与进口商要求。"),
+  coverImage: "/blog/chloroform-vietnam-cover.webp",
+  content: t(`# Chloroform Supplier China to Vietnam: 2026 Import & Shipping Guide
+
+Chloroform and trichloromethane are two names for the same chemical, CAS 67-66-3 and formula CHCl3. For a Vietnamese industrial buyer, a workable China supply inquiry must cover more than price: grade, stabilizer, end use, buyer and importer identity, SDS, batch COA, approved packing, Chinese precursor-chemical controls and carrier acceptance all need review.
+
+**Quick answer:** ChinaChemExport can coordinate a chloroform supply review from China to Vietnam, but producer availability, export eligibility, Vietnamese import requirements, packing and vessel acceptance are confirmed for each transaction. No shipment should be treated as approved from a website description alone.
+
+## Chloroform product and transport identity
+
+- Common name: Chloroform
+- Chemical name: Trichloromethane
+- CAS number: 67-66-3
+- Molecular formula: CHCl3
+- UN number: UN 1888
+- Transport class: 6.1, toxic substance
+- Packing group: III
+
+These identifiers help align the inquiry, specification, SDS and transport documents. The current supplier SDS and the rules applicable to the actual mode, carrier and destination remain controlling. See the [chloroform product page](/products/trichloromethane-tcm) for the product-level procurement checklist.
+
+## Which chloroform grade should a Vietnamese buyer request?
+
+The required grade depends on the industrial process. Chloroform is used as a solvent and chemical intermediate in qualified chemical synthesis, fluorochemical value chains and selected pharmaceutical processing. Industrial, reagent and application-specific grades are not automatically interchangeable.
+
+Before matching a supply channel, the buyer should state:
+
+- Intended industrial application and final user
+- Required assay or purity
+- Maximum water and acidity
+- Stabilizer type or stabilizer-free requirement, if applicable
+- Residue, colour and other critical limits
+- Required test method or target COA
+- Trial quantity and expected regular volume
+
+A target specification or previous acceptable COA is more useful than asking only for “best quality.” Final acceptance should follow the mutually confirmed specification and batch COA.
+
+## Why the end use and importer matter
+
+Chloroform is not an unrestricted ordinary solvent transaction. China controls trichloromethane under its precursor-chemical framework. The responsible Chinese export party must review business eligibility, buyer and end-user information, declared use, contract consistency and the applicable approval and licence route before export.
+
+Vietnam introduced Chemical Law No. 69/2025/QH15 effective 1 January 2026. Decrees No. 24/2026/ND-CP and No. 26/2026/ND-CP, effective 17 January 2026, set updated chemical lists and implementation requirements. The Vietnamese importer should therefore verify the current list classification and any declaration, licence, reporting, GHS label, Vietnamese SDS or hazardous-chemical obligations for the actual product and use.
+
+This article does not determine whether a particular buyer or shipment is eligible. The importer should obtain transaction-specific confirmation from its customs broker or chemical-compliance adviser before placing the order.
+
+## Documents to prepare before quotation and shipment
+
+A serious inquiry should be supported by enough information to begin document matching. Depending on the transaction, the working file may include:
+
+- Buyer, importer and final-user registration details
+- Purchase order or sales contract
+- End-user and end-use statement
+- Agreed product specification
+- Current supplier SDS
+- Batch COA before final acceptance
+- Commercial invoice and packing list
+- Chinese precursor-chemical approval and export licence documents where applicable
+- Dangerous-goods declaration and carrier documents
+- Vietnamese declaration, permit or other import approval where applicable
+- Certificate of origin if requested and available for the shipment
+
+Product name, CAS number, UN number, grade, quantity and packing must remain consistent across commercial, regulatory and transport documents. A mismatch can delay licensing, booking or customs review.
+
+![Inspection of sealed chemical drums and export documents before a Vietnam shipment](/blog/chloroform-vietnam-inspection.webp)
+
+## Packaging and UN 1888 shipment review
+
+Chloroform is commonly transported as UN 1888, Class 6.1, Packing Group III. Packaging must be compatible with the selected grade and meet the applicable UN performance, closure, marking and carrier requirements. An approved drum or other permitted system can only be selected after quantity, route and handling conditions are known.
+
+Before booking, the export team should confirm:
+
+- Packaging compatibility and condition
+- Required UN package marking and hazard labels
+- Net and gross weight limits
+- Closure, leak-prevention and palletisation plan
+- Dangerous-goods declaration data
+- Carrier and vessel acceptance
+- Transshipment restrictions and document cut-offs
+- Destination-port and inland-delivery capability
+
+Hai Phong and the Ho Chi Minh City port area may be considered according to the buyer’s location and carrier service, but naming a port does not guarantee acceptance or availability.
+
+## China-to-Vietnam procurement workflow
+
+1. **Buyer qualification:** collect the registered buyer, importer, final user and intended application.
+2. **Specification matching:** compare the requested limits and stabilizer requirement with an available producer specification.
+3. **Compliance screening:** review Chinese export controls and the importer’s Vietnamese requirements.
+4. **Document review:** confirm SDS, target specification, COA process and required end-use documents.
+5. **Packing and route review:** select a compatible packing concept and request preliminary carrier acceptance.
+6. **Commercial quotation:** quote only after the workable supply and shipping assumptions are clear.
+7. **Pre-shipment confirmation:** recheck the batch, documents, labels, package condition, booking and destination instructions.
+
+This sequence reduces the risk of quoting material that cannot be licensed, packed, booked or imported as proposed.
+
+## Information required from a Vietnamese buyer
+
+Send the following in the first inquiry:
+
+- Registered company and importer name
+- Final user and exact industrial application
+- Required purity and full specification
+- Stabilizer requirement
+- Quantity and repeat-demand estimate
+- Packing preference
+- Destination city and preferred port
+- Incoterm and requested shipment window
+- Required SDS language, COA fields and import documents
+- Confirmation of available Vietnamese approvals or broker review
+
+ChinaChemExport can then coordinate specification matching, supply communication, document collection, packing discussion and preliminary logistics review. We do not present ourselves as the regulator, customs broker, carrier or guaranteed manufacturer, and we do not confirm licensing or vessel acceptance before the responsible parties approve the actual shipment.
+
+## Frequently asked questions
+
+### Is chloroform the same as trichloromethane?
+
+Yes. Chloroform is the common name for trichloromethane, CAS 67-66-3, molecular formula CHCl3.
+
+### What is the UN number for chloroform?
+
+Chloroform is commonly identified for transport as UN 1888, Class 6.1, Packing Group III. Confirm the current SDS and shipment-specific transport assessment before booking.
+
+### Can chloroform be exported from China to Vietnam?
+
+A potential shipment can proceed only after the Chinese export party confirms the applicable precursor-chemical controls and the Vietnamese importer confirms its current import obligations. Carrier and route acceptance are also required.
+
+### What should I send to obtain a quotation?
+
+Send the specification, stabilizer requirement, quantity, packing, destination, importer and final-user details, exact end use, requested documents and shipment window.
+
+## Authoritative references
+
+- [Vietnam Chemical Law No. 69/2025/QH15](https://vanban.chinhphu.vn/?docid=214610&pageid=27160)
+- [Vietnam Decree No. 24/2026/ND-CP](https://vanban.chinhphu.vn/?docid=216671&pageid=27160&typegroupid=4)
+- [Vietnam Decree No. 26/2026/ND-CP](https://vanban.chinhphu.vn/?classid=1&docid=216673&pageid=27160)
+- [China Ministry of Commerce precursor-chemical export licensing guide](https://www.mofcom.gov.cn/zwdt/lywxhjsjcksp/index.html)
+- [PubChem chloroform identity record](https://pubchem.ncbi.nlm.nih.gov/compound/Chloroform)
+- [UN dangerous-goods list](https://unece.org/fileadmin/DAM/trans/danger/publi/unrec/rev14/English/03E_Part3.pdf)
+
+> This guide provides general procurement and logistics information, not legal, customs or safety advice. Regulations and carrier policies change. The exporter, importer, final user and carrier must verify the actual transaction before payment, licensing, loading or customs declaration.`, `# 中国氯仿供应至越南：2026 进口与运输指南
+
+氯仿与三氯甲烷是同一种化学品，CAS 67-66-3，分子式 CHCl3。越南工业买家从中国采购时，不能只询问价格，还应核实牌号、稳定剂、最终用途、买方和进口商身份、SDS、批次 COA、合规包装、中国易制毒化学品管制以及承运人接受条件。
+
+**简要结论：** ChinaChemExport 可以协调中国至越南的氯仿供应审核，但生产企业、货源、出口资格、越南进口要求、包装和船公司接受条件均须逐单确认。网站介绍不能代替实际交易审批。
+
+## 产品与运输身份
+
+- 常用名称：氯仿
+- 化学名称：三氯甲烷
+- CAS：67-66-3
+- 分子式：CHCl3
+- UN 编号：UN 1888
+- 运输类别：6.1 类毒性物质
+- 包装等级：III
+
+这些信息应在询盘、规格、SDS 和运输文件中保持一致。最终仍以当前供应商 SDS、实际运输方式、承运人和目的地规则为准。产品级采购资料可查看[氯仿产品页](/products/trichloromethane-tcm)。
+
+## 越南买家应确认什么牌号？
+
+氯仿可用于合格的化学合成、含氟化学品制造链、部分医药加工及工业溶剂工艺。工业级、试剂级和特定应用牌号不能默认互换。
+
+买家应提供：
+
+- 工业用途与最终用户
+- 所需纯度或含量
+- 水分与酸度上限
+- 稳定剂类型或无稳定剂要求
+- 残留物、色度等关键限值
+- 检测方法或目标 COA
+- 试单数量与预计常规需求
+
+最终验收应以双方确认的规格和批次 COA 为准。
+
+## 为什么必须审核最终用途和进口商？
+
+中国将三氯甲烷纳入易制毒化学品管理。负责出口的主体需要审核经营资格、买方与最终用户、申报用途、合同一致性以及适用的审批和许可证路径。
+
+越南第 69/2025/QH15 号《化学品法》自 2026 年 1 月 1 日生效；第 24/2026/ND-CP 号与第 26/2026/ND-CP 号法令自 2026 年 1 月 17 日生效，对化学品清单和实施要求进行了更新。越南进口商应确认实际产品和用途对应的清单分类、申报或许可、报告、GHS 标签、越南语 SDS 及危险化学品义务。
+
+本文不能判断某个买家或某票货物是否具备资格。下单前，进口商应向当地报关或化学合规顾问取得针对本次交易的确认。
+
+## 报价和出运前的文件
+
+- 买方、进口商及最终用户注册资料
+- 采购订单或销售合同
+- 最终用户和最终用途声明
+- 已确认的产品规格
+- 当前供应商 SDS
+- 批次 COA
+- 商业发票和装箱单
+- 适用时的中国易制毒化学品审批及出口许可证文件
+- 危险品申报和承运人文件
+- 适用时的越南申报、许可或其他进口批准
+- 客户要求且本票可提供的原产地证
+
+商业、监管和运输文件中的产品名称、CAS、UN 编号、牌号、数量和包装必须一致。
+
+![越南出运前对密封化工桶及出口文件进行检查](/blog/chloroform-vietnam-inspection.webp)
+
+## UN 1888 包装与运输审核
+
+氯仿通常按 UN 1888、6.1 类、包装等级 III 运输。包装需与所选牌号相容，并符合适用的 UN 性能、封口、标记及承运人要求。只有在数量、路线和操作条件明确后，才能确认桶装或其他获准方案。
+
+订舱前应确认：
+
+- 包装相容性及状态
+- UN 包装标记与危险标签
+- 净重和毛重限制
+- 封口、防漏及托盘方案
+- 危险品申报数据
+- 船公司和船舶接受条件
+- 中转限制和文件截单时间
+- 目的港及内陆交付能力
+
+海防和胡志明市港区可以根据买家位置及船期研究，但指定港口不代表保证接货或有舱位。
+
+## 中国至越南采购流程
+
+1. **买家资格：** 收集注册买方、进口商、最终用户和具体用途。
+2. **规格匹配：** 将所需指标及稳定剂要求与可供生产企业规格比较。
+3. **合规筛查：** 审核中国出口管制和越南进口义务。
+4. **文件审核：** 确认 SDS、规格、COA 流程及最终用途文件。
+5. **包装与路线：** 选择相容包装并初步确认承运人接受条件。
+6. **商务报价：** 在供应与运输假设可执行后报价。
+7. **出运复核：** 再次核对批次、文件、标签、包装状态、订舱和目的地指示。
+
+## 越南买家首次询盘资料
+
+- 注册公司和进口商名称
+- 最终用户与准确工业用途
+- 纯度与完整规格
+- 稳定剂要求
+- 数量及重复需求预测
+- 包装偏好
+- 目的城市和首选港口
+- 贸易术语与计划出运时间
+- SDS 语言、COA 字段和进口文件要求
+- 已有越南批准或报关顾问审核情况
+
+ChinaChemExport 可以协调规格匹配、供应沟通、文件收集、包装讨论和初步物流审核。我们不是监管机构、报关行、承运人，也不保证所有产品均由固定生产企业供应；许可证和船公司接受条件必须由相关责任方针对实际交易确认。
+
+## 常见问题
+
+### 氯仿和三氯甲烷是同一种产品吗？
+
+是。氯仿是三氯甲烷的常用名称，CAS 67-66-3，分子式 CHCl3。
+
+### 氯仿的 UN 编号是什么？
+
+通常识别为 UN 1888、6.1 类、包装等级 III。订舱前仍需确认当前 SDS 和本票运输鉴定。
+
+### 氯仿可以从中国出口到越南吗？
+
+潜在货物只有在中国出口方确认适用易制毒管制、越南进口商确认当前进口义务，并获得承运人与路线接受后才能执行。
+
+### 询价需要提供什么？
+
+请提供规格、稳定剂要求、数量、包装、目的地、进口商和最终用户资料、准确用途、文件要求及出运时间。
+
+## 权威参考
+
+- [越南第 69/2025/QH15 号《化学品法》](https://vanban.chinhphu.vn/?docid=214610&pageid=27160)
+- [越南第 24/2026/ND-CP 号法令](https://vanban.chinhphu.vn/?docid=216671&pageid=27160&typegroupid=4)
+- [越南第 26/2026/ND-CP 号法令](https://vanban.chinhphu.vn/?classid=1&docid=216673&pageid=27160)
+- [中国商务部易制毒化学品出口许可指南](https://www.mofcom.gov.cn/zwdt/lywxhjsjcksp/index.html)
+- [PubChem 氯仿记录](https://pubchem.ncbi.nlm.nih.gov/compound/Chloroform)
+- [联合国危险货物目录](https://unece.org/fileadmin/DAM/trans/danger/publi/unrec/rev14/English/03E_Part3.pdf)
+
+> 本文提供一般采购与物流信息，不构成法律、海关或安全建议。法规及承运人政策可能变化，出口商、进口商、最终用户与承运人必须在付款、许可、装货和报关前核实实际交易。`),
+};
 function storedI18n(value: string | null | undefined, fallbackEn: string, fallbackZh: string): I18n {
   if (value) {
     try {
@@ -702,7 +977,7 @@ export default function App() {
   const [products, setProducts] = useState<Product[]>(fallbackProducts);
   const [inquiryProduct, setInquiryProduct] = useState("");
 const [articles, setArticles] = useState<Article[]>(
-  fallbackArticles.map(fallbackArticleToArticle),
+  [chloroformVietnamArticle, ...fallbackArticles.map(fallbackArticleToArticle)],
 );
 
 useEffect(() => {
@@ -725,7 +1000,8 @@ useEffect(() => {
       .order("created_at", { ascending: false });
 
     if (articleData && articleData.length > 0) {
-      setArticles(articleData.map((item) => cmsArticleToArticle(item as CmsArticle)));
+      const cmsArticles = articleData.map((item) => cmsArticleToArticle(item as CmsArticle));
+      setArticles(cmsArticles.some((article) => article.slug === chloroformVietnamArticle.slug) ? cmsArticles : [chloroformVietnamArticle, ...cmsArticles]);
     }
   }
 
@@ -1515,7 +1791,7 @@ function renderArticleContent(content: string) {
   return content.split("\n").map((rawLine, index) => {
     const line = rawLine.trim();
     if (!line) return null;
-    const image = line.match(/^!\[([^\]]*)\]\((https?:\/\/[^)]+)\)$/);
+    const image = line.match(/^!\[([^\]]*)\]\(((?:https?:\/\/|\/)[^)]+)\)$/);
     if (image) return <figure className="article-body-image" key={index}><img src={image[2]} alt={image[1] || "Article illustration"} loading="lazy" /><figcaption>{image[1]}</figcaption></figure>;
     if (line.startsWith("### ")) return <h3 key={index}>{renderArticleInline(line.slice(4))}</h3>;
     if (line.startsWith("## ")) return <h2 key={index}>{renderArticleInline(line.slice(3))}</h2>;
@@ -1551,6 +1827,10 @@ function articleTopicLinks(slug: string, lang: Lang) {
     "how-to-export-dichloromethane-from-china": [
       { href: "/products/methylene-chloride-dcm", label: t("Methylene Chloride product details", "二氯甲烷产品详情") },
       { href: "/insights/methylene-chloride-india-dcm-msds-china-supply-guide", label: t("DCM supply guide for India", "二氯甲烷印度供应指南") },
+    ],
+    "chloroform-supplier-china-vietnam-import-guide": [
+      { href: "/products/trichloromethane-tcm", label: t("Chloroform product details", "氯仿产品详情") },
+      { href: "/dangerous-goods", label: t("Dangerous-goods export support", "危险品出口服务") },
     ],
   };
   return (links[slug] || []).map((link) => ({ href: link.href, text: tx(link.label, lang) }));

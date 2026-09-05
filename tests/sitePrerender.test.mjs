@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { buildRouteHtml } from "../scripts/prerender-products.mjs";
+import { insightRouteDetails } from "../scripts/site-routes.mjs";
 
 const shell = `<!doctype html><html><head><title>ChinaChemExport</title><meta name="description" content="default"><link rel="canonical" href="https://chinachemexport.com/"><meta property="og:title" content="default"><meta property="og:description" content="default"><meta property="og:url" content="https://chinachemexport.com/"></head><body><div id="root"></div><script type="module" src="/assets/index.js"></script></body></html>`;
 
@@ -28,6 +29,20 @@ test("insight prerender exposes metadata, article schema, breadcrumbs, and inter
   assert.match(html, /href="\/insights\/dimethyl-carbonate-supplier-china-export-guide"/);
   assert.ok(html.indexOf('<div id="root">') < html.indexOf('data-prerendered="insight"'));
   assert.ok(html.indexOf('data-prerendered="insight"') < html.indexOf('</div><script type="module"'));
+});
+
+test("chloroform Vietnam guide exposes GEO entities, FAQ schema and commercial links", () => {
+  const route = insightRouteDetails.find((item) => item.slug === "chloroform-supplier-china-vietnam-import-guide");
+  assert.ok(route);
+  const html = buildRouteHtml(shell, route);
+  assert.match(html, /Chloroform Supplier China to Vietnam/);
+  assert.match(html, /CAS 67-66-3/);
+  assert.match(html, /UN 1888/);
+  assert.match(html, /"@type":"FAQPage"/);
+  assert.match(html, /"name":"Daniel Zhang"/);
+  assert.match(html, /"datePublished":"2026-09-05"/);
+  assert.match(html, /href="\/products\/trichloromethane-tcm"/);
+  assert.match(html, /href="\/dangerous-goods"/);
 });
 
 test("homepage prerender exposes organization and website identity", () => {

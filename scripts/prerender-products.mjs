@@ -117,10 +117,24 @@ export function buildRouteHtml(shell, route) {
         headline: route.heading,
         description: route.description,
         mainEntityOfPage: canonical,
+        ...(route.author ? { author: { "@type": "Person", name: route.author } } : {}),
+        ...(route.datePublished ? { datePublished: route.datePublished, dateModified: route.datePublished } : {}),
+        ...(route.image ? { image: new URL(route.image, SITE_URL).href } : {}),
         publisher: { "@type": "Organization", name: "ChinaChemExport", url: `${SITE_URL}/` },
       },
       breadcrumbSchema(route.path, route.heading),
     );
+    if (route.faqs?.length) {
+      schemas.push({
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: route.faqs.map(([name, text]) => ({
+          "@type": "Question",
+          name,
+          acceptedAnswer: { "@type": "Answer", text },
+        })),
+      });
+    }
   } else {
     schemas.push(
       {

@@ -28,6 +28,7 @@ export default function ProductDetailPage({ product, products, lang, onBack, onO
           ["/insights/methylene-chloride-india-dcm-msds-china-supply-guide", lang === "en" ? "DCM supply guide for India" : "二氯甲烷印度供应指南"],
         ]
       : [];
+  if (detail.slug === "trichloromethane-tcm") guideLinks.push(["/insights/chloroform-supplier-china-vietnam-import-guide", lang === "en" ? "Chloroform supply and import guide for Vietnam" : "氯仿越南供应与进口指南"]);
   const requestDocuments = () => document.querySelector("#product-documents")?.scrollIntoView({ behavior: "smooth" });
   const buyerChecklist = detail.slug === "aniline"
     ? { title: lang === "en" ? "Aniline buyer checklist" : "苯胺买家资料清单", items: lang === "en" ? ["Required specification", "Order quantity", "Packing preference", "Destination port", "Industrial end use", "Required documents and timeline"] : ["所需指标", "采购数量", "包装偏好", "目的港", "工业最终用途", "文件要求和交期"] }

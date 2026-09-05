@@ -59,6 +59,7 @@ export const insightRouteDetails = [
   ["dimethyl-carbonate-supplier-china-export-guide", "Dimethyl Carbonate Supplier and Export Guide from China", "How to source dimethyl carbonate from China, compare specifications, confirm packaging and prepare export documents."],
   ["dimethyl-carbonate-vietnam-china-supplier-guide", "Dimethyl Carbonate Supply from China to Vietnam", "A Vietnam-focused guide to DMC sourcing, specifications, packaging, documents and shipping coordination from China."],
   ["methylene-chloride-india-dcm-msds-china-supply-guide", "Methylene Chloride Supply from China to India", "An India-focused guide to methylene chloride sourcing, MSDS review, packaging and shipping coordination from China."],
+  ["chloroform-supplier-china-vietnam-import-guide", "Chloroform Supplier China to Vietnam: 2026 Import & Shipping Guide", "A buyer-focused guide to chloroform specifications, China export controls, Vietnam import checks, SDS, COA, UN 1888 packing and shipment review."],
 ].map(([slug, title, description]) => ({
   kind: "insight",
   slug,
@@ -90,10 +91,26 @@ const insightLinksBySlug = {
     ["/insights/methylene-chloride-india-dcm-msds-china-supply-guide", "Read the DCM India supply guide"],
     ["/contact", "Request a DCM supply review"],
   ],
+  "chloroform-supplier-china-vietnam-import-guide": [
+    ["/products/trichloromethane-tcm", "View Chloroform product details"],
+    ["/dangerous-goods", "Review dangerous-goods export support"],
+    ["/contact", "Request a chloroform supply review"],
+  ],
 };
 
 for (const route of insightRouteDetails) {
   route.links = insightLinksBySlug[route.slug] ?? route.links;
+  if (route.slug === "chloroform-supplier-china-vietnam-import-guide") {
+    route.author = "Daniel Zhang";
+    route.datePublished = "2026-09-05";
+    route.image = "/blog/chloroform-vietnam-cover.webp";
+    route.faqs = [
+      ["Is chloroform the same as trichloromethane?", "Yes. Chloroform is the common name for trichloromethane, CAS 67-66-3, molecular formula CHCl3."],
+      ["What is the UN number for chloroform?", "Chloroform is commonly identified as UN 1888, Class 6.1, Packing Group III. Shipment-specific documents must still be checked."],
+      ["Can chloroform be exported from China to Vietnam?", "A potential shipment requires review of Chinese precursor-chemical controls, current Vietnamese import obligations and carrier acceptance."],
+      ["What is required for a chloroform quotation?", "Provide specification, stabilizer requirement, quantity, packing, destination, importer and final-user details, end use, documents and shipment window."],
+    ];
+  }
 }
 
 export const insightRoutes = insightRouteDetails.map(({ slug }) => slug);

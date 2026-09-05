@@ -22,7 +22,7 @@ export function buildSitemap() {
     ...staticPages.slice(0, 2).map((args) => urlEntry(...args)),
     ...productRoutes.map(({ slug }) => urlEntry(`/products/${slug}`, "monthly", "0.8")),
     ...staticPages.slice(2, 6).map((args) => urlEntry(...args)),
-    ...insightRoutes.map((slug) => urlEntry(`/insights/${slug}`, "monthly", slug === "how-to-export-dichloromethane-from-china" || slug.startsWith("dimethyl-carbonate") || slug.startsWith("methylene-chloride") ? "0.8" : "0.7")),
+    ...insightRoutes.map((slug) => urlEntry(`/insights/${slug}`, "monthly", slug === "how-to-export-dichloromethane-from-china" || slug.startsWith("dimethyl-carbonate") || slug.startsWith("methylene-chloride") || slug.startsWith("chloroform") ? "0.8" : "0.7")),
     ...staticPages.slice(6).map((args) => urlEntry(...args)),
   ];
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${entries.join("\n")}\n</urlset>\n`;
