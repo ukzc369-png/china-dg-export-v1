@@ -5,7 +5,7 @@ import { openAnalyticsSettings, trackInquirySubmission, trackPageView } from "./
 import { legalDocuments, type LegalPageKey } from "./legalContent";
 import { articleTranslations } from "./articleTranslations";
 import { translateProductCategoryZh, translateProductNameZh } from "./productTranslations";
-import HomePage from "./HomePage";
+import HomePage from "./HomePageApproved";
 import ProductDetailPage from "./ProductDetail";
 import { productSlug, type I18n, type Lang, type ProductDetailContent, type ProductSource as Product } from "./productDetails";
 import { getProductSlug, productPath } from "./productRouting";
@@ -1030,16 +1030,16 @@ useEffect(() => {
         : page === "home"
         ? tx(
             t(
-              "China Chemical Supplier for Asia, India & Middle East | ChinaChemExport",
-              "中国化工品供应商与大宗化工品出口商 | ChinaChemExport",
+              "China Chemical Sourcing & Export Support | ChinaChemExport",
+              "中国化工品寻源与出口支持 | ChinaChemExport",
             ),
             lang,
           )
         : `${tx(nav.find((n) => n.page === page)?.label || t(page, page), lang)} | ChinaChemExport`;
     const descriptions: Partial<Record<Page, I18n>> = {
       home: t(
-        "Bulk chemical supply from Dongying, China for Southeast Asia, India, Africa, Japan, South Korea, Russia and Middle East buyers, with compliant documents and dangerous-goods export support.",
-        "ChinaChemExport面向东南亚、印度、非洲、日本、韩国、俄罗斯及中东买家，提供来自中国东营的化工产品供应、合规单证和危险品出口支持。",
+        "Independent chemical sourcing and export coordination from Shandong, China, connecting international buyers with reviewed supply options, qualified repacking, inspection, dangerous-goods documentation, customs and shipping resources.",
+        "ChinaChemExport提供立足中国山东的独立化工品寻源与出口协调服务，为国际买家连接经核验的供应选择，以及合格分装、检验、危包单证、报关和运输资源。",
       ),
       products: t(
         "Browse bulk chemicals, solvents and intermediates supplied from China with compliant packaging, export documentation and dangerous-goods logistics support.",
@@ -1119,7 +1119,8 @@ useEffect(() => {
         onOpenArticle={openArticle}
       />
     );
- }, [page, lang, products, articles, currentArticleSlug, inquiryProduct, openProductInquiry]);
+  }, [page, lang, products, articles, currentArticleSlug, inquiryProduct, openProductInquiry]);
+  if (page === "home") return content;
   return (
     <>
       <header className="header">
