@@ -19,7 +19,7 @@ async function renderApplication() {
   }
 
   const [{ default: App }, { default: CookieConsent }] = await Promise.all([
-    import('./App'),
+    import('./NewSiteApp'),
     import('./components/CookieConsent'),
   ]);
   root.render(
