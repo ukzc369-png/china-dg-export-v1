@@ -120,8 +120,10 @@
 .approved-home .ah-lang{height:34px!important;margin-left:6px;padding:0 10px!important;border:1px solid #c8d9e8!important;border-radius:4px;background:#fff!important;color:#17456d!important;white-space:nowrap}
 .approved-home .ah-lang:hover{border-color:#0b84df!important;color:#0678c8!important;background:#eef8ff!important}
 @media(min-width:1181px){
-  .approved-home .ah-hero{height:min(32.65625vw,627px);min-height:470px}
-  .approved-home .ah-hero-bg{background-size:min(100%,1920px) auto;background-repeat:no-repeat;background-position:center center;background-color:#06345d}
+  .approved-home .ah-header-inner{display:grid;grid-template-columns:300px minmax(0,1fr)}
+  .approved-home .ah-header nav{justify-content:center;min-width:0}
+  .approved-home .ah-hero{height:clamp(470px,32.65625vw,840px)}
+  .approved-home .ah-hero-bg{background-size:100% auto;background-repeat:no-repeat;background-position:center center;background-color:#06345d}
   .approved-home .ah-hero-content{align-items:center}
   .approved-home .ah-hero-content>div{max-width:640px}
   .approved-home .ah-hero h1{font-size:52px}
