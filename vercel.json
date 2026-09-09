@@ -5,17 +5,7 @@
   "redirects": [
     {
       "source": "/cases",
-      "destination": "/shandong-supply-base",
-      "permanent": true
-    },
-    {
-      "source": "/services",
-      "destination": "/export-support",
-      "permanent": true
-    },
-    {
-      "source": "/markets",
-      "destination": "/shandong-supply-base",
+      "destination": "/markets",
       "permanent": true
     }
   ],

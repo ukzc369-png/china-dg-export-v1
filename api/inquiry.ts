@@ -93,15 +93,15 @@ export default async function handler(req: any, res: any) {
           html: `
             <h2>Thank you for your inquiry</h2>
             <p>Dear ${escapeHtml(body.name || "Customer")},</p>
-            <p>I have received your chemical sourcing and export requirement. I will review available supplier options, specification, packing, documents and shipment feasibility.</p>
+            <p>We have received your chemical export request. Our team will review product availability, DG compliance, packing and shipment options.</p>
             <h3>Your Inquiry Summary</h3>
             <p><b>Product:</b> ${escapeHtml(body.product || "-")}</p>
             <p><b>Quantity:</b> ${escapeHtml(body.quantity || "-")}</p>
             <p><b>Destination:</b> ${escapeHtml(body.destination || "-")}</p>
             <p><b>Packing:</b> ${escapeHtml(body.packing || "-")}</p>
-            <p>I will reply directly by email or your preferred contact method after reviewing the information.</p>
+            <p>We will contact you within 24 hours by email or your preferred contact method.</p>
             <hr />
-            <p>Best regards,<br/>Daniel Zhang<br/>Independent Chemical Sourcing &amp; Export Coordinator<br/>ChinaChemExport</p>
+            <p>Best regards,<br/>ChinaChemExport<br/>Chemical Supplier &amp; Exporter</p>
           `,
         });
       }

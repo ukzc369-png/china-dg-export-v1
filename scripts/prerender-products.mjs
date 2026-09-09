@@ -95,13 +95,12 @@ export function buildRouteHtml(shell, route) {
     schemas.push(
       {
         "@context": "https://schema.org",
-        "@type": "Person",
-        name: "Daniel Zhang",
-        jobTitle: "Independent Chemical Sourcing and Export Coordinator",
+        "@type": "Organization",
+        name: "ChinaChemExport",
         url: `${SITE_URL}/`,
         description: route.description,
         address: { "@type": "PostalAddress", addressLocality: "Dongying", addressCountry: "CN" },
-        knowsAbout: ["Chemical sourcing", "Supplier verification", "Chemical export coordination", "Dangerous goods documentation"],
+        contactPoint: { "@type": "ContactPoint", contactType: "sales", availableLanguage: ["English", "Chinese"] },
       },
       {
         "@context": "https://schema.org",
@@ -121,7 +120,7 @@ export function buildRouteHtml(shell, route) {
         ...(route.author ? { author: { "@type": "Person", name: route.author } } : {}),
         ...(route.datePublished ? { datePublished: route.datePublished, dateModified: route.datePublished } : {}),
         ...(route.image ? { image: new URL(route.image, SITE_URL).href } : {}),
-        publisher: { "@type": "Person", name: "Daniel Zhang", url: `${SITE_URL}/about` },
+        publisher: { "@type": "Organization", name: "ChinaChemExport", url: `${SITE_URL}/` },
       },
       breadcrumbSchema(route.path, route.heading),
     );
