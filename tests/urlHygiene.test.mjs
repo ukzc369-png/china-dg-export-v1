@@ -6,7 +6,7 @@ import { insightRouteDetails } from "../scripts/site-routes.mjs";
 
 const shell = `<!doctype html><html><head><title>Default</title><meta name="description" content="default"><link rel="canonical" href="https://chinachemexport.com/"></head><body><div id="root"></div></body></html>`;
 
-test("Vercel serves a real 404, preserves admin SPA routes and redirects the retired cases URL", async () => {
+test("Vercel serves a real 404, preserves admin SPA routes and redirects retired public URLs", async () => {
   const [notFound, configText] = await Promise.all([
     readFile(new URL("../public/404.html", import.meta.url), "utf8"),
     readFile(new URL("../vercel.json", import.meta.url), "utf8"),
@@ -14,7 +14,11 @@ test("Vercel serves a real 404, preserves admin SPA routes and redirects the ret
   const config = JSON.parse(configText);
   assert.match(notFound, /name="robots" content="noindex, follow"/);
   assert.equal(config.trailingSlash, false);
-  assert.deepEqual(config.redirects, [{ source: "/cases", destination: "/markets", permanent: true }]);
+  assert.deepEqual(config.redirects, [
+    { source: "/cases", destination: "/shandong-supply-base", permanent: true },
+    { source: "/services", destination: "/export-support", permanent: true },
+    { source: "/markets", destination: "/shandong-supply-base", permanent: true },
+  ]);
   assert.deepEqual(config.rewrites, [
     { source: "/admin", destination: "/" },
     { source: "/admin/:path*", destination: "/" },

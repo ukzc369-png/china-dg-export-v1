@@ -7,6 +7,9 @@ export type Lang = "en" | "zh";
 export type I18n = { en: string; zh: string };
 export type Page =
   | "home"
+  | "chemical-sourcing"
+  | "export-support"
+  | "shandong-supply-base"
   | "products"
   | "about"
   | "services"

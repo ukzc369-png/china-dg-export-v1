@@ -6,12 +6,24 @@ import { legalDocuments, type LegalPageKey } from "./legalContent";
 import { articleTranslations } from "./articleTranslations";
 import { translateProductCategoryZh, translateProductNameZh } from "./productTranslations";
 import HomePage from "./HomePageApproved";
+import {
+  About as ApprovedAbout,
+  ChemicalSourcing as ApprovedChemicalSourcing,
+  Contact as ApprovedContact,
+  ExportSupport as ApprovedExportSupport,
+  Insights as ApprovedInsights,
+  Products as ApprovedProducts,
+  Shandong as ApprovedShandong,
+} from "./NewSiteApp";
 import ProductDetailPage from "./ProductDetail";
 import { productSlug, type I18n, type Lang, type ProductDetailContent, type ProductSource as Product } from "./productDetails";
 import { getProductSlug, productPath } from "./productRouting";
 import { formatInquiryProduct } from "./inquiryPrefill";
 type Page =
   | "home"
+  | "chemical-sourcing"
+  | "export-support"
+  | "shandong-supply-base"
   | "products"
   | "about"
   | "services"
@@ -940,12 +952,23 @@ function pathToPage(pathname: string): Page {
   if (getArticleSlug(pathname)) return "insights";
   if (getProductSlug(pathname)) return "products";
   if (pathname === "/cases") {
-    window.history.replaceState({}, "", "/markets");
-    return "markets";
+    window.history.replaceState({}, "", "/shandong-supply-base");
+    return "shandong-supply-base";
+  }
+  if (pathname === "/services") {
+    window.history.replaceState({}, "", "/export-support");
+    return "export-support";
+  }
+  if (pathname === "/markets") {
+    window.history.replaceState({}, "", "/shandong-supply-base");
+    return "shandong-supply-base";
   }
   const key = pathname.replace("/", "") as Page;
   return [
     "products",
+    "chemical-sourcing",
+    "export-support",
+    "shandong-supply-base",
     "about",
     "services",
     "markets",
@@ -964,6 +987,10 @@ function pageToPath(page: Page) {
 }
 
 export default function App() {
+  // Keep the legacy implementations available for audited detail flows while the
+  // approved standalone pages are rolled out one route at a time.
+  void AboutPage;
+  void ContactPage;
   const [page, setPage] = useState<Page>(() =>
     pathToPage(window.location.pathname),
   );
@@ -1035,7 +1062,15 @@ useEffect(() => {
             ),
             lang,
           )
-        : `${tx(nav.find((n) => n.page === page)?.label || t(page, page), lang)} | ChinaChemExport`;
+        : tx(({
+            "chemical-sourcing": t("Chemical Sourcing in China, Coordinated from Shandong | ChinaChemExport", "中国化工品寻源服务｜ChinaChemExport"),
+            "export-support": t("Chemical Export Support from China | ChinaChemExport", "中国化工品出口支持｜ChinaChemExport"),
+            "shandong-supply-base": t("Shandong Chemical Supply Base | ChinaChemExport", "山东化工产业带寻源｜ChinaChemExport"),
+            products: t("Chemicals Sourced from China | ChinaChemExport", "中国化工品寻源目录｜ChinaChemExport"),
+            insights: t("Chemical Sourcing & Export Guides | ChinaChemExport", "化工品寻源与出口指南｜ChinaChemExport"),
+            about: t("Independent Chemical Sourcing Coordinator in Shandong | ChinaChemExport", "山东独立化工品寻源协调人｜ChinaChemExport"),
+            contact: t("Submit a Chemical Sourcing Requirement | ChinaChemExport", "提交化工品采购需求｜ChinaChemExport"),
+          } as Partial<Record<Page, I18n>>)[page] || t(`${page} | ChinaChemExport`, `${page} | ChinaChemExport`), lang);
     const descriptions: Partial<Record<Page, I18n>> = {
       home: t(
         "Independent chemical sourcing and export coordination from Shandong, China, connecting international buyers with reviewed supply options, qualified repacking, inspection, dangerous-goods documentation, customs and shipping resources.",
@@ -1046,9 +1081,14 @@ useEffect(() => {
         "浏览中国供应的大宗化工品、溶剂及中间体，并获取合规包装、出口单证与危险品物流支持。",
       ),
       about: t(
-        "ChinaChemExport supplies bulk chemicals from Dongying, China, backed by petrochemical industry resources and integrated dangerous-goods export support.",
-        "ChinaChemExport立足中国东营供应大宗化工品，并依托炼化产业资源与危险品出口一站式配套支持全球采购商。",
+        "Meet the independent chemical sourcing and export coordinator behind ChinaChemExport, connecting overseas buyers with reviewed supply and qualified operating resources in Shandong.",
+        "了解ChinaChemExport背后的独立化工品寻源与出口协调人，为海外采购商连接山东经核验货源及合格履约资源。",
       ),
+      "chemical-sourcing": t("Independent chemical sourcing in China: requirement review, supplier identification, specification checks, availability confirmation and commercial comparison.", "独立中国化工品寻源服务：需求梳理、供应商筛选、规格核验、货源确认及商务条件比较。"),
+      "export-support": t("Chemical export coordination covering qualified repacking, inspection, dangerous-goods documents, customs declaration, vessel booking and port follow-up.", "化工品出口协调服务，覆盖合格分装、检验、危包单证、报关、订舱和港口交付跟进。"),
+      "shandong-supply-base": t("A buyer-focused introduction to chemical sourcing from Shandong’s petrochemical supply base and its regional export-service resources.", "面向海外买家的山东石化产业带寻源介绍及区域出口服务资源说明。"),
+      insights: t("Practical guides for overseas buyers reviewing Chinese chemical suppliers, specifications, packing, dangerous-goods documents and shipment options.", "面向海外买家的中国化工品供应商、规格、包装、危品单证与运输方案实务指南。"),
+      contact: t("Submit your product, specification, quantity, packing and destination for a transaction-specific chemical sourcing and export review.", "提交产品、规格、数量、包装和目的地，获取针对具体交易的化工品寻源与出口评估。"),
       services: t(
         "Export support for chemical orders from China, including quality control, documentation, packaging, customs and dangerous-goods logistics.",
         "为中国化工品订单提供质量控制、单证、包装、报关及危险品物流配套支持。",
@@ -1094,19 +1134,26 @@ useEffect(() => {
     setMobileMenuOpen(false);
   }
   const content = useMemo(() => {
-    if (page === "products") return <ProductsPage lang={lang} products={products} onRequestQuote={openProductInquiry} />;
-    if (page === "about") return <AboutPage go={go} lang={lang} />;
+    if (page === "chemical-sourcing") return <ApprovedChemicalSourcing />;
+    if (page === "export-support") return <ApprovedExportSupport />;
+    if (page === "shandong-supply-base") return <ApprovedShandong />;
+    if (page === "products") {
+      return getProductSlug(window.location.pathname)
+        ? <ProductsPage lang={lang} products={products} onRequestQuote={openProductInquiry} />
+        : <ApprovedProducts />;
+    }
+    if (page === "about") return <ApprovedAbout />;
     if (page === "services") return <ServicesPage go={go} lang={lang} />;
     if (page === "markets") return <MarketsPage go={go} lang={lang} />;
-    if (page === "insights") return (
-  <InsightsPage
-    go={go}
-    lang={lang}
-    articles={articles}
-    currentArticleSlug={currentArticleSlug}
-  />
-);
-    if (page === "contact") return <ContactPage lang={lang} initialProduct={inquiryProduct} />;
+    if (page === "insights") return currentArticleSlug ? (
+      <InsightsPage
+        go={go}
+        lang={lang}
+        articles={articles}
+        currentArticleSlug={currentArticleSlug}
+      />
+    ) : <ApprovedInsights />;
+    if (page === "contact") return <ApprovedContact initialProduct={inquiryProduct} />;
     if (["privacy", "terms", "cookies", "dangerous-goods"].includes(page)) {
       return <LegalPage page={page as LegalPageKey} lang={lang} />;
     }
@@ -1120,7 +1167,15 @@ useEffect(() => {
       />
     );
   }, [page, lang, products, articles, currentArticleSlug, inquiryProduct, openProductInquiry]);
-  if (page === "home") return content;
+  const approvedStandalone = page === "home"
+    || page === "chemical-sourcing"
+    || page === "export-support"
+    || page === "shandong-supply-base"
+    || page === "about"
+    || page === "contact"
+    || (page === "products" && !getProductSlug(window.location.pathname))
+    || (page === "insights" && !currentArticleSlug);
+  if (approvedStandalone) return content;
   return (
     <>
       <header className="header">
@@ -1130,7 +1185,7 @@ useEffect(() => {
             <b>ChinaChemExport</b>
             <small>
               {tx(
-                t("Chemical Supplier & Exporter", "化工品供应商与出口商"),
+                t("Independent Chemical Sourcing & Export Coordinator", "独立化工品寻源与出口协调服务"),
                 lang,
               )}
             </small>
@@ -2601,7 +2656,7 @@ function Footer({ go, lang }: { go: (page: Page) => void; lang: Lang }) {
           <b>ChinaChemExport</b>
           <p>
             {tx(
-              t("Chemical Supplier & Exporter", "化工品供应商与出口商"),
+              t("Independent Chemical Sourcing & Export Coordinator", "独立化工品寻源与出口协调服务"),
               lang,
             )}
           </p>
