@@ -115,3 +115,28 @@
   .approved-home .ah-contact form>button{height:40px;margin-top:12px}
 }
 @media(prefers-reduced-motion:reduce){.approved-home button,.approved-home a,.approved-home [role="link"],.approved-home img{transition:none!important}}
+
+/* Hero artwork fidelity, readable desktop process copy, and restored language control */
+.approved-home .ah-lang{height:34px!important;margin-left:6px;padding:0 10px!important;border:1px solid #c8d9e8!important;border-radius:4px;background:#fff!important;color:#17456d!important;white-space:nowrap}
+.approved-home .ah-lang:hover{border-color:#0b84df!important;color:#0678c8!important;background:#eef8ff!important}
+@media(min-width:1181px){
+  .approved-home .ah-hero{height:min(32.65625vw,627px);min-height:470px}
+  .approved-home .ah-hero-bg{background-size:min(100%,1920px) auto;background-repeat:no-repeat;background-position:center center;background-color:#06345d}
+  .approved-home .ah-hero-content{align-items:center}
+  .approved-home .ah-hero-content>div{max-width:640px}
+  .approved-home .ah-hero h1{font-size:52px}
+  .approved-home .ah-hero p{font-size:16px;line-height:1.5}
+  .approved-home .ah-section{padding:48px 0}
+  .approved-home .ah-section-title h2{font-size:30px}
+  .approved-home .ah-section-title p{font-size:14px}
+  .approved-home .ah-section-title>button{font-size:12px}
+  .approved-home .ah-steps article{min-height:138px;padding:31px 20px 20px;gap:13px}
+  .approved-home .ah-steps .ah-icon{width:34px;height:34px;flex-basis:34px;font-size:16px}
+  .approved-home .ah-steps h3{font-size:15px;line-height:1.3;margin-bottom:7px}
+  .approved-home .ah-steps p{font-size:12px;line-height:1.5}
+}
+@media(min-width:681px) and (max-width:1180px){
+  .approved-home .ah-lang{margin:6px 0 0!important;width:auto;text-align:center!important}
+  .approved-home .ah-steps h3{font-size:13px}
+  .approved-home .ah-steps p{font-size:10px;line-height:1.45}
+}

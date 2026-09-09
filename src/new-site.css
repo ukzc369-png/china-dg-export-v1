@@ -19,3 +19,5 @@
 .ns-article-card{display:flex;flex-direction:column;height:100%}.ns-article-card img{display:block;background:#eaf3f9}.ns-article-card span{margin-top:auto}
 @media(min-width:981px) and (max-width:1180px){.ns-shell{width:calc(100% - 48px)}.ns-header nav{gap:12px;font-size:11px}.ns-header nav>a:not(.ns-btn){padding-left:2px;padding-right:2px}.ns-btn-small{padding:0 11px}.ns-hero-grid,.ns-about-grid{gap:36px}.ns-page-hero h1,.ns-about-hero h1{font-size:42px}}
 @media(prefers-reduced-motion:reduce){.ns-btn,.ns-header a,.ns-footer a,.ns-product-card,.ns-article-card,.ns-service-grid article,.ns-info-grid article,.ns-chain article,.ns-list-link,.ns-faq details,.ns-product-card img,.ns-article-card img{transition:none!important}}
+.ns-lang{height:34px;padding:0 10px;border:1px solid #c8d9e8;border-radius:4px;background:#fff;color:#17456d;font:inherit;font-weight:750;white-space:nowrap;cursor:pointer;transition:.18s ease}
+.ns-lang:hover{border-color:#0b84df;background:#eef8ff;color:#0678c8;transform:translateY(-1px)}

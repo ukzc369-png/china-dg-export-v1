@@ -1161,6 +1161,7 @@ useEffect(() => {
       <HomePage
         go={go}
         lang={lang}
+        setLang={setLang}
         products={products}
         articles={articles}
         onOpenArticle={openArticle}
