@@ -56,3 +56,62 @@
 .approved-home .ah-hero-bg{background-image:linear-gradient(90deg,rgba(4,42,76,.98) 0%,rgba(4,49,86,.86) 40%,rgba(5,58,97,.16) 68%,rgba(5,55,90,.03)),url('/home-v5/sourcing-hero-v3.webp')}
 @media(min-width:721px){.approved-home .ah-product-grid img{transform:scale(1.1);transform-origin:center center}}
 @media(max-width:680px){.approved-home .ah-hero-bg{background-image:linear-gradient(180deg,rgba(4,42,76,.98) 0%,rgba(4,46,80,.88) 54%,rgba(5,53,88,.32)),url('/home-v5/sourcing-hero-v3.webp')}}
+
+/* Interaction and proportion pass */
+@media(min-width:1181px){
+  .approved-home .ah-shell{width:min(1560px,calc(100% - 80px))}
+  .approved-home .ah-hero{height:365px}
+  .approved-home .ah-hero-content>div{max-width:620px}
+}
+.approved-home button,.approved-home a,.approved-home [role="link"]{transition:transform .18s ease,box-shadow .18s ease,background-color .18s ease,color .18s ease,border-color .18s ease,opacity .18s ease}
+.approved-home button:hover,.approved-home a:hover{filter:brightness(1.04)}
+.approved-home .ah-header nav button:not(.ah-top-cta):hover,.approved-home .ah-footer nav button:hover,.approved-home .ah-guides button:hover{color:#0784d5}
+.approved-home .ah-top-cta:hover,.approved-home .ah-actions button:hover,.approved-home .ah-contact form>button:hover,.approved-home .ah-contact-actions a:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(5,57,94,.2)}
+.approved-home .ah-top-cta:active,.approved-home .ah-actions button:active,.approved-home .ah-contact form>button:active,.approved-home .ah-contact-actions a:active{transform:translateY(0) scale(.98)}
+.approved-home .ah-cap-grid article,.approved-home .ah-steps article,.approved-home .ah-chain-grid article{cursor:pointer}
+.approved-home .ah-cap-grid article:hover{background:rgba(255,255,255,.07)!important}
+.approved-home .ah-steps article:hover,.approved-home .ah-chain-grid article:hover{transform:translateY(-4px);box-shadow:0 15px 30px rgba(7,52,84,.13);z-index:3}
+.approved-home .ah-product-grid article:hover img,.approved-home .ah-chain-grid article:hover img{transform:scale(1.045)}
+.approved-home .ah-product-grid img,.approved-home .ah-chain-grid img{transition:transform .28s ease}
+.approved-home button:focus-visible,.approved-home a:focus-visible,.approved-home [role="link"]:focus-visible{outline:3px solid #f7bd4c;outline-offset:3px}
+@media(min-width:681px) and (max-width:1180px){
+  .approved-home .ah-shell{width:calc(100% - 48px)}
+  .approved-home .ah-header{height:64px;min-height:64px}
+  .approved-home .ah-menu{display:block}
+  .approved-home .ah-header nav{display:none;position:absolute;top:64px;left:0;right:0;height:auto;padding:16px 24px 22px;background:#fff;box-shadow:0 14px 28px rgba(4,40,70,.16);grid-template-columns:repeat(2,1fr)}
+  .approved-home .ah-header nav.open{display:grid}
+  .approved-home .ah-header nav button{height:42px!important;font-size:12px!important;text-align:left;padding:0 12px!important}
+  .approved-home .ah-header nav .ah-top-cta{width:auto;margin:6px 0 0}
+  .approved-home .ah-brand{width:auto;flex:auto}
+  .approved-home .ah-brand b{font-size:21px}
+  .approved-home .ah-hero{height:350px}
+  .approved-home .ah-hero h1{font-size:42px;max-width:560px}
+  .approved-home .ah-hero p{font-size:14px;max-width:520px}
+  .approved-home .ah-hero strong{font-size:10px}
+  .approved-home .ah-actions{margin-top:18px}
+  .approved-home .ah-actions button{height:42px;font-size:11px}
+  .approved-home .ah-hero-route{right:3%;bottom:45px;transform:scale(.86);transform-origin:right bottom}
+  .approved-home .ah-section{padding:42px 0}
+  .approved-home .ah-section-title{margin-bottom:22px}
+  .approved-home .ah-section-title h2{font-size:25px}
+  .approved-home .ah-section-title p{font-size:11px}
+  .approved-home .ah-steps article{min-height:122px;padding:27px 12px 14px}
+  .approved-home .ah-steps h3{font-size:11px}
+  .approved-home .ah-steps p{font-size:8.5px}
+  .approved-home .ah-products{padding:36px 0}
+  .approved-home .ah-product-grid article{height:auto;min-height:205px;max-height:none}
+  .approved-home .ah-product-grid img{height:98px;min-height:98px}
+  .approved-home .ah-product-grid article>div{height:auto;padding:9px 8px 18px}
+  .approved-home .ah-chain{padding:36px 0 28px}
+  .approved-home .ah-chain-grid img{height:82px}
+  .approved-home .ah-contact{padding:34px 0}
+  .approved-home .ah-contact article,.approved-home .ah-contact form{height:auto;min-height:260px;max-height:none;overflow:visible;padding:20px}
+  .approved-home .ah-photo{height:210px}
+  .approved-home .ah-person{grid-template-columns:145px 1fr}
+  .approved-home .ah-contact form h2{font-size:23px;margin-bottom:12px}
+  .approved-home .ah-form-grid{gap:10px}
+  .approved-home .ah-form-grid label{font-size:9px}
+  .approved-home .ah-form-grid input{height:38px;margin-top:4px;font-size:9px}
+  .approved-home .ah-contact form>button{height:40px;margin-top:12px}
+}
+@media(prefers-reduced-motion:reduce){.approved-home button,.approved-home a,.approved-home [role="link"],.approved-home img{transition:none!important}}
