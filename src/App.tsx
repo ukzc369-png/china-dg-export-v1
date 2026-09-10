@@ -1135,7 +1135,7 @@ useEffect(() => {
   }
   const content = useMemo(() => {
     if (page === "chemical-sourcing") return <ApprovedChemicalSourcing lang={lang} />;
-    if (page === "export-support") return <ApprovedExportSupport />;
+    if (page === "export-support") return <ApprovedExportSupport lang={lang} />;
     if (page === "shandong-supply-base") return <ApprovedShandong />;
     if (page === "products") {
       return getProductSlug(window.location.pathname)
