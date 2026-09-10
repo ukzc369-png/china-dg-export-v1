@@ -10,6 +10,7 @@ import {
   ChemicalSourcing as ApprovedChemicalSourcing,
   Contact as ApprovedContact,
   ExportSupport as ApprovedExportSupport,
+  InsightArticle as ApprovedInsightArticle,
   Insights as ApprovedInsights,
   Products as ApprovedProducts,
 } from "./NewSiteApp";
@@ -1150,14 +1151,21 @@ useEffect(() => {
     }
     if (page === "services") return <ServicesPage go={go} lang={lang} />;
     if (page === "markets") return <MarketsPage go={go} lang={lang} />;
-    if (page === "insights") return currentArticleSlug ? (
-      <InsightsPage
-        go={go}
+    if (page === "insights") {
+      if (!currentArticleSlug) return <ApprovedInsights lang={lang} />;
+      const source = articles.find((article) => article.slug === currentArticleSlug);
+      return <ApprovedInsightArticle
+        slug={currentArticleSlug}
         lang={lang}
-        articles={articles}
-        currentArticleSlug={currentArticleSlug}
-      />
-    ) : <ApprovedInsights lang={lang} />;
+        article={source ? {
+          title: tx(source.title, lang),
+          tag: tx(source.tag, lang),
+          summary: tx(source.seoDescription, lang),
+          content: tx(source.content, lang),
+          cover: source.coverImage,
+        } : undefined}
+      />;
+    }
     if (page === "contact") return <ApprovedContact initialProduct={inquiryProduct} lang={lang} />;
     if (["privacy", "terms", "cookies", "dangerous-goods"].includes(page)) {
       return <LegalPage page={page as LegalPageKey} lang={lang} />;
@@ -1178,7 +1186,7 @@ useEffect(() => {
     || page === "export-support"
     || page === "contact"
     || (page === "products" && !getProductSlug(window.location.pathname))
-    || (page === "insights" && !currentArticleSlug);
+    || page === "insights";
   if (approvedStandalone) return content;
   return (
     <>
@@ -1896,7 +1904,7 @@ function articleTopicLinks(slug: string, lang: Lang) {
   return (links[slug] || []).map((link) => ({ href: link.href, text: tx(link.label, lang) }));
 }
 
-function InsightsPage({
+export function InsightsPage({
   go,
   lang,
   articles,
