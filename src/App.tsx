@@ -7,13 +7,11 @@ import { articleTranslations } from "./articleTranslations";
 import { translateProductCategoryZh, translateProductNameZh } from "./productTranslations";
 import HomePage from "./HomePageApproved";
 import {
-  About as ApprovedAbout,
   ChemicalSourcing as ApprovedChemicalSourcing,
   Contact as ApprovedContact,
   ExportSupport as ApprovedExportSupport,
   Insights as ApprovedInsights,
   Products as ApprovedProducts,
-  Shandong as ApprovedShandong,
 } from "./NewSiteApp";
 import ProductDetailPage from "./ProductDetail";
 import { productSlug, type I18n, type Lang, type ProductDetailContent, type ProductSource as Product } from "./productDetails";
@@ -380,11 +378,10 @@ function storedI18n(value: string | null | undefined, fallbackEn: string, fallba
 
 const nav: { label: I18n; page: Page }[] = [
   { label: t("Home", "首页"), page: "home" },
+  { label: t("Chemical Sourcing", "化工品寻源"), page: "chemical-sourcing" },
+  { label: t("Export Support", "出口支持"), page: "export-support" },
   { label: t("Products", "产品"), page: "products" },
-  { label: t("Export Services", "出口服务"), page: "services" },
-  { label: t("Markets", "市场"), page: "markets" },
-  { label: t("Insights", "知识"), page: "insights" },
-  { label: t("About Us", "关于我们"), page: "about" },
+  { label: t("Insights", "行业洞察"), page: "insights" },
   { label: t("Contact", "联系"), page: "contact" },
 ];
 
@@ -952,16 +949,24 @@ function pathToPage(pathname: string): Page {
   if (getArticleSlug(pathname)) return "insights";
   if (getProductSlug(pathname)) return "products";
   if (pathname === "/cases") {
-    window.history.replaceState({}, "", "/shandong-supply-base");
-    return "shandong-supply-base";
+    window.history.replaceState({}, "", "/chemical-sourcing");
+    return "chemical-sourcing";
   }
   if (pathname === "/services") {
     window.history.replaceState({}, "", "/export-support");
     return "export-support";
   }
   if (pathname === "/markets") {
-    window.history.replaceState({}, "", "/shandong-supply-base");
-    return "shandong-supply-base";
+    window.history.replaceState({}, "", "/chemical-sourcing");
+    return "chemical-sourcing";
+  }
+  if (pathname === "/shandong-supply-base") {
+    window.history.replaceState({}, "", "/chemical-sourcing");
+    return "chemical-sourcing";
+  }
+  if (pathname === "/about") {
+    window.history.replaceState({}, "", "/export-support");
+    return "export-support";
   }
   const key = pathname.replace("/", "") as Page;
   return [
@@ -1136,13 +1141,11 @@ useEffect(() => {
   const content = useMemo(() => {
     if (page === "chemical-sourcing") return <ApprovedChemicalSourcing lang={lang} />;
     if (page === "export-support") return <ApprovedExportSupport lang={lang} />;
-    if (page === "shandong-supply-base") return <ApprovedShandong />;
     if (page === "products") {
       return getProductSlug(window.location.pathname)
         ? <ProductsPage lang={lang} products={products} onRequestQuote={openProductInquiry} />
         : <ApprovedProducts lang={lang} />;
     }
-    if (page === "about") return <ApprovedAbout />;
     if (page === "services") return <ServicesPage go={go} lang={lang} />;
     if (page === "markets") return <MarketsPage go={go} lang={lang} />;
     if (page === "insights") return currentArticleSlug ? (
@@ -1171,8 +1174,6 @@ useEffect(() => {
   const approvedStandalone = page === "home"
     || page === "chemical-sourcing"
     || page === "export-support"
-    || page === "shandong-supply-base"
-    || page === "about"
     || page === "contact"
     || (page === "products" && !getProductSlug(window.location.pathname))
     || (page === "insights" && !currentArticleSlug);
