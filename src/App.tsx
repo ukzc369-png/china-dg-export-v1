@@ -1134,7 +1134,7 @@ useEffect(() => {
     setMobileMenuOpen(false);
   }
   const content = useMemo(() => {
-    if (page === "chemical-sourcing") return <ApprovedChemicalSourcing />;
+    if (page === "chemical-sourcing") return <ApprovedChemicalSourcing lang={lang} />;
     if (page === "export-support") return <ApprovedExportSupport />;
     if (page === "shandong-supply-base") return <ApprovedShandong />;
     if (page === "products") {
