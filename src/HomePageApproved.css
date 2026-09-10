@@ -120,22 +120,24 @@
 .approved-home .ah-lang{height:34px!important;margin-left:6px;padding:0 10px!important;border:1px solid #c8d9e8!important;border-radius:4px;background:#fff!important;color:#17456d!important;white-space:nowrap}
 .approved-home .ah-lang:hover{border-color:#0b84df!important;color:#0678c8!important;background:#eef8ff!important}
 @media(min-width:1181px){
-  .approved-home .ah-header-inner{display:grid;grid-template-columns:300px minmax(0,1fr)}
-  .approved-home .ah-header nav{justify-content:center;min-width:0}
-  .approved-home .ah-hero{height:clamp(470px,32.65625vw,840px)}
-  .approved-home .ah-hero-bg{background-size:100% auto;background-repeat:no-repeat;background-position:center center;background-color:#06345d}
+  .approved-home .ah-header-inner{display:flex;position:relative}
+  .approved-home .ah-header nav{position:absolute;left:50%;transform:translateX(-50%);justify-content:center;min-width:max-content}
+  .approved-home .ah-hero{height:clamp(390px,24vw,470px)}
+  .approved-home .ah-hero-bg{background-size:cover;background-repeat:no-repeat;background-position:center center;background-color:#06345d}
   .approved-home .ah-hero-content{align-items:center}
   .approved-home .ah-hero-content>div{max-width:640px}
   .approved-home .ah-hero h1{font-size:52px}
   .approved-home .ah-hero p{font-size:16px;line-height:1.5}
-  .approved-home .ah-section{padding:48px 0}
+  .approved-home .ah-section{padding:54px 0}
   .approved-home .ah-section-title h2{font-size:30px}
   .approved-home .ah-section-title p{font-size:14px}
   .approved-home .ah-section-title>button{font-size:12px}
-  .approved-home .ah-steps article{min-height:138px;padding:31px 20px 20px;gap:13px}
+  .approved-home .ah-steps article{min-height:150px;padding:32px 22px 21px;gap:14px}
   .approved-home .ah-steps .ah-icon{width:34px;height:34px;flex-basis:34px;font-size:16px}
-  .approved-home .ah-steps h3{font-size:15px;line-height:1.3;margin-bottom:7px}
-  .approved-home .ah-steps p{font-size:12px;line-height:1.5}
+  .approved-home .ah-steps h3{font-size:16px;line-height:1.3;margin-bottom:7px}
+  .approved-home .ah-steps p{font-size:13px;line-height:1.5}
+  .approved-home .ah-cap-grid h3{font-size:13px}
+  .approved-home .ah-cap-grid p{font-size:10px;line-height:1.4}
 }
 @media(min-width:681px) and (max-width:1180px){
   .approved-home .ah-lang{margin:6px 0 0!important;width:auto;text-align:center!important}

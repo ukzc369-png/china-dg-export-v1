@@ -1003,6 +1003,7 @@ export default function App() {
     () => (localStorage.getItem("chinadg-lang") as Lang) || "en",
   );
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [routePath, setRoutePath] = useState(() => window.location.pathname);
   const [currentArticleSlug, setCurrentArticleSlug] = useState<string | null>(() =>
     getArticleSlug(window.location.pathname),
   );
@@ -1041,6 +1042,7 @@ useEffect(() => {
 }, []);
   useEffect(() => {
     const onPop = () => {
+      setRoutePath(window.location.pathname);
       setPage(pathToPage(window.location.pathname));
       setCurrentArticleSlug(getArticleSlug(window.location.pathname));
     };
@@ -1170,7 +1172,7 @@ useEffect(() => {
         onOpenArticle={openArticle}
       />
     );
-  }, [page, lang, products, articles, currentArticleSlug, inquiryProduct, openProductInquiry]);
+  }, [page, lang, products, articles, currentArticleSlug, inquiryProduct, openProductInquiry, routePath]);
   const approvedStandalone = page === "home"
     || page === "chemical-sourcing"
     || page === "export-support"

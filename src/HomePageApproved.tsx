@@ -1,16 +1,16 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
 import type { Article, Lang, Page, Product } from "./HomePage";
+import { productSlug } from "./productDetails";
 import "./HomePageApproved.css";
 
 type Props={go:(page:Page)=>void;lang:Lang;setLang:(lang:Lang)=>void;products:Product[];articles:Article[];onOpenArticle:(slug:string)=>void};
 const copy={
-  en:{nav:["Home","Chemical Sourcing","Export Support","Products","Shandong Supply Base","Insights","About","Contact"],hero:"China Chemical Sourcing & Export Support",intro:"Work directly with an independent coordinator connected to Shandong’s petrochemical supply base and qualified resources for repacking, inspection, DG documentation, customs and shipping.",based:"Based in Shandong, China · Supporting international industrial buyers"},
-  zh:{nav:["首页","化工品寻源","出口支持","产品","山东产业带","行业洞察","关于","联系"],hero:"中国化工品寻源与出口支持",intro:"直接对接立足山东的独立协调人，连接石化产业带货源，以及分装、检验、危包单证、报关和订舱等合格服务资源。",based:"立足中国山东 · 服务国际工业采购商"}
+  en:{nav:["Home","Chemical Sourcing","Export Support","Products","Insights","Contact"],hero:"China Chemical Sourcing & Export Support",intro:"Work directly with an independent coordinator connected to Shandong’s petrochemical supply base and qualified resources for repacking, inspection, DG documentation, customs and shipping.",based:"Based in Shandong, China · Supporting international industrial buyers"},
+  zh:{nav:["首页","化工品寻源","出口支持","产品","行业洞察","联系"],hero:"中国化工品寻源与出口支持",intro:"直接对接立足山东的独立协调人，连接石化产业带货源，以及分装、检验、危包单证、报关和订舱等合格服务资源。",based:"立足中国山东 · 服务国际工业采购商"}
 };
-const routes:Page[]=["home","chemical-sourcing","export-support","products","shandong-supply-base","insights","about","contact"];
+const routes:Page[]=["home","chemical-sourcing","export-support","products","insights","contact"];
 const safe=(v:{en:string;zh:string},lang:Lang)=>v?.[lang]||v?.en||"";
-function slug(p:Product){return p.name.en.toLowerCase().trim().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"")}
 const showcase=[
  {label:"Xylene",cas:"1330-20-7",image:"/home-v5/xylene.webp",text:"Solvent sourcing, specification and drum or ISO tank review."},
  {label:"Methylene Chloride",cas:"75-09-2",image:"/home-v5/methylene-chloride.webp",text:"Supplier, COA, MSDS, packing and DG shipment review."},
@@ -19,7 +19,7 @@ const showcase=[
  {label:"Dimethyl Carbonate",cas:"616-38-6",image:"/home-v5/dimethyl-carbonate.webp",text:"Grade, application and shipment-option confirmation."},
  {label:"Acetone",cas:"67-64-1",image:"/home-v5/acetone.webp",text:"Industrial packing and export-document review."}
 ];
-function openProduct(p:Product){history.pushState({},"",`/products/${slug(p)}`);dispatchEvent(new PopStateEvent("popstate"));scrollTo({top:0,behavior:"smooth"})}
+function openProduct(p:Product){history.pushState({},"",`/products/${productSlug(p)}`);dispatchEvent(new PopStateEvent("popstate"));scrollTo({top:0,behavior:"smooth"})}
 const Icon=({children}:{children:string})=><span className="ah-icon" aria-hidden="true">{children}</span>;
 
 export default function HomePageApproved({go,lang,setLang,products,articles,onOpenArticle}:Props){
