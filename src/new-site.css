@@ -64,3 +64,14 @@ html,body,#root{max-width:100%;overflow-x:hidden}
   .ns-header-actions .ns-btn-small{display:none}
 }
 @media(max-width:480px){.ns-lang{font-size:10px;padding:0 7px}.ns-brand b{font-size:17px}.ns-brand small{font-size:6px}}
+
+/* Exact shared header metrics — mirrored by HomePageApproved.css. */
+@media(min-width:981px){
+  .ns-shell{width:min(1440px,calc(100% - 80px))}
+  .ns-header-in{height:64px}
+  .ns-header nav{font-size:11px;font-weight:450}
+  .ns-header nav>a:not(.ns-btn){padding:23px 11px 20px;letter-spacing:0;transition:color .16s ease,font-weight .16s ease}
+  .ns-header nav>a:not(.ns-btn):hover,.ns-header nav>a.active{font-weight:700}
+  .ns-lang{height:30px;padding:0 9px;font-size:10px;font-weight:500}
+  .ns-header-actions .ns-btn-small{min-height:34px;height:34px;padding:0 14px;font-size:10px;font-weight:600;border-radius:4px}
+}

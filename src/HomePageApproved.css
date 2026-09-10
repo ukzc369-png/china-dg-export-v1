@@ -181,3 +181,13 @@
   .approved-home .ah-lang{margin:0!important}
 }
 @media(max-width:480px){.approved-home .ah-lang{font-size:10px!important;padding:0 7px!important}}
+
+/* Exact shared header metrics — mirrored by new-site.css. */
+@media(min-width:981px){
+  .approved-home .ah-shell{width:min(1440px,calc(100% - 80px))}
+  .approved-home .ah-header{height:64px;min-height:64px}
+  .approved-home .ah-header nav button{font-size:11px;font-weight:450;padding:0 11px;letter-spacing:0;transition:color .16s ease,font-weight .16s ease}
+  .approved-home .ah-header nav button:hover,.approved-home .ah-header nav button.active{font-weight:700}
+  .approved-home .ah-lang{height:30px!important;padding:0 9px!important;font-size:10px!important;font-weight:500!important}
+  .approved-home .ah-header-actions .ah-top-cta{height:34px;padding:0 14px;font-size:10px;font-weight:600;border-radius:4px}
+}
