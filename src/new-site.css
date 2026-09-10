@@ -74,4 +74,5 @@ html,body,#root{max-width:100%;overflow-x:hidden}
   .ns-header nav>a:not(.ns-btn):hover,.ns-header nav>a.active{font-weight:700}
   .ns-lang{height:30px;padding:0 9px;font-size:10px;font-weight:500}
   .ns-header-actions .ns-btn-small{min-height:34px;height:34px;padding:0 14px;font-size:10px;font-weight:600;border-radius:4px}
+  .ns-brand small{margin-top:5px;font-size:7px;line-height:1;letter-spacing:1px;color:#668096;text-transform:uppercase}
 }

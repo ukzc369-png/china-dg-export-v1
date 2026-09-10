@@ -190,4 +190,5 @@
   .approved-home .ah-header nav button:hover,.approved-home .ah-header nav button.active{font-weight:700}
   .approved-home .ah-lang{height:30px!important;padding:0 9px!important;font-size:10px!important;font-weight:500!important}
   .approved-home .ah-header-actions .ah-top-cta{height:34px;padding:0 14px;font-size:10px;font-weight:600;border-radius:4px}
+  .approved-home .ah-brand small{margin-top:5px;font-size:7px;line-height:1;letter-spacing:1px;color:#668096;text-transform:uppercase}
 }
