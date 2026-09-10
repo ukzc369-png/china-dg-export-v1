@@ -102,7 +102,7 @@ const insightLinksBySlug = {
 for (const route of insightRouteDetails) {
   route.links = insightLinksBySlug[route.slug] ?? route.links;
   if (route.slug === "chloroform-supplier-china-vietnam-import-guide") {
-    route.author = "Daniel Zhang";
+    route.author = "Chao Zhang";
     route.datePublished = "2026-09-05";
     route.image = "/blog/chloroform-vietnam-cover.webp";
     route.faqs = [

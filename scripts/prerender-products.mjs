@@ -108,6 +108,22 @@ export function buildRouteHtml(shell, route) {
         name: "ChinaChemExport",
         url: `${SITE_URL}/`,
       },
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        name: "Chao Zhang",
+        jobTitle: "Independent Chemical Sourcing & Export Coordinator",
+        image: `${SITE_URL}/page-assets/chao-zhang-portrait.png`,
+        address: { "@type": "PostalAddress", addressRegion: "Shandong", addressCountry: "CN" },
+        knowsAbout: [
+          "Chemical sourcing in China",
+          "Dangerous chemical trade",
+          "Shandong chemical supply chains",
+          "Dangerous goods documentation",
+          "Chemical export coordination",
+        ],
+        worksFor: { "@type": "Organization", name: "ChinaChemExport", url: `${SITE_URL}/` },
+      },
     );
   } else if (kind === "insight") {
     schemas.push(
