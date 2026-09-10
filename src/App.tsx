@@ -1157,8 +1157,8 @@ useEffect(() => {
         articles={articles}
         currentArticleSlug={currentArticleSlug}
       />
-    ) : <ApprovedInsights />;
-    if (page === "contact") return <ApprovedContact initialProduct={inquiryProduct} />;
+    ) : <ApprovedInsights lang={lang} />;
+    if (page === "contact") return <ApprovedContact initialProduct={inquiryProduct} lang={lang} />;
     if (["privacy", "terms", "cookies", "dangerous-goods"].includes(page)) {
       return <LegalPage page={page as LegalPageKey} lang={lang} />;
     }

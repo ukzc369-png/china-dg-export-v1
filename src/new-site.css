@@ -29,3 +29,21 @@
 .ns-lang{height:34px;padding:0 10px;border:1px solid #c8d9e8;border-radius:4px;background:#fff;color:#17456d;font:inherit;font-weight:750;white-space:nowrap;cursor:pointer;transition:.18s ease}
 .ns-lang:hover{border-color:#0b84df;background:#eef8ff;color:#0678c8;transform:translateY(-1px)}
 .ns-coordinator-photo{width:145px;height:175px;flex:0 0 145px;object-fit:cover;object-position:center 16%;border-radius:7px;background:#d9e7f0}.ns-profile-name{display:block;margin-top:8px;color:#123a5c;font-size:13px}.ns-profile-tags{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 0}.ns-profile-tags span{padding:5px 8px;border:1px solid #cbdfea;border-radius:999px;background:#f2f8fc;color:#45637a;font-size:10px}.ns-about-card .ns-coordinator-photo{width:260px;height:265px}
+
+/* Final visual-system pass: consistent navigation, richer evidence imagery and clear interaction */
+.ns-evidence-image{position:relative;overflow:hidden;padding:0!important}.ns-evidence-image img{transition:transform .35s ease}.ns-evidence-image span{position:absolute;left:12px;bottom:12px;padding:5px 9px;border-radius:999px;background:rgba(3,31,57,.82);color:#fff;font-size:9px;font-weight:750;letter-spacing:.35px;backdrop-filter:blur(6px)}.ns-evidence-grid article:hover .ns-evidence-image img{transform:scale(1.035)}
+.ns-service-grid article,.ns-info-grid article,.ns-chain article,.ns-evidence-grid article,.ns-deliverables article{position:relative}.ns-service-grid article:after,.ns-info-grid article:after,.ns-deliverables article:after{content:"";position:absolute;left:0;bottom:0;width:0;height:3px;background:#1499e5;transition:width .22s ease}.ns-service-grid article:hover:after,.ns-info-grid article:hover:after,.ns-deliverables article:hover:after{width:100%}
+.ns-evidence-grid article,.ns-service-grid article,.ns-info-grid article,.ns-deliverables article,.ns-product-card,.ns-article-card{cursor:default}.ns-product-card,.ns-article-card,.ns-btn,.ns-list-link,.ns-text-link{cursor:pointer}
+@media(min-width:1181px){.ns-shell{width:min(1440px,calc(100% - 80px))}.ns-header-in{height:76px}.ns-header nav{gap:5px}.ns-header nav>a:not(.ns-btn){font-size:13px;padding-left:13px;padding-right:13px}.ns-page-intro{padding:58px 0}.ns-page-intro h1{font-size:43px}.ns-page-intro p{font-size:16px}.ns-evidence-grid img{height:230px}.ns-evidence-grid.four img{height:195px}.ns-profile{min-height:330px}.ns-coordinator-photo{width:170px;height:220px;flex-basis:170px}.ns-about-card .ns-coordinator-photo{width:270px;height:300px}.ns-profile p{font-size:14px}.ns-profile-tags span{font-size:11px}}
+@media(max-width:640px){.ns-evidence-image span{font-size:8px}.ns-coordinator-photo{width:128px!important;height:158px!important;flex-basis:128px}.ns-profile-name{font-size:12px}.ns-profile-tags span{font-size:9px}}
+
+/* Guard every page against narrow-screen overflow from long trade terminology. */
+html,body,#root{max-width:100%;overflow-x:hidden}
+.ns-shell,.ns-shell>*,.ns-page-intro-row>*,.ns-section-head>*,.ns-steps article{min-width:0}
+.ns-page-intro h1,.ns-section-head h2,.ns-steps h3,.ns-steps p{overflow-wrap:anywhere}
+@media(max-width:640px){
+  .ns-shell{width:calc(100% - 30px)}
+  .ns-page-intro h1{font-size:28px;line-height:1.12;letter-spacing:-.5px}
+  .ns-section-head h2{font-size:27px;line-height:1.15}
+  .ns-steps article{overflow:hidden;padding-left:16px;padding-right:16px}
+}

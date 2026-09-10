@@ -39,7 +39,7 @@ test("chloroform Vietnam guide exposes GEO entities, FAQ schema and commercial l
   assert.match(html, /CAS 67-66-3/);
   assert.match(html, /UN 1888/);
   assert.match(html, /"@type":"FAQPage"/);
-  assert.match(html, /"name":"Chao Zhang"/);
+  assert.match(html, /"name":"Evan Cole"/);
   assert.match(html, /"datePublished":"2026-09-05"/);
   assert.match(html, /href="\/products\/trichloromethane-tcm"/);
   assert.match(html, /href="\/dangerous-goods"/);
@@ -62,7 +62,7 @@ test("homepage prerender exposes organization and website identity", () => {
   assert.match(html, /"@type":"Organization"/);
   assert.match(html, /"@type":"WebSite"/);
   assert.match(html, /"@type":"Person"/);
-  assert.match(html, /"name":"Chao Zhang"/);
+  assert.match(html, /"name":"Evan Cole"/);
   assert.match(html, /"jobTitle":"Independent Chemical Sourcing & Export Coordinator"/);
   assert.match(html, /href="\/products"/);
   assert.match(html, /href="\/contact"/);

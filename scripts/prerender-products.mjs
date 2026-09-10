@@ -111,7 +111,7 @@ export function buildRouteHtml(shell, route) {
       {
         "@context": "https://schema.org",
         "@type": "Person",
-        name: "Chao Zhang",
+        name: "Evan Cole",
         jobTitle: "Independent Chemical Sourcing & Export Coordinator",
         image: `${SITE_URL}/page-assets/chao-zhang-portrait.png`,
         address: { "@type": "PostalAddress", addressRegion: "Shandong", addressCountry: "CN" },
