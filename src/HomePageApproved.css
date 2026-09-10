@@ -138,6 +138,11 @@
   .approved-home .ah-steps p{font-size:13px;line-height:1.5}
   .approved-home .ah-cap-grid h3{font-size:13px}
   .approved-home .ah-cap-grid p{font-size:10px;line-height:1.4}
+  .approved-home .ah-chain-grid img{height:120px}
+  .approved-home .ah-chain-grid h3{font-size:13px;margin-top:10px}
+  .approved-home .ah-chain-grid p{font-size:10px;line-height:1.4}
+  .approved-home .ah-chain-grid i{top:48px}
+  .approved-home .ah-boundary{margin-top:14px;font-size:9px}
 }
 @media(min-width:681px) and (max-width:1180px){
   .approved-home .ah-lang{margin:6px 0 0!important;width:auto;text-align:center!important}
