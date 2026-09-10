@@ -47,3 +47,20 @@ html,body,#root{max-width:100%;overflow-x:hidden}
   .ns-section-head h2{font-size:27px;line-height:1.15}
   .ns-steps article{overflow:hidden;padding-left:16px;padding-right:16px}
 }
+
+/* Three-zone header keeps utility actions out of the primary navigation. */
+.ns-header-actions{display:flex;align-items:center;justify-content:flex-end;gap:10px;min-width:0}
+@media(min-width:981px){
+  .ns-header-in{display:grid;grid-template-columns:minmax(255px,1fr) auto minmax(255px,1fr);column-gap:24px;justify-content:initial}
+  .ns-header nav{position:static;transform:none;justify-self:center;min-width:0;gap:4px;font-size:12px}
+  .ns-header nav>a:not(.ns-btn){padding-left:11px;padding-right:11px}
+  .ns-header-actions{justify-self:end}
+  .ns-header-actions .ns-btn-small{min-height:40px;padding:0 17px;font-size:12px;white-space:nowrap}
+}
+@media(max-width:980px){
+  .ns-header-in{display:flex}
+  .ns-header nav{top:64px;transform:none}
+  .ns-header-actions{margin-left:auto}
+  .ns-header-actions .ns-btn-small{display:none}
+}
+@media(max-width:480px){.ns-lang{font-size:10px;padding:0 7px}.ns-brand b{font-size:17px}.ns-brand small{font-size:6px}}

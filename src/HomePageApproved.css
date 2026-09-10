@@ -163,3 +163,21 @@
   .approved-home .ah-contact{padding:50px 0}.approved-home .ah-contact article,.approved-home .ah-contact form{height:auto;min-height:350px;max-height:none;overflow:visible;padding:28px}.approved-home .ah-person{grid-template-columns:180px 1fr;gap:24px}.approved-home .ah-photo{height:255px}.approved-home .ah-person small{font-size:9px}.approved-home .ah-person h2{font-size:28px;margin:7px 0}.approved-home .ah-person p{font-size:12px;line-height:1.55}.approved-home .ah-person b,.approved-home .ah-person em{font-size:10px}.approved-home .ah-experience-tags{gap:6px;margin-top:12px}.approved-home .ah-experience-tags span{font-size:9px;padding:4px 7px}.approved-home .ah-contact-actions{margin-top:15px}.approved-home .ah-contact-actions a{height:38px;font-size:10px}.approved-home .ah-contact form h2{font-size:27px;margin-bottom:18px}.approved-home .ah-form-grid{gap:13px}.approved-home .ah-form-grid label{font-size:10px}.approved-home .ah-form-grid input{height:42px;font-size:10px}.approved-home .ah-contact form>button{height:44px;margin-top:14px;font-size:11px}
 }
 @media(max-width:680px){.approved-home .ah-shell{width:calc(100% - 28px)}}
+
+/* Three-zone header: brand left, primary navigation centered, utilities right. */
+.approved-home .ah-header-actions{display:flex;align-items:center;justify-content:flex-end;gap:10px;min-width:0}
+.approved-home .ah-header-actions .ah-top-cta{height:40px;border:0;border-radius:5px;background:var(--bright);color:#fff;padding:0 18px;font-size:11px;font-weight:800;white-space:nowrap}
+@media(min-width:981px){
+  .approved-home .ah-header-inner{display:grid;grid-template-columns:minmax(245px,1fr) auto minmax(245px,1fr);column-gap:24px}
+  .approved-home .ah-header nav{position:static;transform:none;justify-self:center;min-width:0;gap:2px}
+  .approved-home .ah-header nav button{font-size:11px;padding:0 12px}
+  .approved-home .ah-header-actions{justify-self:end}
+}
+@media(max-width:980px){
+  .approved-home .ah-header-inner{display:flex}
+  .approved-home .ah-header nav{top:64px;transform:none}
+  .approved-home .ah-header-actions{margin-left:auto}
+  .approved-home .ah-header-actions .ah-top-cta{display:none}
+  .approved-home .ah-lang{margin:0!important}
+}
+@media(max-width:480px){.approved-home .ah-lang{font-size:10px!important;padding:0 7px!important}}
