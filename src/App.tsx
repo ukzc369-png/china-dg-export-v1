@@ -1140,7 +1140,7 @@ useEffect(() => {
     if (page === "products") {
       return getProductSlug(window.location.pathname)
         ? <ProductsPage lang={lang} products={products} onRequestQuote={openProductInquiry} />
-        : <ApprovedProducts />;
+        : <ApprovedProducts lang={lang} />;
     }
     if (page === "about") return <ApprovedAbout />;
     if (page === "services") return <ServicesPage go={go} lang={lang} />;
