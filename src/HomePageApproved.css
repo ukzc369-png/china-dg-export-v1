@@ -180,6 +180,11 @@
   .approved-home .ah-header-actions .ah-top-cta{display:none}
   .approved-home .ah-lang{margin:0!important}
 }
+
+/* Match the business-page brand and navigation exactly. */
+.approved-home .brand-logo{display:flex;align-items:center;gap:10px;color:#062b52}.approved-home .brand-logo-mark{display:block;width:36px;height:36px;flex:0 0 36px;color:#062b52}.approved-home .brand-logo-copy{display:flex;min-width:0;flex-direction:column;line-height:1}.approved-home .brand-logo-copy b{font-size:19px;letter-spacing:-.45px}.approved-home .brand-logo-copy small{margin-top:5px;font-size:6.5px;line-height:1;letter-spacing:1.15px;color:#668096;text-transform:uppercase;white-space:nowrap}.approved-home .ah-brand{display:block}
+@media(min-width:981px){.approved-home .ah-header nav button{font-size:12px!important;font-weight:450!important;padding:0 10px!important}.approved-home .ah-header nav button:hover,.approved-home .ah-header nav button.active{font-weight:700!important}}
+@media(max-width:480px){.approved-home .brand-logo-mark{width:31px;height:31px;flex-basis:31px}.approved-home .brand-logo-copy b{font-size:16px}.approved-home .brand-logo-copy small{font-size:5.2px;letter-spacing:.75px}}
 @media(max-width:480px){.approved-home .ah-lang{font-size:10px!important;padding:0 7px!important}}
 
 /* Exact shared header metrics — mirrored by new-site.css. */

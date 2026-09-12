@@ -379,9 +379,9 @@ function storedI18n(value: string | null | undefined, fallbackEn: string, fallba
 
 const nav: { label: I18n; page: Page }[] = [
   { label: t("Home", "首页"), page: "home" },
+  { label: t("Products", "产品"), page: "products" },
   { label: t("Chemical Sourcing", "化工品寻源"), page: "chemical-sourcing" },
   { label: t("Export Support", "出口支持"), page: "export-support" },
-  { label: t("Products", "产品"), page: "products" },
   { label: t("Insights", "行业洞察"), page: "insights" },
   { label: t("Contact", "联系"), page: "contact" },
 ];

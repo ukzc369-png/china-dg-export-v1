@@ -58,6 +58,11 @@ html,body,#root{max-width:100%;overflow-x:hidden}
   .ns-header-actions .ns-btn-small{min-height:40px;padding:0 17px;font-size:12px;white-space:nowrap}
 }
 
+/* Shared brand and navigation metrics. */
+.brand-logo{display:flex;align-items:center;gap:10px;color:#062b52}.brand-logo-mark{display:block;width:36px;height:36px;flex:0 0 36px;color:#062b52}.brand-logo-copy{display:flex;min-width:0;flex-direction:column;line-height:1}.brand-logo-copy b{font-size:19px;letter-spacing:-.45px}.brand-logo-copy small{margin-top:5px;font-size:6.5px;line-height:1;letter-spacing:1.15px;color:#668096;text-transform:uppercase;white-space:nowrap}.ns-brand{flex-direction:row;align-items:center}.ns-brand>.brand-logo{display:flex}.ns-brand>.brand-logo .brand-logo-copy small{margin-top:5px}
+@media(min-width:981px){.ns-header nav{font-size:12px!important;font-weight:450}.ns-header nav>a:not(.ns-btn){padding-left:10px;padding-right:10px}.ns-header nav>a:not(.ns-btn):hover,.ns-header nav>a.active{font-weight:700}}
+@media(max-width:480px){.brand-logo-mark{width:31px;height:31px;flex-basis:31px}.brand-logo-copy b{font-size:16px}.brand-logo-copy small{font-size:5.2px;letter-spacing:.75px}}
+
 /* Give catalogue artwork enough vertical room for its embedded product label. */
 .ns-product-img{height:200px}
 .ns-product-img img{object-position:center center}
