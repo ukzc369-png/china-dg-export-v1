@@ -51,6 +51,7 @@ export const coreRoutes = [
 ];
 
 export const insightRouteDetails = [
+  ["white-oil-liquid-paraffin-durban-import-specification-guide", "White Oil / Liquid Paraffin from China: Durban Import Guide", "How buyers can verify white oil or liquid paraffin identity, specification, Flexibag packing and Durban import preparation."],
   ["how-to-export-dichloromethane-from-china", "How to Export Dichloromethane from China", "A practical guide to dichloromethane sourcing, documents, packaging and dangerous-goods shipping from China."],
   ["one-stop-chemical-export-compliance-services-from-china", "One-stop Chemical Export Compliance Services from China", "How chemical buyers can coordinate sourcing, compliance documents, packaging and export shipping through one workflow."],
   ["inland-port-chemical-export-services-china", "Inland Port Chemical Export Services in China", "How inland-port warehousing, consolidation, repacking and customs coordination support chemical exports from China."],
@@ -72,6 +73,11 @@ export const insightRouteDetails = [
 }));
 
 const insightLinksBySlug = {
+  "white-oil-liquid-paraffin-durban-import-specification-guide": [
+    ["/products", "Browse chemical products"],
+    ["/export-support", "Review export support"],
+    ["/contact", "Request a white oil supply review"],
+  ],
   "dimethyl-carbonate-supplier-china-export-guide": [
     ["/products/dimethyl-carbonate-dmc", "View Dimethyl Carbonate product details"],
     ["/insights/dimethyl-carbonate-vietnam-china-supplier-guide", "Read the DMC Vietnam supply guide"],
@@ -101,6 +107,16 @@ const insightLinksBySlug = {
 
 for (const route of insightRouteDetails) {
   route.links = insightLinksBySlug[route.slug] ?? route.links;
+  if (route.slug === "white-oil-liquid-paraffin-durban-import-specification-guide") {
+    route.author = "Evan Cole";
+    route.datePublished = "2026-10-09";
+    route.image = "/blog/white-oil-durban-import-guide-cover.png";
+    route.faqs = [
+      ["Is white oil the same as liquid paraffin?", "The names can overlap in trade, but grade, CAS, specification and intended use must be confirmed from current documents."],
+      ["Can white oil be shipped in a Flexibag?", "Potentially, subject to product compatibility, liner, carrier, terminal and destination requirements."],
+      ["What documents should a Durban buyer request?", "Confirm the transaction-specific set, commonly including TDS, SDS, batch COA, invoice, packing list and bill of lading."],
+    ];
+  }
   if (route.slug === "chloroform-supplier-china-vietnam-import-guide") {
     route.author = "Evan Cole";
     route.datePublished = "2026-09-05";
