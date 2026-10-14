@@ -51,6 +51,7 @@ export const coreRoutes = [
 ];
 
 export const insightRouteDetails = [
+  ["xylene-china-kenya-export-cif-mombasa-guide", "Xylene from China to Kenya: Mombasa Export Guide", "A buyer-focused guide to mixed xylene specifications, drum packing, FOB Qingdao, CIF Mombasa and Kenya import preparation."],
   ["white-oil-liquid-paraffin-durban-import-specification-guide", "White Oil / Liquid Paraffin from China: Durban Import Guide", "How buyers can verify white oil or liquid paraffin identity, specification, Flexibag packing and Durban import preparation."],
   ["how-to-export-dichloromethane-from-china", "How to Export Dichloromethane from China", "A practical guide to dichloromethane sourcing, documents, packaging and dangerous-goods shipping from China."],
   ["one-stop-chemical-export-compliance-services-from-china", "One-stop Chemical Export Compliance Services from China", "How chemical buyers can coordinate sourcing, compliance documents, packaging and export shipping through one workflow."],
@@ -73,6 +74,11 @@ export const insightRouteDetails = [
 }));
 
 const insightLinksBySlug = {
+  "xylene-china-kenya-export-cif-mombasa-guide": [
+    ["/products/xylene", "View Xylene product details"],
+    ["/chemical-sourcing", "Review chemical sourcing support"],
+    ["/contact", "Request a Xylene supply review"],
+  ],
   "white-oil-liquid-paraffin-durban-import-specification-guide": [
     ["/products", "Browse chemical products"],
     ["/export-support", "Review export support"],
@@ -107,6 +113,16 @@ const insightLinksBySlug = {
 
 for (const route of insightRouteDetails) {
   route.links = insightLinksBySlug[route.slug] ?? route.links;
+  if (route.slug === "xylene-china-kenya-export-cif-mombasa-guide") {
+    route.author = "Evan Cole";
+    route.datePublished = "2026-10-14";
+    route.image = "/blog/xylene-kenya-export-guide-cover.png";
+    route.faqs = [
+      ["Is mixed xylene the same as every product sold as Xylene?", "No. Composition and quality limits vary by grade and producer, so confirm the TDS and COA."],
+      ["Can 180 kg drums be used instead of 170 kg drums?", "Only after the buyer confirms the change because drum size affects loading and final net quantity."],
+      ["Who buys marine insurance under FOB Qingdao?", "The buyer normally arranges the main carriage and insurance under FOB, subject to the agreed contract."],
+    ];
+  }
   if (route.slug === "white-oil-liquid-paraffin-durban-import-specification-guide") {
     route.author = "Evan Cole";
     route.datePublished = "2026-10-09";
