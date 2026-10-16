@@ -1192,7 +1192,7 @@ useEffect(() => {
     <>
       <header className="header">
         <button className="brand" onClick={() => go("home")}>
-          <span className="brand-mark">CE</span>
+          <span className="brand-mark brand-mark-cce">CCE<i /></span>
           <span>
             <b>ChinaChemExport</b>
             <small>

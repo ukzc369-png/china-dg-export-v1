@@ -57,6 +57,8 @@ button {
   font-weight: 850;
   font-size: 14px;
 }
+.brand-mark-cce{font-size:11px;letter-spacing:-1.5px;position:relative;font-weight:850}
+.brand-mark-cce i{position:absolute;width:5px;height:5px;background:#1678d4;right:5px;top:15px}
 .brand b {
   display: block;
   font-size: 15px;
@@ -654,6 +656,9 @@ button {
 .hp-hero-bg {
   background-image: linear-gradient(90deg, rgba(1, 15, 34, .98) 0%, rgba(2, 18, 39, .88) 36%, rgba(2, 18, 39, .18) 68%, rgba(2, 18, 39, .03) 100%), url('/home-v4/hero-refinery.png') !important;
 }
+
+.hp-footer-brand .hp-footer-cce{position:relative;background:#062b52;border:0;border-radius:0;color:#fff;font-size:13px;letter-spacing:-1.5px}
+.hp-footer-brand .hp-footer-cce i{position:absolute;width:5px;height:5px;background:#1678d4;right:4px;top:16px}
 .catalog-layout {
   display: grid;
   grid-template-columns: 250px 1fr;
