@@ -1071,7 +1071,7 @@ useEffect(() => {
             lang,
           )
         : tx(({
-            "chemical-sourcing": t("Chemical Sourcing in China, Coordinated from Shandong | ChinaChemExport", "中国化工品寻源服务｜ChinaChemExport"),
+            "chemical-sourcing": t("Chemical Sourcing in China | Verified Suppliers & Export Coordination", "中国化工品寻源｜供应商核验与出口协调 | ChinaChemExport"),
             "export-support": t("Chemical Export Support from China | ChinaChemExport", "中国化工品出口支持｜ChinaChemExport"),
             "shandong-supply-base": t("Shandong Chemical Supply Base | ChinaChemExport", "山东化工产业带寻源｜ChinaChemExport"),
             products: t("Chemicals Sourced from China | ChinaChemExport", "中国化工品寻源目录｜ChinaChemExport"),
@@ -1092,7 +1092,7 @@ useEffect(() => {
         "Meet the independent chemical sourcing and export coordinator behind ChinaChemExport, connecting overseas buyers with reviewed supply and qualified operating resources in Shandong.",
         "了解ChinaChemExport背后的独立化工品寻源与出口协调人，为海外采购商连接山东经核验货源及合格履约资源。",
       ),
-      "chemical-sourcing": t("Independent chemical sourcing in China: requirement review, supplier identification, specification checks, availability confirmation and commercial comparison.", "独立中国化工品寻源服务：需求梳理、供应商筛选、规格核验、货源确认及商务条件比较。"),
+      "chemical-sourcing": t("Source chemicals from China with specification review, supplier coordination, document checks, compliant packing and export support for qualified industrial buyers.", "中国化工品寻源服务：规格核验、供应商协调、出口单证、合规包装及面向工业买家的国际运输支持。"),
       "export-support": t("Chemical export coordination covering qualified repacking, inspection, dangerous-goods documents, customs declaration, vessel booking and port follow-up.", "化工品出口协调服务，覆盖合格分装、检验、危包单证、报关、订舱和港口交付跟进。"),
       "shandong-supply-base": t("A buyer-focused introduction to chemical sourcing from Shandong’s petrochemical supply base and its regional export-service resources.", "面向海外买家的山东石化产业带寻源介绍及区域出口服务资源说明。"),
       insights: t("Practical guides for overseas buyers reviewing Chinese chemical suppliers, specifications, packing, dangerous-goods documents and shipment options.", "面向海外买家的中国化工品供应商、规格、包装、危品单证与运输方案实务指南。"),
