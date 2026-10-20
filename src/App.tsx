@@ -1019,8 +1019,6 @@ const newExportServiceGuide: Article = {
   seoTitle: t("Chemical Export Service China | Supplier and Price Review", "中国化工出口服务｜供应商与价格审核"),
   seoDescription: t("Compare Chinese chemical suppliers, current pricing, export documents, packing and shipment feasibility before quotation.", "报价前比较中国化工供应商、当前价格、出口文件、包装和出运可行性。"),
   coverImage: "/blog/chemical-export-service-china-guide-cover.png",
-  created_at: "2026-10-20",
-  status: "published",
 };
 const [articles, setArticles] = useState<Article[]>(
   [chloroformVietnamArticle, newExportServiceGuide, ...fallbackArticles.map(fallbackArticleToArticle)],
