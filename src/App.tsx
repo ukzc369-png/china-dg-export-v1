@@ -1045,7 +1045,9 @@ useEffect(() => {
 
     if (articleData && articleData.length > 0) {
       const cmsArticles = articleData.map((item) => cmsArticleToArticle(item as CmsArticle));
-      setArticles(cmsArticles.some((article) => article.slug === chloroformVietnamArticle.slug) ? cmsArticles : [chloroformVietnamArticle, ...cmsArticles]);
+      const requiredArticles = [chloroformVietnamArticle, newExportServiceGuide];
+      const mergedArticles = [...requiredArticles, ...cmsArticles.filter((article) => !requiredArticles.some((required) => required.slug === article.slug))];
+      setArticles(mergedArticles);
     }
   }
 
