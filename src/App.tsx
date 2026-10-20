@@ -1010,8 +1010,20 @@ export default function App() {
   );
   const [products, setProducts] = useState<Product[]>(fallbackProducts);
   const [inquiryProduct, setInquiryProduct] = useState("");
+const newExportServiceGuide: Article = {
+  slug: "chemical-export-service-china-supplier-price-document-guide",
+  title: t("Chemical Export Service China: How to Compare Suppliers, Prices and Export Documents", "中国化工出口服务：如何比较供应商、价格和出口文件"),
+  tag: t("Supplier Evaluation", "供应商评估"),
+  text: t("A practical guide for industrial buyers comparing Chinese chemical suppliers, pricing, documents, packing and shipment terms.", "帮助工业买家比较中国化工供应商、价格、文件、包装和出运条件的实用指南。"),
+  content: t("A useful chemical export quote starts with the product specification, not only the trade name. Confirm the CAS number, grade, quantity, packing, destination port and Incoterm before comparing prices. Then check the supplier identity, current availability, TDS, SDS, batch COA, UN packing and carrier acceptance. One offer may be FOB Qingdao while another includes freight, so compare like with like. Send the product, specification, quantity, packing preference, destination and required documents before requesting a quote. ChinaChemExport reviews suitable supply channels, current commercial terms, documents and shipment feasibility for each inquiry.", "一份可靠的化工出口报价应从产品规格开始，而不只是贸易名称。比较价格前，应确认 CAS、牌号、数量、包装、目的港和贸易术语，再核验供应商身份、当前货源、TDS、SDS、批次 COA、UN 包装和承运条件。不同报价可能分别采用 FOB 青岛或含运费条件，必须在同一基础上比较。询价时请提供产品、规格、数量、包装、目的地和文件要求。ChinaChemExport 会针对每条询盘审核合适货源、商务条件、文件和出运可行性。"),
+  seoTitle: t("Chemical Export Service China | Supplier and Price Review", "中国化工出口服务｜供应商与价格审核"),
+  seoDescription: t("Compare Chinese chemical suppliers, current pricing, export documents, packing and shipment feasibility before quotation.", "报价前比较中国化工供应商、当前价格、出口文件、包装和出运可行性。"),
+  coverImage: "/blog/chemical-export-service-china-guide-cover.png",
+  created_at: "2026-10-20",
+  status: "published",
+};
 const [articles, setArticles] = useState<Article[]>(
-  [chloroformVietnamArticle, ...fallbackArticles.map(fallbackArticleToArticle)],
+  [chloroformVietnamArticle, newExportServiceGuide, ...fallbackArticles.map(fallbackArticleToArticle)],
 );
 
 useEffect(() => {
