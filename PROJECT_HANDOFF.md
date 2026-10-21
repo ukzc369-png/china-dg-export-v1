@@ -274,3 +274,78 @@ https://github.com/ukzc369-png/china-dg-export-v1
 
 下一步优先开发：
 产品详情页系统。
+
+---
+
+## 九、2026-10-21 继续工作记忆（换账号必读）
+
+### 正式网站与仓库
+
+正式网站：
+https://chinachemexport.com
+
+Cloudflare Pages 项目：
+china-dg-export-v1
+
+GitHub：
+https://github.com/ukzc369-png/china-dg-export-v1
+
+当前工作目录：
+D:\CodexData\.codex\worktrees\9bb7\ChinaDGExport-V1
+
+### 已完成的近期工作
+
+- CCE Logo 已替换并发布。
+- 首页已完成 SEO/GEO 与询盘转化优化。
+- 首页新增供应商比较、当前价格、规格/文件/包装/运输可行性等表达。
+- 新增文章：
+  `chemical-export-service-china-supplier-price-document-guide`
+- 文章已生成专属封面：
+  `public/blog/chemical-export-service-china-guide-cover.png`
+- 已加入 Cloudflare Pages SPA 路由回退：
+  `public/_redirects`
+- 已修复文章备用数据被 Supabase CMS 数据覆盖的问题。
+- 中文切换已改为不刷新整页，并同步更新文章内容和主要页面内容。
+
+### 最近重要提交
+
+- `02c3637` update CCE brand logo
+- `5d919e5` improve sourcing SEO and GEO content
+- `7cdfaf9` prevent public site crash without Supabase env
+- `940579a` complete homepage conversion optimization
+- `454d1f4` publish china chemical export service buyer guide
+- `aba89ca` add cover image to export service guide
+- `dfd03f0` fix direct access for article routes
+- `832e819` preserve published guide when CMS loads
+- `5df3de4` format export guide with structured sections
+- `9570761` make language switch update article content
+
+### 必须遵守的发布流程
+
+用户明确要求：任何网站修改不能只以“代码已提交/已推送”为完成标准。
+
+每次修改必须：
+
+1. 本地 `npm run build` 通过。
+2. 提交并推送到 `main`，触发 Cloudflare 部署。
+3. 打开正式网站 `https://chinachemexport.com` 检查实际线上页面。
+4. 检查目标页面、文案、图片、链接、中文切换、刷新和深层 URL。
+5. 如果线上还是旧版本、404、空白页或功能异常，继续排查，不能报告“已完成”。
+
+### 当前已知风险
+
+- Cloudflare Pages 自动部署可能有延迟，必须以正式域名实际打开结果为准。
+- Supabase CMS 数据加载可能覆盖本地备用文章，新增文章必须同时保留在主应用数据源。
+- 文章深层 URL 需要 `public/_redirects`，否则直接打开可能出现 404。
+- 不要把 Cloudflare Token、Supabase 密钥或 Resend API Key 粘贴到对话中。
+
+### 当前建议的下一步
+
+1. 在正式网站验证最新文章英文显示。
+2. 点击文章页中文按钮，确认标题、正文、FAQ、侧栏同步切换且不 404。
+3. 检查首页线上是否已经显示最新的五项优化文案。
+4. 继续根据 Google Search Console 七天数据优化已有曝光页面，不要只增加无搜索意图的文章。
+
+### 换 GPT 账号时使用的继续指令
+
+请读取项目根目录的 `PROJECT_HANDOFF.md`，继续负责 ChinaChemExport 独立站运营和开发。正式网站是 https://chinachemexport.com，仓库是 https://github.com/ukzc369-png/china-dg-export-v1。必须遵守文档中的“每次修改后打开正式网站真实检查”的发布流程；不要只根据 Git 推送或 Cloudflare 后台状态报告完成。先检查当前线上文章路由、中文切换和首页版本，再开展新任务。
