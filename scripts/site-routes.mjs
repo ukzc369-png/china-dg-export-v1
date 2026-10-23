@@ -52,7 +52,8 @@ export const coreRoutes = [
 
 export const insightRouteDetails = [
   ["xylene-china-kenya-export-cif-mombasa-guide", "Xylene from China to Kenya: Mombasa Export Guide", "A buyer-focused guide to mixed xylene specifications, drum packing, FOB Qingdao, CIF Mombasa and Kenya import preparation."],
-  ["white-oil-liquid-paraffin-durban-import-specification-guide", "White Oil / Liquid Paraffin from China: Durban Import Guide", "How buyers can verify white oil or liquid paraffin identity, specification, Flexibag packing and Durban import preparation."],
+  ["white-oil-liquid-paraffin-durban-import-specification-guide", "White Oil Supplier China: Bulk Packing & Durban Import Guide", "Compare China white oil and liquid paraffin suppliers, viscosity and flash point specifications, batch documents, Flexibag packing and Durban import requirements."],
+  ["chemical-export-service-china-supplier-price-document-guide", "Chemical Export Service China: Compare Suppliers, Prices and Documents", "A practical guide to comparing Chinese chemical suppliers, current pricing, TDS, SDS, COA, export packing and shipment feasibility before quotation."],
   ["how-to-export-dichloromethane-from-china", "How to Export Dichloromethane from China", "A practical guide to dichloromethane sourcing, documents, packaging and dangerous-goods shipping from China."],
   ["one-stop-chemical-export-compliance-services-from-china", "One-stop Chemical Export Compliance Services from China", "How chemical buyers can coordinate sourcing, compliance documents, packaging and export shipping through one workflow."],
   ["inland-port-chemical-export-services-china", "Inland Port Chemical Export Services in China", "How inland-port warehousing, consolidation, repacking and customs coordination support chemical exports from China."],
@@ -80,9 +81,14 @@ const insightLinksBySlug = {
     ["/contact", "Request a Xylene supply review"],
   ],
   "white-oil-liquid-paraffin-durban-import-specification-guide": [
-    ["/products", "Browse chemical products"],
+    ["/chemical-sourcing", "Review chemical sourcing support"],
     ["/export-support", "Review export support"],
     ["/contact", "Request a white oil supply review"],
+  ],
+  "chemical-export-service-china-supplier-price-document-guide": [
+    ["/chemical-sourcing", "Review chemical sourcing support"],
+    ["/export-support", "Review export support"],
+    ["/contact", "Send a chemical sourcing requirement"],
   ],
   "dimethyl-carbonate-supplier-china-export-guide": [
     ["/products/dimethyl-carbonate-dmc", "View Dimethyl Carbonate product details"],
@@ -131,6 +137,16 @@ for (const route of insightRouteDetails) {
       ["Is white oil the same as liquid paraffin?", "The names can overlap in trade, but grade, CAS, specification and intended use must be confirmed from current documents."],
       ["Can white oil be shipped in a Flexibag?", "Potentially, subject to product compatibility, liner, carrier, terminal and destination requirements."],
       ["What documents should a Durban buyer request?", "Confirm the transaction-specific set, commonly including TDS, SDS, batch COA, invoice, packing list and bill of lading."],
+    ];
+  }
+  if (route.slug === "chemical-export-service-china-supplier-price-document-guide") {
+    route.author = "Evan Cole";
+    route.datePublished = "2026-10-20";
+    route.image = "/blog/chemical-export-service-china-guide-cover.png";
+    route.faqs = [
+      ["Can a China chemical export service guarantee the lowest price?", "No. Suppliers and prices must be compared on the same specification, packing, quantity, Incoterm and shipment basis."],
+      ["Which documents should be checked before quotation?", "Review the current TDS, SDS, batch COA and any route-specific dangerous-goods or packing documents."],
+      ["What should a buyer send for a useful review?", "Send the product and CAS, specification, quantity, packing, destination port, Incoterm, schedule and required documents."],
     ];
   }
   if (route.slug === "chloroform-supplier-china-vietnam-import-guide") {

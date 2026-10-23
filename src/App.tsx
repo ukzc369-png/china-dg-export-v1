@@ -1045,7 +1045,19 @@ useEffect(() => {
       .order("created_at", { ascending: false });
 
     if (articleData && articleData.length > 0) {
-      const cmsArticles = articleData.map((item) => cmsArticleToArticle(item as CmsArticle));
+      const cmsArticles = articleData.map((item) => cmsArticleToArticle(item as CmsArticle)).map((article) => {
+        if (article.slug !== "white-oil-liquid-paraffin-durban-import-specification-guide") return article;
+        const linksEn = "\n\n## Continue your review\n\nSee our [chemical sourcing support](/chemical-sourcing), [export support](/export-support) and [chemical product directory](/products). If you already have a target specification, [send a white oil sourcing requirement](/contact) for a transaction-specific review.";
+        const linksZh = "\n\n## 继续审核采购方案\n\n您可以查看[化工品寻源服务](/chemical-sourcing)、[出口支持](/export-support)和[化工产品目录](/products)。如果已有目标规格，请[提交白油采购需求](/contact)，以便按具体交易审核。";
+        return {
+          ...article,
+          title: t("White Oil Supplier China: Bulk Packing & Durban Import Guide", "中国白油供应商：散装包装与德班进口指南"),
+          text: t("Compare China white oil and liquid paraffin suppliers, viscosity and flash point specifications, batch documents, Flexibag packing and Durban import requirements.", "比较中国白油和液体石蜡供应商、黏度与闪点规格、批次文件、液袋包装及德班进口要求。"),
+          seoTitle: t("White Oil Supplier China | Bulk Packing & Durban Import", "中国白油供应商｜散装包装与德班进口"),
+          seoDescription: t("Compare China white oil suppliers, specifications, batch documents, Flexibag packing and Durban import requirements before quotation.", "报价前比较中国白油供应商、规格、批次文件、液袋包装和德班进口要求。"),
+          content: t(`${tx(article.content, "en")}${linksEn}`, `${tx(article.content, "zh")}${linksZh}`),
+        };
+      });
       const requiredArticles = [chloroformVietnamArticle, newExportServiceGuide];
       const mergedArticles = [...requiredArticles, ...cmsArticles.filter((article) => !requiredArticles.some((required) => required.slug === article.slug))];
       setArticles(mergedArticles);
