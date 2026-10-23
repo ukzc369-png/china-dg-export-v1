@@ -83,6 +83,7 @@ const insightLinksBySlug = {
   "white-oil-liquid-paraffin-durban-import-specification-guide": [
     ["/chemical-sourcing", "Review chemical sourcing support"],
     ["/export-support", "Review export support"],
+    ["/products", "Browse chemical products"],
     ["/contact", "Request a white oil supply review"],
   ],
   "chemical-export-service-china-supplier-price-document-guide": [
