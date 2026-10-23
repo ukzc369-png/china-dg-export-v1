@@ -140,10 +140,43 @@ const priorityByCas: Record<string, PriorityContent> = {
     "Dimethyl Carbonate (DMC)",
     "碳酸二甲酯（DMC）",
     bi(
-      "Dimethyl Carbonate (DMC) is supplied for industrial processing and chemical-manufacturing requirements. ChinaChemExport coordinates the requested grade, batch documentation, packing selection and export logistics after reviewing the buyer's application and destination.",
-      "碳酸二甲酯（DMC）用于工业加工和化工生产。ChinaChemExport 根据买家的应用和目的地要求，协调所需牌号、批次文件、包装选择及出口物流。",
+      "Dimethyl Carbonate (DMC, CAS 616-38-6) is a carbonate solvent and chemical intermediate used in coatings, synthesis and other qualified industrial processes. Before quotation, ChinaChemExport checks the buyer's application, target specification, current supply, batch documents, packing compatibility and destination route. Supplier, price and shipment terms are confirmed for the actual inquiry rather than presented as fixed stock.",
+      "碳酸二甲酯（DMC，CAS 616-38-6）是一种用于涂料、化学合成及其他合格工业工艺的碳酸酯类溶剂和中间体。报价前，ChinaChemExport 会核对买家的用途、目标指标、当前货源、批次文件、包装相容性及目的地路线；供应商、价格和出运条件均按实际询盘确认，不作为固定库存承诺。",
     ),
-    [bi("Coatings and solvents", "涂料与溶剂"), bi("Chemical intermediates", "化工中间体"), bi("Industrial synthesis", "工业合成")],
+    [
+      bi("Coatings, inks and solvent formulations", "涂料、油墨与溶剂配方"),
+      bi("Chemical intermediates and synthesis", "化工中间体与合成"),
+      bi("Qualified electrolyte and materials processing", "合格的电解液与材料加工用途"),
+      bi("Industrial cleaning and process use", "工业清洗与工艺用途"),
+    ],
+    {
+      h1: bi("Dimethyl Carbonate (DMC) Supplier from China", "中国碳酸二甲酯（DMC）供应与出口服务"),
+      formula: "C₃H₆O₃",
+      appearance: bi("Clear, colorless liquid; final acceptance follows the agreed specification and batch COA", "澄清无色液体；最终验收以约定规格和批次 COA 为准"),
+      storage: bi("Confirm storage, handling and transport controls from the current SDS for the selected grade and shipment", "根据选定牌号和具体出运批次的现行 SDS 确认储存、操作和运输条件"),
+      faqs: [
+        {
+          question: bi("What information is needed for a DMC quotation?", "DMC 询价需要提供哪些信息？"),
+          answer: bi("Send the intended application, target purity and limits for water, methanol, acidity, colour or density where relevant, together with quantity, packing, destination port, requested documents and shipment window.", "请提供用途、目标纯度，以及适用时对水分、甲醇、酸度、色度或密度的限制，同时说明数量、包装、目的港、文件要求和出运时间。"),
+        },
+        {
+          question: bi("How are DMC specifications compared between suppliers?", "如何比较不同供应商的 DMC 规格？"),
+          answer: bi("We compare the same grade and test basis using the supplier specification, current TDS and batch COA. A headline purity value alone is not enough when the application has tighter impurity limits.", "我们以相同牌号和检测口径对照供应商规格、当前 TDS 与批次 COA。若应用对杂质有限制，仅比较一个纯度数值并不足够。"),
+        },
+        {
+          question: bi("Which documents can be reviewed before a DMC order?", "DMC 下单前可以审核哪些文件？"),
+          answer: bi("The applicable TDS, SDS and batch COA are reviewed for the selected producer and grade. Transport and destination documents are then confirmed for the actual shipment.", "可针对选定生产企业和牌号审核适用的 TDS、SDS 与批次 COA，再按实际出运确认运输及目的地文件。"),
+        },
+        {
+          question: bi("Can DMC be supplied in drums, IBCs or an ISO tank?", "DMC 可以采用钢桶、IBC 或 ISO Tank 吗？"),
+          answer: bi("Potential packing includes compatible drums, IBCs or bulk equipment, but the final option depends on quantity, material compatibility, supplier capability, cargo classification, carrier acceptance and destination rules.", "可评估相容钢桶、IBC 或散装设备，但最终方案取决于数量、材料相容性、供应商能力、货物分类、承运人接受条件及目的地规则。"),
+        },
+        {
+          question: bi("Can you coordinate DMC exports to Vietnam and other markets?", "可以协调 DMC 出口至越南及其他市场吗？"),
+          answer: bi("Potential routes are reviewed order by order. Importer details, intended use, destination requirements, packing, documents, carrier acceptance and the responsible contracting parties must be confirmed before shipment.", "潜在路线均需逐单审核；出运前须确认进口商信息、最终用途、目的地要求、包装、文件、承运条件及合同责任主体。"),
+        },
+      ],
+    },
   ),
   "67-66-3": priorityContent(
     "Chloroform (Trichloromethane)",
@@ -293,10 +326,10 @@ function buildTemplateProductDetail(source: ProductSource): ProductDetailModel {
     h1: priority?.h1 || bi(`${nameEn} Supplier China`, `${nameZh}中国供应与出口服务`),
     subtitle: priority?.subtitle || bi("Industrial sourcing, documentation and export coordination", "工业采购、单证与出口协调"),
     overview,
-    seoTitle: bi(source.seoTitle || (source.cas === "62-53-3" ? "Aniline Supplier China | CAS 62-53-3 Export" : source.cas === "67-66-3" ? "Chloroform Supplier China | CAS 67-66-3 Export" : `${nameEn} Supplier China | ChinaChemExport`), source.cas === "62-53-3" ? "苯胺中国供应与出口 | CAS 62-53-3" : source.cas === "67-66-3" ? "氯仿中国供应与出口 | CAS 67-66-3" : `${nameZh}中国供应商 | ChinaChemExport`),
+    seoTitle: bi(source.seoTitle || (source.cas === "62-53-3" ? "Aniline Supplier China | CAS 62-53-3 Export" : source.cas === "67-66-3" ? "Chloroform Supplier China | CAS 67-66-3 Export" : source.cas === "616-38-6" ? "Dimethyl Carbonate Supplier China | DMC CAS 616-38-6" : `${nameEn} Supplier China | ChinaChemExport`), source.cas === "62-53-3" ? "苯胺中国供应与出口 | CAS 62-53-3" : source.cas === "67-66-3" ? "氯仿中国供应与出口 | CAS 67-66-3" : source.cas === "616-38-6" ? "碳酸二甲酯 DMC 中国供应 | CAS 616-38-6" : `${nameZh}中国供应商 | ChinaChemExport`),
     seoDescription: bi(
-      source.seoDescription || (source.cas === "62-53-3" ? "Source aniline (CAS 62-53-3) from China with specification and COA review, SDS, compatible packing, UN 1547 documentation and export coordination." : source.cas === "67-66-3" ? "Source chloroform (trichloromethane, CAS 67-66-3) from China with SDS and COA review, UN 1888 packing and export coordination." : `Source ${nameEn} from China with specification confirmation, compliant packing, export documentation and international logistics coordination.`),
-      source.cas === "62-53-3" ? "苯胺（CAS 62-53-3）中国供应与出口协调，涵盖规格及 COA 审核、SDS、相容包装、UN 1547 文件与危险品运输方案。" : source.cas === "67-66-3" ? "氯仿（三氯甲烷，CAS 67-66-3）中国供应与出口协调，涵盖 SDS 与 COA 审核、UN 1888 包装和出运方案。" : `${nameZh}中国供应服务，按订单确认规格、合规包装、出口单证及国际物流方案。`,
+      source.seoDescription || (source.cas === "62-53-3" ? "Source aniline (CAS 62-53-3) from China with specification and COA review, SDS, compatible packing, UN 1547 documentation and export coordination." : source.cas === "67-66-3" ? "Source chloroform (trichloromethane, CAS 67-66-3) from China with SDS and COA review, UN 1888 packing and export coordination." : source.cas === "616-38-6" ? "Source dimethyl carbonate (DMC, CAS 616-38-6) from China with specification and batch COA review, SDS, compatible packing and export coordination." : `Source ${nameEn} from China with specification confirmation, compliant packing, export documentation and international logistics coordination.`),
+      source.cas === "62-53-3" ? "苯胺（CAS 62-53-3）中国供应与出口协调，涵盖规格及 COA 审核、SDS、相容包装、UN 1547 文件与危险品运输方案。" : source.cas === "67-66-3" ? "氯仿（三氯甲烷，CAS 67-66-3）中国供应与出口协调，涵盖 SDS 与 COA 审核、UN 1888 包装和出运方案。" : source.cas === "616-38-6" ? "碳酸二甲酯 DMC（CAS 616-38-6）中国供应，涵盖规格与批次 COA 审核、SDS、相容包装及出口协调。" : `${nameZh}中国供应服务，按订单确认规格、合规包装、出口单证及国际物流方案。`,
     ),
     formula: priority?.formula,
     hsCode: priority?.hsCode,

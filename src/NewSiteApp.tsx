@@ -45,6 +45,7 @@ const products: Product[] = [
 ].map(([slug,name,cas,category,focus]) => ({
   slug,name,cas,category,focus,
   image:({
+    "dimethyl-carbonate-dmc":"/product-images/dimethyl-carbonate-dmc-616-38-6-v2.webp",
     "monoethanolamine-mea":"/product-images/monoethanolamine-mea-141-43-5-v2.webp",
     "diethanolamine-dea":"/product-images/diethanolamine-dea-111-42-2-v2.webp",
     "furfuryl-alcohol":"/product-images/furfuryl-alcohol-98-00-0-v2.webp",

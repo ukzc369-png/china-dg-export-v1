@@ -175,12 +175,15 @@ export function buildProductHtml(shell, product) {
   const path = `/products/${product.slug}`;
   const isAniline = product.slug === "aniline";
   const isChloroform = product.slug === "trichloromethane-tcm";
-  const heading = isAniline ? "Aniline Supplier from China for Industrial Buyers" : isChloroform ? "Chloroform (Trichloromethane) Supplier from China" : `${product.name} Supplier from China`;
-  const title = isAniline ? "Aniline Supplier China | CAS 62-53-3 Export" : isChloroform ? "Chloroform Supplier China | CAS 67-66-3 Export" : `${heading} | ChinaChemExport`;
+  const isDmc = product.slug === "dimethyl-carbonate-dmc";
+  const heading = isAniline ? "Aniline Supplier from China for Industrial Buyers" : isChloroform ? "Chloroform (Trichloromethane) Supplier from China" : isDmc ? "Dimethyl Carbonate (DMC) Supplier from China" : `${product.name} Supplier from China`;
+  const title = isAniline ? "Aniline Supplier China | CAS 62-53-3 Export" : isChloroform ? "Chloroform Supplier China | CAS 67-66-3 Export" : isDmc ? "Dimethyl Carbonate Supplier China | DMC CAS 616-38-6" : `${heading} | ChinaChemExport`;
   const description = isAniline
     ? "Source aniline (CAS 62-53-3) from China with specification and COA review, SDS, compatible packing, UN 1547 documentation and export coordination."
     : isChloroform
       ? "Source chloroform (trichloromethane, CAS 67-66-3) from China with SDS and COA review, UN 1888 packing and export coordination."
+    : isDmc
+      ? "Source dimethyl carbonate (DMC, CAS 616-38-6) from China with specification and batch COA review, SDS, compatible packing and export coordination."
     : `Source ${product.name} (${product.cas}) from China with specification review, export documentation, packaging and shipment coordination.`;
   const schemas = [
     {
@@ -190,6 +193,7 @@ export function buildProductHtml(shell, product) {
       description,
       sku: product.cas,
       brand: { "@type": "Brand", name: "ChinaChemExport" },
+      ...(isDmc ? { image: [`${SITE_URL}/product-images/dimethyl-carbonate-dmc-616-38-6-v2.webp`] } : {}),
       url: canonicalFor(path),
     },
     breadcrumbSchema(path, product.name),

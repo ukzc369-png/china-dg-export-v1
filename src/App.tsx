@@ -870,7 +870,7 @@ const fallbackProductImages: Record<string, string> = {
   "67-64-1": "/product-images/acetone-ac-67-64-1.webp",
   "75-09-2": "/product-images/methylene-chloride-dcm-75-09-2.webp",
   "67-66-3": "/product-images/trichloromethane-tcm-67-66-3.webp",
-  "616-38-6": "/product-images/dimethyl-carbonate-dmc-616-38-6.webp",
+  "616-38-6": "/product-images/dimethyl-carbonate-dmc-616-38-6-v2.webp",
   "62-53-3": "/product-images/aniline-62-53-3.webp",
   "79-01-6": "/product-images/trichloroethylene-tce-79-01-6.webp",
 };
@@ -884,7 +884,9 @@ function cmsProductToProduct(item: CmsProduct): Product {
     cas,
     un: /^\d{4}$/.test(item.un_number?.trim() || "") ? item.un_number!.trim() : "",
     purity: item.specification?.trim() || referenceSpecifications[cas] || "To be confirmed by COA",
-    imageUrl: item.image_url?.trim() || fallbackProductImages[cas] || undefined,
+    imageUrl: cas === "616-38-6"
+      ? fallbackProductImages[cas]
+      : item.image_url?.trim() || fallbackProductImages[cas] || undefined,
     seoTitle: item.seo_title || undefined,
     seoDescription: item.seo_description || undefined,
     slug: item.slug?.trim() || undefined,

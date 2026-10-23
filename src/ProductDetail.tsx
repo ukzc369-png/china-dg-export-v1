@@ -34,6 +34,8 @@ export default function ProductDetailPage({ product, products, lang, onBack, onO
     ? { title: lang === "en" ? "Aniline buyer checklist" : "苯胺买家资料清单", items: lang === "en" ? ["Required specification", "Order quantity", "Packing preference", "Destination port", "Industrial end use", "Required documents and timeline"] : ["所需指标", "采购数量", "包装偏好", "目的港", "工业最终用途", "文件要求和交期"] }
     : detail.slug === "trichloromethane-tcm"
       ? { title: lang === "en" ? "Chloroform buyer checklist" : "氯仿买家资料清单", items: lang === "en" ? ["Required grade and stabilizer", "Industrial end use", "Order quantity", "Packing preference", "Destination port and importer", "SDS, COA and permit requirements"] : ["所需牌号与稳定剂", "工业最终用途", "采购数量", "包装偏好", "目的港与进口商", "SDS、COA 与许可要求"] }
+      : detail.slug === "dimethyl-carbonate-dmc"
+        ? { title: lang === "en" ? "DMC buyer checklist" : "DMC 买家资料清单", items: lang === "en" ? ["Application and required grade", "Purity and impurity limits", "Order quantity", "Drum, IBC or bulk preference", "Destination port and Incoterm", "TDS, SDS and batch COA requirements"] : ["用途与所需牌号", "纯度与杂质限制", "采购数量", "钢桶、IBC 或散装偏好", "目的港与贸易术语", "TDS、SDS 与批次 COA 要求"] }
       : undefined;
   useEffect(() => {
     const seo = buildProductSeo(detail, lang);
