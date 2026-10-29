@@ -130,3 +130,37 @@
 5. 完成修改、构建、测试、发布、正式域名验证。
 6. 把重要结果、提交号、线上验证和下一步更新回本文件。
 
+## 10. 2026-10-29 CTR 优化发布
+
+根据 3 个月 147 展示、1 点击、CTR 0.7%、平均排名 31.5 的基线，已完成第一轮“优化已有曝光页而非继续堆文章”的 CTR 调整。
+
+### 修改内容
+
+- 首页 SEO 标题改为：`Chemical Export Service China | Sourcing & Shipping`
+- 首页摘要直接覆盖供应商、规格、SDS、COA、包装和出运方案。
+- `/chemical-sourcing` 标题改为：`Chemical Sourcing Service China | Supplier & Price Review`
+- 寻源页摘要强化当前供应、批次 COA、SDS、价格和出口可行性。
+- 寻源页新增 DMC、氯仿、DCM 和询盘页的可抓取内部链接。
+- DMC 通用指南与越南指南拆分搜索意图：
+  - `Dimethyl Carbonate Supplier China | DMC Export Guide`
+  - `DMC Supplier China to Vietnam | Packing & Import Guide`
+- 优化已有展示的页面标题：
+  - `Chloroform China to Vietnam | SDS, COA & Shipping`
+  - `Methylene Chloride China to India | MSDS & Packing`
+  - `White Oil Supplier China: Flexibag & Durban Import Guide`
+- 同步修改浏览器运行时元数据、CMS 加载后的覆盖逻辑及 Google 抓取的预渲染 HTML，避免只改前端显示而搜索引擎仍读取旧标题。
+
+### 发布与验证
+
+- 提交：`f5e165d optimize search titles for higher CTR`
+- 本地构建通过。
+- 31 项自动测试全部通过。
+- 正式网站逐页核验：首页、寻源页、两篇 DMC、氯仿、DCM、白油均为 HTTP 200。
+- 七个页面的新 title、description、canonical 均在正式域名 HTML 中确认生效。
+- `/chemical-sourcing` 到 DMC、氯仿、DCM 和 `/contact` 的链接均在线存在。
+
+### 后续观察
+
+- 观察窗口：14–21 天，不要短期频繁改动同一批标题。
+- 重点比较首页、两篇 DMC、氯仿、DCM 的展示、平均排名和 CTR 变化。
+- 如果展示增加但仍无点击，再根据 GSC 的“查询词—页面”数据微调标题；如果平均排名仍在 30 名以后，优先加强页面独立内容和相关内部链接，而不是继续堆相似文章。
