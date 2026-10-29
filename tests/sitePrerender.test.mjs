@@ -35,7 +35,7 @@ test("chloroform Vietnam guide exposes GEO entities, FAQ schema and commercial l
   const route = insightRouteDetails.find((item) => item.slug === "chloroform-supplier-china-vietnam-import-guide");
   assert.ok(route);
   const html = buildRouteHtml(shell, route);
-  assert.match(html, /Chloroform Supplier China to Vietnam/);
+  assert.match(html, /Chloroform China to Vietnam/);
   assert.match(html, /CAS 67-66-3/);
   assert.match(html, /UN 1888/);
   assert.match(html, /"@type":"FAQPage"/);

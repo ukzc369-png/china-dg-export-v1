@@ -87,7 +87,7 @@ function injectFallback(html, markup) {
 
 export function buildRouteHtml(shell, route) {
   const kind = route.kind ?? (route.path === "/" ? "home" : "core");
-  const title = `${route.title} | ChinaChemExport`;
+  const title = route.seoTitle ?? `${route.title} | ChinaChemExport`;
   const canonical = canonicalFor(route.path);
   const schemas = [];
 

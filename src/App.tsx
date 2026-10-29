@@ -89,13 +89,37 @@ type CaseItem = {
 const tx = (v: I18n, lang: Lang) => v[lang];
 const t = (en: string, zh: string): I18n => ({ en, zh });
 
+const ctrArticleMetadata: Record<string, { title: I18n; description: I18n }> = {
+  "dimethyl-carbonate-supplier-china-export-guide": {
+    title: t("Dimethyl Carbonate Supplier China | DMC Export Guide", "中国碳酸二甲酯供应商 | DMC 出口指南"),
+    description: t("Compare DMC suppliers in China by grade, specification, batch COA, SDS, packing, current availability and export feasibility before quotation.", "报价前按牌号、规格、批次 COA、SDS、包装、当前供应和出口可行性比较中国 DMC 供应商。"),
+  },
+  "dimethyl-carbonate-vietnam-china-supplier-guide": {
+    title: t("DMC Supplier China to Vietnam | Packing & Import Guide", "中国 DMC 供应至越南 | 包装与进口指南"),
+    description: t("Source DMC from China to Vietnam with supplier, specification, drum or ISO tank packing, documents, importer and shipment-route checks.", "从中国采购 DMC 至越南：核查供应商、规格、桶装或 ISO Tank、文件、进口商和运输路线。"),
+  },
+  "methylene-chloride-india-dcm-msds-china-supply-guide": {
+    title: t("Methylene Chloride China to India | MSDS & Packing", "中国二氯甲烷供应至印度 | MSDS 与包装"),
+    description: t("Source methylene chloride from China to India with specification, MSDS, batch COA, UN packing, importer and shipment-route checks before quotation.", "从中国采购二氯甲烷至印度：报价前核查规格、MSDS、批次 COA、UN 包装、进口商和运输路线。"),
+  },
+  "white-oil-liquid-paraffin-durban-import-specification-guide": {
+    title: t("White Oil Supplier China | Flexibag & Durban Import Guide", "中国白油供应商 | 液袋包装与德班进口指南"),
+    description: t("Compare China white oil suppliers, viscosity and flash point specifications, batch documents, Flexibag packing and Durban import requirements.", "比较中国白油供应商、黏度与闪点规格、批次文件、液袋包装和德班进口要求。"),
+  },
+};
+
+function applyCtrArticleMetadata(article: Article): Article {
+  const metadata = ctrArticleMetadata[article.slug];
+  return metadata ? { ...article, title: metadata.title, text: metadata.description, seoTitle: metadata.title, seoDescription: metadata.description } : article;
+}
+
 const chloroformVietnamArticle: Article = {
   slug: "chloroform-supplier-china-vietnam-import-guide",
-  title: t("Chloroform Supplier China to Vietnam: 2026 Import & Shipping Guide", "中国氯仿供应至越南：2026 进口与运输指南"),
+  title: t("Chloroform China to Vietnam: SDS, COA & Shipping Guide", "中国氯仿供应至越南：SDS、COA 与运输指南"),
   tag: t("Vietnam Supply Guide", "越南供应指南"),
   text: t("A buyer-focused guide to chloroform specifications, China export controls, Vietnam import checks, SDS, COA, UN 1888 packing and shipment review.", "面向越南工业买家的氯仿规格、中国出口管制、越南进口核查、SDS、COA、UN 1888 包装及出运指南。"),
-  seoTitle: t("Chloroform Supplier China to Vietnam | 2026 Guide", "中国氯仿供应至越南 | 2026 进口与运输指南"),
-  seoDescription: t("Source chloroform (CAS 67-66-3) from China to Vietnam. Review grade, SDS, COA, UN 1888 packing, precursor controls and importer checks before quotation.", "从中国采购氯仿（CAS 67-66-3）至越南：报价前核查牌号、SDS、COA、UN 1888 包装、易制毒管制与进口商要求。"),
+  seoTitle: t("Chloroform China to Vietnam | SDS, COA & Shipping", "中国氯仿供应至越南 | SDS、COA 与运输"),
+  seoDescription: t("Source chloroform from China to Vietnam with grade, SDS, batch COA, UN 1888 packing, precursor controls, importer and carrier checks before quotation.", "从中国采购氯仿至越南：报价前核查牌号、SDS、批次 COA、UN 1888 包装、易制毒管制、进口商及承运条件。"),
   coverImage: "/blog/chloroform-vietnam-cover.webp",
   content: t(`# Chloroform Supplier China to Vietnam: 2026 Import & Shipping Guide
 
@@ -1047,16 +1071,16 @@ useEffect(() => {
       .order("created_at", { ascending: false });
 
     if (articleData && articleData.length > 0) {
-      const cmsArticles = articleData.map((item) => cmsArticleToArticle(item as CmsArticle)).map((article) => {
+      const cmsArticles = articleData.map((item) => applyCtrArticleMetadata(cmsArticleToArticle(item as CmsArticle))).map((article) => {
         if (article.slug !== "white-oil-liquid-paraffin-durban-import-specification-guide") return article;
         const linksEn = "\n\n## Continue your review\n\nSee our [chemical sourcing support](/chemical-sourcing), [export support](/export-support) and [chemical product directory](/products). If you already have a target specification, [send a white oil sourcing requirement](/contact) for a transaction-specific review.";
         const linksZh = "\n\n## 继续审核采购方案\n\n您可以查看[化工品寻源服务](/chemical-sourcing)、[出口支持](/export-support)和[化工产品目录](/products)。如果已有目标规格，请[提交白油采购需求](/contact)，以便按具体交易审核。";
         return {
           ...article,
-          title: t("White Oil Supplier China: Bulk Packing & Durban Import Guide", "中国白油供应商：散装包装与德班进口指南"),
-          text: t("Compare China white oil and liquid paraffin suppliers, viscosity and flash point specifications, batch documents, Flexibag packing and Durban import requirements.", "比较中国白油和液体石蜡供应商、黏度与闪点规格、批次文件、液袋包装及德班进口要求。"),
-          seoTitle: t("White Oil Supplier China | Bulk Packing & Durban Import", "中国白油供应商｜散装包装与德班进口"),
-          seoDescription: t("Compare China white oil suppliers, specifications, batch documents, Flexibag packing and Durban import requirements before quotation.", "报价前比较中国白油供应商、规格、批次文件、液袋包装和德班进口要求。"),
+          title: ctrArticleMetadata[article.slug].title,
+          text: ctrArticleMetadata[article.slug].description,
+          seoTitle: ctrArticleMetadata[article.slug].title,
+          seoDescription: ctrArticleMetadata[article.slug].description,
           content: t(`${tx(article.content, "en")}${linksEn}`, `${tx(article.content, "zh")}${linksZh}`),
         };
       });
@@ -1088,17 +1112,17 @@ useEffect(() => {
     }
     document.title =
       activeArticle
-        ? `${tx(activeArticle.seoTitle, lang)} | ChinaChemExport`
+        ? tx(activeArticle.seoTitle, lang)
         : page === "home"
         ? tx(
             t(
-              "China Chemical Sourcing & Export Support | ChinaChemExport",
+              "Chemical Export Service China | Sourcing & Shipping",
               "中国化工品寻源与出口支持 | ChinaChemExport",
             ),
             lang,
           )
         : tx(({
-            "chemical-sourcing": t("Chemical Sourcing in China | Verified Suppliers & Export Coordination", "中国化工品寻源｜供应商核验与出口协调 | ChinaChemExport"),
+            "chemical-sourcing": t("Chemical Sourcing Service China | Supplier & Price Review", "中国化工品寻源服务｜供应商与价格审核"),
             "export-support": t("Chemical Export Support from China | ChinaChemExport", "中国化工品出口支持｜ChinaChemExport"),
             "shandong-supply-base": t("Shandong Chemical Supply Base | ChinaChemExport", "山东化工产业带寻源｜ChinaChemExport"),
             products: t("Chemicals Sourced from China | ChinaChemExport", "中国化工品寻源目录｜ChinaChemExport"),
@@ -1108,7 +1132,7 @@ useEffect(() => {
           } as Partial<Record<Page, I18n>>)[page] || t(`${page} | ChinaChemExport`, `${page} | ChinaChemExport`), lang);
     const descriptions: Partial<Record<Page, I18n>> = {
       home: t(
-        "Independent chemical sourcing and export coordination from Shandong, China, connecting international buyers with reviewed supply options, qualified repacking, inspection, dangerous-goods documentation, customs and shipping resources.",
+        "Compare qualified Chinese chemical suppliers, specifications, SDS, COA, packing and shipment options with an independent coordinator based in Shandong.",
         "ChinaChemExport提供立足中国山东的独立化工品寻源与出口协调服务，为国际买家连接经核验的供应选择，以及合格分装、检验、危包单证、报关和运输资源。",
       ),
       products: t(
@@ -1119,7 +1143,7 @@ useEffect(() => {
         "Meet the independent chemical sourcing and export coordinator behind ChinaChemExport, connecting overseas buyers with reviewed supply and qualified operating resources in Shandong.",
         "了解ChinaChemExport背后的独立化工品寻源与出口协调人，为海外采购商连接山东经核验货源及合格履约资源。",
       ),
-      "chemical-sourcing": t("Source chemicals from China with specification review, supplier coordination, document checks, compliant packing and export support for qualified industrial buyers.", "中国化工品寻源服务：规格核验、供应商协调、出口单证、合规包装及面向工业买家的国际运输支持。"),
+      "chemical-sourcing": t("Compare suitable Chinese chemical suppliers, specifications, current availability, batch COA, SDS, packing, prices and export feasibility before quotation.", "报价前比较合适的中国化工供应商、规格、当前供应、批次 COA、SDS、包装、价格及出口可行性。"),
       "export-support": t("Chemical export coordination covering qualified repacking, inspection, dangerous-goods documents, customs declaration, vessel booking and port follow-up.", "化工品出口协调服务，覆盖合格分装、检验、危包单证、报关、订舱和港口交付跟进。"),
       "shandong-supply-base": t("A buyer-focused introduction to chemical sourcing from Shandong’s petrochemical supply base and its regional export-service resources.", "面向海外买家的山东石化产业带寻源介绍及区域出口服务资源说明。"),
       insights: t("Practical guides for overseas buyers reviewing Chinese chemical suppliers, specifications, packing, dangerous-goods documents and shipment options.", "面向海外买家的中国化工品供应商、规格、包装、危品单证与运输方案实务指南。"),
