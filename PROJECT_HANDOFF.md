@@ -349,3 +349,13 @@ D:\CodexData\.codex\worktrees\9bb7\ChinaDGExport-V1
 ### 换 GPT 账号时使用的继续指令
 
 请读取项目根目录的 `PROJECT_HANDOFF.md`，继续负责 ChinaChemExport 独立站运营和开发。正式网站是 https://chinachemexport.com，仓库是 https://github.com/ukzc369-png/china-dg-export-v1。必须遵守文档中的“每次修改后打开正式网站真实检查”的发布流程；不要只根据 Git 推送或 Cloudflare 后台状态报告完成。先检查当前线上文章路由、中文切换和首页版本，再开展新任务。
+
+---
+
+## 十、长期运营记忆入口（2026-10-29）
+
+项目根目录已建立长期运营记忆：
+
+`INDEPENDENT_SITE_OPERATIONS_MEMORY_2026-10-16.md`
+
+今后每次工作必须先读取该文件。文件记录品牌定位、既有修改、SEO/GEO 与询盘策略、Search Console 数据基线、发布验收规则、Git 注意事项和下一步优先级。重要修改和上线结果完成后必须同步更新，避免换账号、换线程或上下文压缩后丢失运营连续性。
