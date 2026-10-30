@@ -130,10 +130,33 @@ const priorityByCas: Record<string, PriorityContent> = {
     ),
     [bi("Paint and coating processing", "涂料加工"), bi("Pharmaceutical processing", "医药加工"), bi("Metal cleaning", "金属清洗"), bi("Chemical manufacturing", "化工生产")],
     {
+      h1: bi("Methylene Chloride (DCM) Supplier from China", "中国二氯甲烷（DCM）供应与出口服务"),
       formula: "CH₂Cl₂",
       hsCode: "29031200",
-      appearance: bi("Refer to the confirmed product specification and batch COA", "以确认的产品规格和批次 COA 为准"),
-      storage: bi("Confirm storage and handling requirements from the shipment MSDS", "储存与操作要求以出运 MSDS 为准"),
+      appearance: bi("Clear, colorless, volatile liquid; final acceptance follows the agreed specification and batch COA", "澄清无色挥发性液体；最终验收以约定规格和批次 COA 为准"),
+      storage: bi("Use the closed, controlled storage and handling conditions stated in the current shipment SDS", "按照本批次 SDS 规定的密闭受控条件储存和操作"),
+      faqs: [
+        {
+          question: bi("What information is needed for a DCM quotation?", "DCM 询价需要提供哪些信息？"),
+          answer: bi("Send the application, required grade and specification, quantity, packing preference, India or other destination port, importer information, requested documents and shipment window.", "请提供用途、所需牌号与指标、数量、包装偏好、印度或其他目的港、进口商信息、文件要求和出运时间。"),
+        },
+        {
+          question: bi("Which DCM documents can be reviewed before an order?", "DCM 下单前可以审核哪些文件？"),
+          answer: bi("The applicable SDS, supplier specification and batch COA are reviewed for the selected source. Transport assessment and destination documents are confirmed for the actual shipment.", "可针对选定货源审核适用的 SDS、供应商规格和批次 COA；运输鉴定及目的地文件按实际出运确认。"),
+        },
+        {
+          question: bi("How is methylene chloride classified for transport?", "二氯甲烷运输如何分类？"),
+          answer: bi("Methylene chloride is commonly identified as UN 1593, Class 6.1, Packing Group III. The current SDS, transport assessment and carrier rules govern each shipment.", "二氯甲烷通常按 UN 1593、6.1 类、包装等级 III 识别；每票货物以现行 SDS、运输鉴定和承运人规则为准。"),
+        },
+        {
+          question: bi("Which packing can be used for DCM export?", "DCM 出口可以采用哪些包装？"),
+          answer: bi("The final packing is selected after reviewing material compatibility, quantity, supplier capability, route and carrier acceptance. No packing option is treated as approved before that review.", "最终包装需结合材料相容性、数量、供应商能力、路线和承运条件确定；完成审核前不将任何包装方案视为已获批准。"),
+        },
+        {
+          question: bi("Can you coordinate DCM supply to India?", "可以协调 DCM 供应至印度吗？"),
+          answer: bi("A potential India shipment is reviewed order by order. The importer, declared end use, specification, documents, packing, port and carrier acceptance must be confirmed before quotation becomes executable.", "印度方向的潜在订单需逐单审核；报价形成可执行方案前，应确认进口商、申报用途、规格、文件、包装、港口和承运条件。"),
+        },
+      ],
     },
   ),
   "616-38-6": priorityContent(
@@ -303,7 +326,7 @@ function buildTemplateProductDetail(source: ProductSource): ProductDetailModel {
   if (validValue(source.un)) specifications.push({ label: bi("UN Number", "UN 编号"), value: bi(source.un, source.un) });
   const transportFacts = source.cas === "62-53-3"
     ? ["II (confirm for shipment)", "II（按具体出运确认）"]
-    : source.cas === "67-66-3"
+    : source.cas === "67-66-3" || source.cas === "75-09-2"
       ? ["III (confirm for shipment)", "III（按具体出运确认）"]
       : undefined;
   if (transportFacts) {
@@ -326,10 +349,10 @@ function buildTemplateProductDetail(source: ProductSource): ProductDetailModel {
     h1: priority?.h1 || bi(`${nameEn} Supplier China`, `${nameZh}中国供应与出口服务`),
     subtitle: priority?.subtitle || bi("Industrial sourcing, documentation and export coordination", "工业采购、单证与出口协调"),
     overview,
-    seoTitle: bi(source.seoTitle || (source.cas === "62-53-3" ? "Aniline Supplier China | CAS 62-53-3 Export" : source.cas === "67-66-3" ? "Chloroform Supplier China | CAS 67-66-3 Export" : source.cas === "616-38-6" ? "Dimethyl Carbonate Supplier China | DMC CAS 616-38-6" : `${nameEn} Supplier China | ChinaChemExport`), source.cas === "62-53-3" ? "苯胺中国供应与出口 | CAS 62-53-3" : source.cas === "67-66-3" ? "氯仿中国供应与出口 | CAS 67-66-3" : source.cas === "616-38-6" ? "碳酸二甲酯 DMC 中国供应 | CAS 616-38-6" : `${nameZh}中国供应商 | ChinaChemExport`),
+    seoTitle: bi(source.seoTitle || (source.cas === "62-53-3" ? "Aniline Supplier China | CAS 62-53-3 Export" : source.cas === "67-66-3" ? "Chloroform Supplier China | CAS 67-66-3 Export" : source.cas === "75-09-2" ? "Methylene Chloride Supplier China | DCM CAS 75-09-2" : source.cas === "616-38-6" ? "Dimethyl Carbonate Supplier China | DMC CAS 616-38-6" : `${nameEn} Supplier China | ChinaChemExport`), source.cas === "62-53-3" ? "苯胺中国供应与出口 | CAS 62-53-3" : source.cas === "67-66-3" ? "氯仿中国供应与出口 | CAS 67-66-3" : source.cas === "75-09-2" ? "二氯甲烷 DCM 中国供应 | CAS 75-09-2" : source.cas === "616-38-6" ? "碳酸二甲酯 DMC 中国供应 | CAS 616-38-6" : `${nameZh}中国供应商 | ChinaChemExport`),
     seoDescription: bi(
-      source.seoDescription || (source.cas === "62-53-3" ? "Source aniline (CAS 62-53-3) from China with specification and COA review, SDS, compatible packing, UN 1547 documentation and export coordination." : source.cas === "67-66-3" ? "Source chloroform (trichloromethane, CAS 67-66-3) from China with SDS and COA review, UN 1888 packing and export coordination." : source.cas === "616-38-6" ? "Source dimethyl carbonate (DMC, CAS 616-38-6) from China with specification and batch COA review, SDS, compatible packing and export coordination." : `Source ${nameEn} from China with specification confirmation, compliant packing, export documentation and international logistics coordination.`),
-      source.cas === "62-53-3" ? "苯胺（CAS 62-53-3）中国供应与出口协调，涵盖规格及 COA 审核、SDS、相容包装、UN 1547 文件与危险品运输方案。" : source.cas === "67-66-3" ? "氯仿（三氯甲烷，CAS 67-66-3）中国供应与出口协调，涵盖 SDS 与 COA 审核、UN 1888 包装和出运方案。" : source.cas === "616-38-6" ? "碳酸二甲酯 DMC（CAS 616-38-6）中国供应，涵盖规格与批次 COA 审核、SDS、相容包装及出口协调。" : `${nameZh}中国供应服务，按订单确认规格、合规包装、出口单证及国际物流方案。`,
+      source.seoDescription || (source.cas === "62-53-3" ? "Source aniline (CAS 62-53-3) from China with specification and COA review, SDS, compatible packing, UN 1547 documentation and export coordination." : source.cas === "67-66-3" ? "Source chloroform (trichloromethane, CAS 67-66-3) from China with SDS and COA review, UN 1888 packing and export coordination." : source.cas === "75-09-2" ? "Source methylene chloride (DCM, CAS 75-09-2) from China with specification, SDS, batch COA, UN 1593 packing and India route review." : source.cas === "616-38-6" ? "Source dimethyl carbonate (DMC, CAS 616-38-6) from China with specification and batch COA review, SDS, compatible packing and export coordination." : `Source ${nameEn} from China with specification confirmation, compliant packing, export documentation and international logistics coordination.`),
+      source.cas === "62-53-3" ? "苯胺（CAS 62-53-3）中国供应与出口协调，涵盖规格及 COA 审核、SDS、相容包装、UN 1547 文件与危险品运输方案。" : source.cas === "67-66-3" ? "氯仿（三氯甲烷，CAS 67-66-3）中国供应与出口协调，涵盖 SDS 与 COA 审核、UN 1888 包装和出运方案。" : source.cas === "75-09-2" ? "二氯甲烷 DCM（CAS 75-09-2）中国供应，涵盖规格、SDS、批次 COA、UN 1593 包装及印度路线审核。" : source.cas === "616-38-6" ? "碳酸二甲酯 DMC（CAS 616-38-6）中国供应，涵盖规格与批次 COA 审核、SDS、相容包装及出口协调。" : `${nameZh}中国供应服务，按订单确认规格、合规包装、出口单证及国际物流方案。`,
     ),
     formula: priority?.formula,
     hsCode: priority?.hsCode,

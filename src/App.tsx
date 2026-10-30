@@ -892,8 +892,8 @@ const fallbackProductImages: Record<string, string> = {
   "1330-20-7": "/product-images/xylene-1330-20-7.webp",
   "67-56-1": "/product-images/methanol-67-56-1.webp",
   "67-64-1": "/product-images/acetone-ac-67-64-1.webp",
-  "75-09-2": "/product-images/methylene-chloride-dcm-75-09-2.webp",
-  "67-66-3": "/product-images/trichloromethane-tcm-67-66-3.webp",
+  "75-09-2": "/product-images/methylene-chloride-dcm-75-09-2-v2.webp",
+  "67-66-3": "/product-images/trichloromethane-tcm-67-66-3-v2.webp",
   "616-38-6": "/product-images/dimethyl-carbonate-dmc-616-38-6-v2.webp",
   "62-53-3": "/product-images/aniline-62-53-3.webp",
   "79-01-6": "/product-images/trichloroethylene-tce-79-01-6.webp",
@@ -908,7 +908,7 @@ function cmsProductToProduct(item: CmsProduct): Product {
     cas,
     un: /^\d{4}$/.test(item.un_number?.trim() || "") ? item.un_number!.trim() : "",
     purity: item.specification?.trim() || referenceSpecifications[cas] || "To be confirmed by COA",
-    imageUrl: cas === "616-38-6"
+    imageUrl: ["616-38-6", "75-09-2", "67-66-3"].includes(cas)
       ? fallbackProductImages[cas]
       : item.image_url?.trim() || fallbackProductImages[cas] || undefined,
     seoTitle: item.seo_title || undefined,

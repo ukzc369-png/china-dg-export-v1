@@ -13,11 +13,13 @@ test("product prerender creates route-specific crawlable HTML", () => {
   };
   const html = buildProductHtml(shell, product);
 
-  assert.match(html, /<title>Methylene Chloride \(DCM\) Supplier from China/);
-  assert.match(html, /name="description" content="[^"]*Methylene Chloride/);
+  assert.match(html, /<title>Methylene Chloride Supplier China \| DCM CAS 75-09-2<\/title>/);
+  assert.match(html, /name="description" content="[^"]*methylene chloride/);
   assert.match(html, /rel="canonical" href="https:\/\/chinachemexport\.com\/products\/methylene-chloride-dcm"/);
   assert.match(html, /<h1>Methylene Chloride \(DCM\) Supplier from China<\/h1>/);
   assert.match(html, /"@type":"Product"/);
+  assert.match(html, /methylene-chloride-dcm-75-09-2-v2\.webp/);
+  assert.match(html, /methylene-chloride-india-dcm-msds-china-supply-guide/);
   assert.match(html, /"@type":"BreadcrumbList"/);
   assert.match(html, /data-prerendered="product"/);
   assert.ok(html.indexOf('<div id="root">') < html.indexOf('data-prerendered="product"'));
@@ -49,5 +51,7 @@ test("chloroform prerender targets product, identity and export intent", () => {
   assert.match(html, /<h1>Chloroform \(Trichloromethane\) Supplier from China<\/h1>/);
   assert.match(html, /UN 1888 packing/);
   assert.match(html, /href="\/dangerous-goods"/);
+  assert.match(html, /chloroform-supplier-china-vietnam-import-guide/);
+  assert.match(html, /trichloromethane-tcm-67-66-3-v2\.webp/);
   assert.match(html, /Request a chloroform quotation/);
 });

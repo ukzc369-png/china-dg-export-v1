@@ -153,7 +153,7 @@ test("blank CMS detail fields keep template defaults", () => {
   });
 
   assert.equal(detail.slug, "methylene-chloride-dcm");
-  assert.equal(detail.h1.en, "Methylene Chloride (DCM) Supplier China");
+  assert.equal(detail.h1.en, "Methylene Chloride (DCM) Supplier from China");
   assert.ok(detail.applications.length >= 3);
   assert.equal(detail.faqs.length, 5);
 });

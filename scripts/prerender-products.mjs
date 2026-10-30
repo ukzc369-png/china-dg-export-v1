@@ -175,13 +175,16 @@ export function buildProductHtml(shell, product) {
   const path = `/products/${product.slug}`;
   const isAniline = product.slug === "aniline";
   const isChloroform = product.slug === "trichloromethane-tcm";
+  const isDcm = product.slug === "methylene-chloride-dcm";
   const isDmc = product.slug === "dimethyl-carbonate-dmc";
-  const heading = isAniline ? "Aniline Supplier from China for Industrial Buyers" : isChloroform ? "Chloroform (Trichloromethane) Supplier from China" : isDmc ? "Dimethyl Carbonate (DMC) Supplier from China" : `${product.name} Supplier from China`;
-  const title = isAniline ? "Aniline Supplier China | CAS 62-53-3 Export" : isChloroform ? "Chloroform Supplier China | CAS 67-66-3 Export" : isDmc ? "Dimethyl Carbonate Supplier China | DMC CAS 616-38-6" : `${heading} | ChinaChemExport`;
+  const heading = isAniline ? "Aniline Supplier from China for Industrial Buyers" : isChloroform ? "Chloroform (Trichloromethane) Supplier from China" : isDcm ? "Methylene Chloride (DCM) Supplier from China" : isDmc ? "Dimethyl Carbonate (DMC) Supplier from China" : `${product.name} Supplier from China`;
+  const title = isAniline ? "Aniline Supplier China | CAS 62-53-3 Export" : isChloroform ? "Chloroform Supplier China | CAS 67-66-3 Export" : isDcm ? "Methylene Chloride Supplier China | DCM CAS 75-09-2" : isDmc ? "Dimethyl Carbonate Supplier China | DMC CAS 616-38-6" : `${heading} | ChinaChemExport`;
   const description = isAniline
     ? "Source aniline (CAS 62-53-3) from China with specification and COA review, SDS, compatible packing, UN 1547 documentation and export coordination."
     : isChloroform
       ? "Source chloroform (trichloromethane, CAS 67-66-3) from China with SDS and COA review, UN 1888 packing and export coordination."
+    : isDcm
+      ? "Source methylene chloride (DCM, CAS 75-09-2) from China with specification, SDS, batch COA, UN 1593 packing and India route review."
     : isDmc
       ? "Source dimethyl carbonate (DMC, CAS 616-38-6) from China with specification and batch COA review, SDS, compatible packing and export coordination."
     : `Source ${product.name} (${product.cas}) from China with specification review, export documentation, packaging and shipment coordination.`;
@@ -194,6 +197,8 @@ export function buildProductHtml(shell, product) {
       sku: product.cas,
       brand: { "@type": "Brand", name: "ChinaChemExport" },
       ...(isDmc ? { image: [`${SITE_URL}/product-images/dimethyl-carbonate-dmc-616-38-6-v2.webp`] } : {}),
+      ...(isDcm ? { image: [`${SITE_URL}/product-images/methylene-chloride-dcm-75-09-2-v2.webp`] } : {}),
+      ...(isChloroform ? { image: [`${SITE_URL}/product-images/trichloromethane-tcm-67-66-3-v2.webp`] } : {}),
       url: canonicalFor(path),
     },
     breadcrumbSchema(path, product.name),
@@ -202,7 +207,7 @@ export function buildProductHtml(shell, product) {
   const topicLinks = product.slug === "aniline"
     ? [["/insights", "Review chemical export guides"], ["/dangerous-goods", "Review dangerous-goods export support"], ["/contact", "Request an aniline quotation"]]
     : product.slug === "trichloromethane-tcm"
-      ? [["/dangerous-goods", "Review dangerous-goods export support"], ["/insights", "Review chemical export guides"], ["/contact", "Request a chloroform quotation"]]
+      ? [["/insights/chloroform-supplier-china-vietnam-import-guide", "Read the chloroform Vietnam import guide"], ["/dangerous-goods", "Review dangerous-goods export support"], ["/contact", "Request a chloroform quotation"]]
     : product.slug === "dimethyl-carbonate-dmc"
     ? [
         ["/insights/dimethyl-carbonate-supplier-china-export-guide", "Read the DMC China export guide"],
