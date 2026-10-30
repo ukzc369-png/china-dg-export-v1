@@ -103,12 +103,25 @@ test("keeps a backend packing specification intact instead of splitting transpor
 test("CMS SEO values take precedence over generated defaults", () => {
   const detail = buildProductDetail({
     ...baseProduct,
-    seoTitle: "Custom DCM SEO Title",
-    seoDescription: "Custom DCM SEO description from the product admin.",
+    name: { en: "Xylene", zh: "二甲苯" },
+    cas: "1330-20-7",
+    seoTitle: "Custom Xylene SEO Title",
+    seoDescription: "Custom xylene SEO description from the product admin.",
   });
 
-  assert.equal(detail.seoTitle.en, "Custom DCM SEO Title");
-  assert.equal(detail.seoDescription.en, "Custom DCM SEO description from the product admin.");
+  assert.equal(detail.seoTitle.en, "Custom Xylene SEO Title");
+  assert.equal(detail.seoDescription.en, "Custom xylene SEO description from the product admin.");
+});
+
+test("reviewed priority pages keep the approved SEO presentation", () => {
+  const detail = buildProductDetail({
+    ...baseProduct,
+    seoTitle: "Old DCM SEO Title",
+    seoDescription: "Old DCM SEO description.",
+  });
+
+  assert.equal(detail.seoTitle.en, "Methylene Chloride Supplier China | DCM CAS 75-09-2");
+  assert.match(detail.seoDescription.en, /India route review/);
 });
 
 test("CMS detail content overrides the safe product template", () => {
