@@ -45,6 +45,20 @@ test("chloroform Vietnam guide exposes GEO entities, FAQ schema and commercial l
   assert.match(html, /href="\/dangerous-goods"/);
 });
 
+test("supplier document checklist exposes buyer-intent metadata, FAQ schema and service links", () => {
+  const route = insightRouteDetails.find((item) => item.slug === "wholesale-chemical-supplier-documents-checklist");
+  assert.ok(route);
+  const html = buildRouteHtml(shell, route);
+  assert.match(html, /Wholesale Chemical Supplier Documents \| Buyer Checklist/);
+  assert.match(html, /supplier identity/);
+  assert.match(html, /batch COA/);
+  assert.match(html, /"@type":"FAQPage"/);
+  assert.match(html, /"datePublished":"2026-11-06"/);
+  assert.match(html, /href="\/chemical-sourcing"/);
+  assert.match(html, /href="\/export-support"/);
+  assert.match(html, /href="\/contact"/);
+});
+
 test("homepage prerender exposes organization and website identity", () => {
   const html = buildRouteHtml(shell, {
     kind: "home",

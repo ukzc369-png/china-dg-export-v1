@@ -91,8 +91,8 @@ const t = (en: string, zh: string): I18n => ({ en, zh });
 
 const ctrArticleMetadata: Record<string, { title: I18n; description: I18n }> = {
   "dimethyl-carbonate-supplier-china-export-guide": {
-    title: t("Dimethyl Carbonate Supplier China | DMC Export Guide", "中国碳酸二甲酯供应商 | DMC 出口指南"),
-    description: t("Compare DMC suppliers in China by grade, specification, batch COA, SDS, packing, current availability and export feasibility before quotation.", "报价前按牌号、规格、批次 COA、SDS、包装、当前供应和出口可行性比较中国 DMC 供应商。"),
+    title: t("DMC Supplier China | Price, COA, Packing & Export Guide", "中国 DMC 供应商 | 价格、COA、包装与出口指南"),
+    description: t("Compare dimethyl carbonate suppliers in China by grade, current price basis, batch COA, SDS, packing, lead time and export feasibility.", "按牌号、当前价格口径、批次 COA、SDS、包装、交期和出口可行性比较中国碳酸二甲酯供应商。"),
   },
   "dimethyl-carbonate-vietnam-china-supplier-guide": {
     title: t("DMC Supplier China to Vietnam | Packing & Import Guide", "中国 DMC 供应至越南 | 包装与进口指南"),
@@ -1036,6 +1036,134 @@ export default function App() {
   );
   const [products, setProducts] = useState<Product[]>(fallbackProducts);
   const [inquiryProduct, setInquiryProduct] = useState("");
+const supplierDocumentGuide: Article = {
+  slug: "wholesale-chemical-supplier-documents-checklist",
+  title: t("What Documents Should a Wholesale Chemical Supplier Provide?", "化工批发供应商应提供哪些文件？"),
+  tag: t("Export Documents", "出口文件"),
+  text: t("A buyer checklist for supplier identity, TDS, SDS, batch COA, packing, labels and shipment information before purchase.", "采购前核查供应商身份、TDS、SDS、批次 COA、包装、标签和出运信息的买家清单。"),
+  seoTitle: t("Wholesale Chemical Supplier Documents | Buyer Checklist", "化工供应商文件清单 | 采购审核指南"),
+  seoDescription: t("Review the SDS, TDS, batch COA, supplier identity, packing documents, labels and shipment information a wholesale chemical supplier should provide before purchase.", "采购前审核化工供应商应提供的 SDS、TDS、批次 COA、主体资料、包装文件、标签和出运信息。"),
+  coverImage: "/page-assets/batch-document-review-v1.webp",
+  content: t(`A wholesale chemical supplier should provide enough information to identify the company, match the offered product to the buyer's requirement and prepare the actual shipment. The exact document set depends on the chemical, grade, packing, destination and trade term, but the following checklist is a practical starting point.
+
+## 1. Supplier identity and contracting party
+
+Ask for the legal company name, registered address and the name of the party that will sign the sales contract and issue the commercial invoice. If the producer, trading company and exporter are different, their roles should be explained. A factory photograph or website alone does not establish who is responsible for the order.
+
+## 2. Product identity and specification
+
+Confirm the chemical name, CAS number, grade, intended application and the specification used for the offer. A CAS number identifies a substance, but it does not by itself define purity, stabilizer, water, colour, viscosity, test method or application grade. The quotation and technical documents should describe the same product.
+
+## 3. Technical Data Sheet (TDS)
+
+A current TDS should show the typical or guaranteed specification and relevant test methods. Check that the producer or product identity matches the offer. A TDS is useful for comparing grades, but typical values are not automatically batch results.
+
+## 4. Safety Data Sheet (SDS or MSDS)
+
+The SDS should match the product, concentration and supplier being reviewed. Check the revision date, hazard classification, handling and storage information, and transport section. For dangerous goods, the UN number, proper shipping name, class and packing group must be reviewed against the actual product and applicable shipment requirements.
+
+## 5. Certificate of Analysis (COA)
+
+During early evaluation, a representative COA can show how the supplier reports quality. Before final release, request a COA tied to the batch being supplied. Compare the batch number, production date, test results and methods with the agreed specification. A sample COA is not proof that the final batch has already been produced or reserved.
+
+## 6. Packing, labels and handling information
+
+Confirm the packing material, capacity, net and gross weight, closure, pallet arrangement and label content. Where regulated packing or dangerous-goods marks are required, the supplier should provide the relevant transaction-specific information for review. Do not assume that every drum, IBC or tank option is suitable for every chemical or route.
+
+## 7. Commercial and shipment documents
+
+Before shipment, the parties normally align the purchase order or contract, commercial invoice, packing list, consignee information, Incoterm, named port and document scope. Depending on the cargo and destination, additional classification, inspection, origin, packing, dangerous-goods, customs or carrier documents may be required. The importer and customs broker should confirm destination requirements.
+
+## Red flags to investigate
+
+- The company name changes between the quotation, SDS, invoice and bank information.
+- The supplier will not identify the contracting or exporting party.
+- The TDS, SDS and COA describe different grades or product names.
+- Only an old sample COA is available, but it is presented as the final batch result.
+- Packing, labels or transport information are promised before the actual route is reviewed.
+- A very low price is offered without a clear specification, packing basis or Incoterm.
+
+## What the buyer should send
+
+Provide the product name and CAS, intended use, target specification, quantity, preferred packing, destination port, delivery window, Incoterm and required documents. This lets suppliers answer on the same basis and makes the comparison more useful.
+
+ChinaChemExport can help review suitable supply channels, current commercial terms, documents, packing and shipment feasibility. See our [chemical sourcing support](/chemical-sourcing), [export support](/export-support) or [send a sourcing requirement](/contact) for a transaction-specific review.
+
+## Frequently asked questions
+
+### Is an SDS enough to approve a supplier?
+
+No. It is an important safety document, but it does not confirm current availability, batch quality, contracting identity or shipment readiness.
+
+### Must the COA come from the actual batch?
+
+For final release, the buyer should request the COA for the supplied batch. A representative COA is useful only during preliminary comparison.
+
+### Can every supplier provide the same documents?
+
+No. The required set varies by product, destination, packing and route. Missing non-applicable documents are not automatically a problem, but the supplier should explain what is available and who is responsible for the remaining items.
+
+This checklist is general sourcing guidance, not a product certificate, legal opinion, customs ruling or transport approval.`, `化工批发供应商应提供足以确认公司主体、核对产品要求并准备实际出运的信息。具体文件会随化学品、牌号、包装、目的地和贸易条款变化，以下清单可作为实用起点。
+
+## 1. 供应商身份与签约主体
+
+确认公司法定名称、注册地址，以及签署销售合同、开具商业发票的主体。如果生产商、贸易公司和出口商不是同一家公司，应说明各自职责。工厂照片或网站本身不能证明谁对订单负责。
+
+## 2. 产品身份与规格
+
+确认化学名称、CAS 号、牌号、用途和本次报价采用的规格。CAS 号只能识别物质，不能单独说明纯度、稳定剂、水分、色度、黏度、检测方法或应用级别。报价与技术文件应对应同一产品。
+
+## 3. 技术数据表（TDS）
+
+当前有效的 TDS 应说明典型值或保证规格及相关检测方法，并与本次报价中的生产商或产品身份一致。TDS 适合比较牌号，但典型值不等于实际批次结果。
+
+## 4. 安全数据表（SDS 或 MSDS）
+
+SDS 应与所审核的产品、浓度和供应商一致。重点核对修订日期、危险分类、操作储存信息和运输章节。对于危险货物，还需结合实际产品和本次出运要求审核 UN 编号、正确运输名称、危险类别和包装等级。
+
+## 5. 分析证书（COA）
+
+初步评估时，代表性 COA 可以帮助了解供应商如何报告质量；最终放货前，应索取与实际供货批次对应的 COA。核对批号、生产日期、检测结果和方法是否符合约定规格。样本 COA 不能证明最终批次已经生产或为买家预留。
+
+## 6. 包装、标签与操作信息
+
+确认包装材质、容量、净重与毛重、封口、托盘方式和标签内容。若需要合规包装或危险品标志，供应商应提供本次交易对应的信息供审核。不能假设所有钢桶、IBC 或罐体都适合每一种化学品和路线。
+
+## 7. 商务与出运文件
+
+出运前通常需要统一采购订单或合同、商业发票、装箱单、收货人信息、贸易条款、指定港口和文件范围。根据货物和目的地，还可能需要分类、检验、原产地、包装、危险品、海关或承运人文件。目的国要求应由进口商及报关代理确认。
+
+## 需要进一步核查的信号
+
+- 报价、SDS、发票和收款信息中的公司名称不一致。
+- 供应商拒绝说明签约或出口主体。
+- TDS、SDS 与 COA 对应不同牌号或产品名称。
+- 只有旧的样本 COA，却被当作最终批次结果。
+- 在实际路线审核前就承诺包装、标签或运输文件一定可用。
+- 报价异常低，但没有明确规格、包装口径或贸易条款。
+
+## 买家应提供什么
+
+请提供产品名称与 CAS、用途、目标规格、数量、包装、目的港、交期、贸易条款和文件要求。这样不同供应商才能在同一基础上回复，比较也更有意义。
+
+ChinaChemExport 可协助审核合适货源、当前商务条件、文件、包装和出运可行性。您可以查看[化工品寻源支持](/chemical-sourcing)、[出口支持](/export-support)，或[提交采购需求](/contact)进行针对具体交易的审核。
+
+## 常见问题
+
+### 仅有 SDS 就能批准供应商吗？
+
+不能。SDS 是重要的安全文件，但不能证明当前货源、批次质量、签约主体或出运准备情况。
+
+### COA 必须对应实际批次吗？
+
+最终放货前，应索取实际供货批次的 COA。代表性 COA 只适合初步比较。
+
+### 每家供应商都能提供相同文件吗？
+
+不能。文件要求会随产品、目的地、包装和路线变化。缺少不适用的文件不一定是问题，但供应商应说明现有文件以及剩余事项由谁负责。
+
+本清单仅为一般采购参考，不构成产品证书、法律意见、海关裁定或运输批准。`),
+};
 const newExportServiceGuide: Article = {
   slug: "chemical-export-service-china-supplier-price-document-guide",
   title: t("Chemical Export Service China: How to Compare Suppliers, Prices and Export Documents", "中国化工出口服务：如何比较供应商、价格和出口文件"),
@@ -1048,7 +1176,7 @@ const newExportServiceGuide: Article = {
 };
 newExportServiceGuide.content = t(`A useful chemical export quote starts with the product specification, not only the trade name. Confirm the CAS number, grade, quantity, packing, destination port and Incoterm before comparing prices.\n\n## Start with the product requirement\n\nA trade name can cover several commercial grades. State the intended use and target specification so suppliers quote the same product.\n\n## Compare suppliers and current prices\n\nCheck the producer, contracting party, current availability, lead time, MOQ, packing, payment terms and price validity. Compare FOB and CIF offers on the same basis.\n\n## Review documents and packing\n\nConfirm the TDS, SDS, batch COA, UN number, labels, packing instruction and carrier acceptance. Packing affects loading, freight and destination handling.\n\n## What to send before quotation\n\nSend the product and CAS, specification, quantity, packing preference, destination port, delivery window, Incoterm and required documents. ChinaChemExport reviews suitable supply channels, commercial terms, documents and shipment feasibility for each inquiry.\n\n## Frequently asked questions\n\n### Can you always provide the lowest price?\n\nNo. The goal is a competitive and workable option with clear responsibilities after the specification, packing, quantity and route are confirmed.`, `一份可靠的化工出口报价应从产品规格开始，而不只是贸易名称。比较价格前，应确认 CAS、牌号、数量、包装、目的港和贸易术语。\n\n## 先明确产品需求\n\n贸易名称可能对应多个商业牌号，应说明用途和目标规格，确保供应商比较的是同一种产品。\n\n## 比较供应商和当前价格\n\n核对生产商、签约主体、当前货源、交期、起订量、包装、付款条件和价格有效期，并在同一 FOB 或 CIF 基础上比较。\n\n## 审核文件和包装\n\n确认 TDS、SDS、批次 COA、UN 编号、标签、包装指令和承运条件。包装会影响装柜、运费和目的地操作。\n\n## 报价前应提供什么\n\n请提供产品和 CAS、规格、数量、包装、目的港、交期、贸易术语和文件要求。ChinaChemExport 会针对每条询盘审核合适货源、商务条件、文件和出运可行性。\n\n## 常见问题\n\n### 能保证最低价格吗？\n\n不能。只有在规格、包装、数量和路线确认后，才能比较具有竞争力且可执行的方案。`);
 const [articles, setArticles] = useState<Article[]>(
-  [chloroformVietnamArticle, newExportServiceGuide, ...fallbackArticles.map(fallbackArticleToArticle)],
+  [supplierDocumentGuide, chloroformVietnamArticle, newExportServiceGuide, ...fallbackArticles.map(fallbackArticleToArticle)],
 );
 
 useEffect(() => {
@@ -1072,6 +1200,14 @@ useEffect(() => {
 
     if (articleData && articleData.length > 0) {
       const cmsArticles = articleData.map((item) => applyCtrArticleMetadata(cmsArticleToArticle(item as CmsArticle))).map((article) => {
+        if (article.slug === "dimethyl-carbonate-supplier-china-export-guide") {
+          const linksEn = "\n\n## Supplier document checklist\n\nBefore approving a DMC supply option, review [what documents a wholesale chemical supplier should provide](/insights/wholesale-chemical-supplier-documents-checklist), including supplier identity, TDS, SDS, batch COA, packing and shipment information.";
+          const linksZh = "\n\n## 供应商文件清单\n\n批准 DMC 供应方案前，请查看[化工批发供应商应提供哪些文件](/insights/wholesale-chemical-supplier-documents-checklist)，包括供应商身份、TDS、SDS、批次 COA、包装和出运信息。";
+          return {
+            ...article,
+            content: t(`${tx(article.content, "en")}${linksEn}`, `${tx(article.content, "zh")}${linksZh}`),
+          };
+        }
         if (article.slug !== "white-oil-liquid-paraffin-durban-import-specification-guide") return article;
         const linksEn = "\n\n## Continue your review\n\nSee our [chemical sourcing support](/chemical-sourcing), [export support](/export-support) and [chemical product directory](/products). If you already have a target specification, [send a white oil sourcing requirement](/contact) for a transaction-specific review.";
         const linksZh = "\n\n## 继续审核采购方案\n\n您可以查看[化工品寻源服务](/chemical-sourcing)、[出口支持](/export-support)和[化工产品目录](/products)。如果已有目标规格，请[提交白油采购需求](/contact)，以便按具体交易审核。";
@@ -1084,7 +1220,7 @@ useEffect(() => {
           content: t(`${tx(article.content, "en")}${linksEn}`, `${tx(article.content, "zh")}${linksZh}`),
         };
       });
-      const requiredArticles = [chloroformVietnamArticle, newExportServiceGuide];
+      const requiredArticles = [supplierDocumentGuide, chloroformVietnamArticle, newExportServiceGuide];
       const mergedArticles = [...requiredArticles, ...cmsArticles.filter((article) => !requiredArticles.some((required) => required.slug === article.slug))];
       setArticles(mergedArticles);
     }
@@ -1126,7 +1262,7 @@ useEffect(() => {
             "export-support": t("Chemical Export Support from China | ChinaChemExport", "中国化工品出口支持｜ChinaChemExport"),
             "shandong-supply-base": t("Shandong Chemical Supply Base | ChinaChemExport", "山东化工产业带寻源｜ChinaChemExport"),
             products: t("Chemicals Sourced from China | ChinaChemExport", "中国化工品寻源目录｜ChinaChemExport"),
-            insights: t("Chemical Sourcing & Export Guides | ChinaChemExport", "化工品寻源与出口指南｜ChinaChemExport"),
+            insights: t("China Chemical Supplier Guides | Documents, Prices & Shipping", "中国化工供应商指南｜文件、价格与运输"),
             about: t("Independent Chemical Sourcing Coordinator in Shandong | ChinaChemExport", "山东独立化工品寻源协调人｜ChinaChemExport"),
             contact: t("Submit a Chemical Sourcing Requirement | ChinaChemExport", "提交化工品采购需求｜ChinaChemExport"),
           } as Partial<Record<Page, I18n>>)[page] || t(`${page} | ChinaChemExport`, `${page} | ChinaChemExport`), lang);
@@ -1146,7 +1282,7 @@ useEffect(() => {
       "chemical-sourcing": t("Compare suitable Chinese chemical suppliers, specifications, current availability, batch COA, SDS, packing, prices and export feasibility before quotation.", "报价前比较合适的中国化工供应商、规格、当前供应、批次 COA、SDS、包装、价格及出口可行性。"),
       "export-support": t("Chemical export coordination covering qualified repacking, inspection, dangerous-goods documents, customs declaration, vessel booking and port follow-up.", "化工品出口协调服务，覆盖合格分装、检验、危包单证、报关、订舱和港口交付跟进。"),
       "shandong-supply-base": t("A buyer-focused introduction to chemical sourcing from Shandong’s petrochemical supply base and its regional export-service resources.", "面向海外买家的山东石化产业带寻源介绍及区域出口服务资源说明。"),
-      insights: t("Practical guides for overseas buyers reviewing Chinese chemical suppliers, specifications, packing, dangerous-goods documents and shipment options.", "面向海外买家的中国化工品供应商、规格、包装、危品单证与运输方案实务指南。"),
+      insights: t("Practical buyer guides for reviewing Chinese chemical suppliers, SDS, TDS, batch COA, packing, prices and export options before purchase.", "面向海外买家的中国化工供应商、SDS、TDS、批次 COA、包装、价格与出口方案实务指南。"),
       contact: t("Submit your product, specification, quantity, packing and destination for a transaction-specific chemical sourcing and export review.", "提交产品、规格、数量、包装和目的地，获取针对具体交易的化工品寻源与出口评估。"),
       services: t(
         "Export support for chemical orders from China, including quality control, documentation, packaging, customs and dangerous-goods logistics.",
@@ -1203,7 +1339,15 @@ useEffect(() => {
     if (page === "services") return <ServicesPage go={go} lang={lang} />;
     if (page === "markets") return <MarketsPage go={go} lang={lang} />;
     if (page === "insights") {
-      if (!currentArticleSlug) return <ApprovedInsights lang={lang} />;
+      if (!currentArticleSlug) return <ApprovedInsights lang={lang} articles={articles.map((article) => ({
+        slug: article.slug,
+        title: tx(article.title, lang),
+        summary: tx(article.seoDescription, lang),
+        tag: tx(article.tag, lang),
+        cover: article.coverImage,
+        content: tx(article.content, lang),
+        date: article.slug === supplierDocumentGuide.slug ? "Nov 06, 2026" : undefined,
+      }))} />;
       const source = articles.find((article) => article.slug === currentArticleSlug);
       return <ApprovedInsightArticle
         slug={currentArticleSlug}

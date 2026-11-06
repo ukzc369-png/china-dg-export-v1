@@ -42,7 +42,7 @@ export const coreRoutes = [
   { path: "/chemical-sourcing", seoTitle: "Chemical Sourcing Service China | Supplier & Price Review", title: "Chemical Sourcing in China, Coordinated from Shandong", description: "Compare suitable Chinese chemical suppliers, specifications, current availability, batch COA, SDS, packing, prices and export feasibility before quotation.", heading: "Chemical Sourcing in China, Coordinated from Shandong", links: [["/products/dimethyl-carbonate-dmc", "Review DMC sourcing"], ["/products/trichloromethane-tcm", "Review chloroform sourcing"], ["/products/methylene-chloride-dcm", "Review DCM sourcing"], ["/contact", "Send your requirement"]] },
   { path: "/export-support", title: "Chemical Export Support from China", description: "Coordinate qualified repacking, inspection, dangerous-goods documents, customs declaration, vessel booking and port follow-up.", heading: "Chemical Export Support from Preparation to Shipment", links: [["/products", "Browse products"], ["/contact", "Request an export review"]] },
   { path: "/shandong-supply-base", title: "Shandong Chemical Supply Base", description: "A buyer-focused introduction to chemical sourcing from Shandong's petrochemical supply base and regional export-service resources.", heading: "Sourcing Chemicals from Shandong's Petrochemical Supply Base", links: [["/insights", "Read buyer guides"], ["/contact", "Discuss a requirement"]] },
-  { path: "/insights", title: "Chemical Export Insights", description: "Practical guides on chemical sourcing, compliance, documentation, packaging and shipping from China.", heading: "Chemical Export Insights", links: [["/products", "Browse products"], ["/contact", "Contact our export team"]] },
+  { path: "/insights", seoTitle: "China Chemical Supplier Guides | Documents, Prices & Shipping", title: "China Chemical Supplier & Export Guides", description: "Practical buyer guides for reviewing Chinese chemical suppliers, SDS, TDS, batch COA, packing, prices and export options before purchase.", heading: "Practical Chemical Sourcing & Export Guides", links: [["/insights/wholesale-chemical-supplier-documents-checklist", "Review the supplier document checklist"], ["/chemical-sourcing", "Review chemical sourcing support"], ["/contact", "Contact our export team"]] },
   { path: "/contact", title: "Submit a Chemical Sourcing Requirement", description: "Send your product, specification, quantity, packaging and destination requirements for a transaction-specific supply and export review.", heading: "Tell Me What You Need to Source", links: [["/products", "Browse products"], ["/export-support", "Review export support"]] },
   { path: "/dangerous-goods", title: "Dangerous Goods Chemical Export", description: "Review dangerous-goods packaging, documentation, declaration and shipping coordination for chemical exports from China.", heading: "Dangerous Goods Chemical Export", links: [["/export-support", "Export support"], ["/contact", "Request a review"]] },
   { path: "/privacy", title: "Privacy Policy", description: "Privacy policy for ChinaChemExport website visitors and inquiry submissions.", heading: "Privacy Policy", links: [["/", "Home"], ["/contact", "Contact us"]] },
@@ -51,6 +51,7 @@ export const coreRoutes = [
 ];
 
 export const insightRouteDetails = [
+  ["wholesale-chemical-supplier-documents-checklist", "Wholesale Chemical Supplier Documents | Buyer Checklist", "Review the SDS, TDS, batch COA, supplier identity, packing documents, labels and shipment information a wholesale chemical supplier should provide before purchase."],
   ["xylene-china-kenya-export-cif-mombasa-guide", "Xylene from China to Kenya: Mombasa Export Guide", "A buyer-focused guide to mixed xylene specifications, drum packing, FOB Qingdao, CIF Mombasa and Kenya import preparation."],
   ["white-oil-liquid-paraffin-durban-import-specification-guide", "White Oil Supplier China: Flexibag & Durban Import Guide", "Compare China white oil and liquid paraffin suppliers, viscosity and flash point specifications, batch documents, Flexibag packing and Durban import requirements."],
   ["chemical-export-service-china-supplier-price-document-guide", "Chemical Export Service China: Compare Suppliers, Prices and Documents", "A practical guide to comparing Chinese chemical suppliers, current pricing, TDS, SDS, COA, export packing and shipment feasibility before quotation."],
@@ -60,7 +61,7 @@ export const insightRouteDetails = [
   ["dongying-strategic-gateway-chemical-exports-china", "Dongying: A Strategic Gateway for Chemical Exports from China", "An introduction to Dongying's petrochemical supply base and its role in chemical sourcing and export coordination."],
   ["factory-to-port-chemical-export-compliance-workflow-china", "Factory-to-Port Chemical Export Compliance Workflow", "A step-by-step overview of supplier checks, specifications, documents, packaging and port execution for chemical exports."],
   ["how-to-export-dangerous-goods-from-china", "How to Export Dangerous Goods from China", "A buyer-focused guide to dangerous-goods classification, packaging, labels, declarations and shipping from China."],
-  ["dimethyl-carbonate-supplier-china-export-guide", "Dimethyl Carbonate Supplier China | DMC Export Guide", "Compare DMC suppliers in China by grade, specification, batch COA, SDS, packing, current availability and export feasibility before quotation."],
+  ["dimethyl-carbonate-supplier-china-export-guide", "DMC Supplier China | Price, COA, Packing & Export Guide", "Compare dimethyl carbonate suppliers in China by grade, current price basis, batch COA, SDS, packing, lead time and export feasibility."],
   ["dimethyl-carbonate-vietnam-china-supplier-guide", "DMC Supplier China to Vietnam | Packing & Import Guide", "A Vietnam-focused DMC sourcing guide covering supplier review, specification, drum or ISO tank packing, documents, importer checks and shipment coordination."],
   ["methylene-chloride-india-dcm-msds-china-supply-guide", "Methylene Chloride China to India | MSDS & Packing", "Source methylene chloride from China to India with specification, MSDS, batch COA, UN packing, importer and shipment-route checks before quotation."],
   ["chloroform-supplier-china-vietnam-import-guide", "Chloroform China to Vietnam | SDS, COA & Shipping", "Source chloroform from China to Vietnam with grade, SDS, batch COA, UN 1888 packing, precursor controls, importer and carrier checks before quotation."],
@@ -75,6 +76,12 @@ export const insightRouteDetails = [
 }));
 
 const insightLinksBySlug = {
+  "wholesale-chemical-supplier-documents-checklist": [
+    ["/chemical-sourcing", "Review chemical sourcing support"],
+    ["/export-support", "Review export support"],
+    ["/insights/dimethyl-carbonate-supplier-china-export-guide", "See a DMC supplier review example"],
+    ["/contact", "Send a sourcing requirement"],
+  ],
   "xylene-china-kenya-export-cif-mombasa-guide": [
     ["/products/xylene", "View Xylene product details"],
     ["/chemical-sourcing", "Review chemical sourcing support"],
@@ -93,6 +100,7 @@ const insightLinksBySlug = {
   ],
   "dimethyl-carbonate-supplier-china-export-guide": [
     ["/products/dimethyl-carbonate-dmc", "View Dimethyl Carbonate product details"],
+    ["/insights/wholesale-chemical-supplier-documents-checklist", "Review the supplier document checklist"],
     ["/insights/dimethyl-carbonate-vietnam-china-supplier-guide", "Read the DMC Vietnam supply guide"],
     ["/contact", "Request a DMC supply review"],
   ],
@@ -121,12 +129,23 @@ const insightLinksBySlug = {
 for (const route of insightRouteDetails) {
   route.links = insightLinksBySlug[route.slug] ?? route.links;
   if ([
+    "wholesale-chemical-supplier-documents-checklist",
     "white-oil-liquid-paraffin-durban-import-specification-guide",
     "dimethyl-carbonate-supplier-china-export-guide",
     "dimethyl-carbonate-vietnam-china-supplier-guide",
     "methylene-chloride-india-dcm-msds-china-supply-guide",
     "chloroform-supplier-china-vietnam-import-guide",
   ].includes(route.slug)) route.seoTitle = route.title;
+  if (route.slug === "wholesale-chemical-supplier-documents-checklist") {
+    route.author = "Evan Cole";
+    route.datePublished = "2026-11-06";
+    route.image = "/page-assets/batch-document-review-v1.webp";
+    route.faqs = [
+      ["What documents should a wholesale chemical supplier provide?", "A useful review normally starts with supplier identity, product specification or TDS, current SDS, a representative or batch COA, packing details and transaction-specific shipping information."],
+      ["Is an SDS enough to approve a chemical supplier?", "No. An SDS describes safety and transport information, but it does not prove current availability, batch quality, contracting identity or shipment readiness."],
+      ["Should the COA be from the actual batch?", "For final release, the buyer should request a COA tied to the supplied batch. A sample COA is useful for preliminary comparison but is not final batch evidence."],
+    ];
+  }
   if (route.slug === "xylene-china-kenya-export-cif-mombasa-guide") {
     route.author = "Evan Cole";
     route.datePublished = "2026-10-14";
