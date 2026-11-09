@@ -7,6 +7,7 @@ const siteUrl = "https://chinachemexport.com";
 const staticPages = [
   ["/", "weekly", "1.0"], ["/products", "weekly", "0.9"],
   ["/chemical-sourcing", "monthly", "0.9"], ["/export-support", "monthly", "0.9"],
+  ["/ru/chemical-sourcing", "weekly", "0.9"],
   ["/insights", "weekly", "0.8"],
   ["/contact", "monthly", "0.9"], ["/privacy", "yearly", "0.4"],
   ["/terms", "yearly", "0.4"], ["/cookies", "yearly", "0.4"],

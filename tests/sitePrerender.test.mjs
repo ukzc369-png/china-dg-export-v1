@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { buildRouteHtml } from "../scripts/prerender-products.mjs";
-import { insightRouteDetails } from "../scripts/site-routes.mjs";
+import { coreRoutes, insightRouteDetails } from "../scripts/site-routes.mjs";
 
 const shell = `<!doctype html><html><head><title>ChinaChemExport</title><meta name="description" content="default"><link rel="canonical" href="https://chinachemexport.com/"><meta property="og:title" content="default"><meta property="og:description" content="default"><meta property="og:url" content="https://chinachemexport.com/"></head><body><div id="root"></div><script type="module" src="/assets/index.js"></script></body></html>`;
 
@@ -100,4 +100,17 @@ test("core route prerender exposes route-specific crawlable copy", () => {
   assert.match(html, /<h1>Chemical Export Markets and Delivery Experience<\/h1>/);
   assert.match(html, /href="\/products"/);
   assert.match(html, /href="\/contact"/);
+});
+
+test("Russian sourcing route exposes Russian metadata and reciprocal language links", () => {
+  const route = coreRoutes.find((item) => item.path === "/ru/chemical-sourcing");
+  assert.ok(route);
+  const html = buildRouteHtml(shell, route);
+  assert.match(html, /<html lang="ru">/);
+  assert.match(html, /Поставка химической продукции из Китая в Россию/);
+  assert.match(html, /rel="canonical" href="https:\/\/chinachemexport\.com\/ru\/chemical-sourcing"/);
+  assert.match(html, /hreflang="ru" href="https:\/\/chinachemexport\.com\/ru\/chemical-sourcing"/);
+  assert.match(html, /hreflang="en" href="https:\/\/chinachemexport\.com\/chemical-sourcing"/);
+  assert.match(html, /hreflang="x-default"/);
+  assert.match(html, /href="\/chemical-sourcing">English version/);
 });

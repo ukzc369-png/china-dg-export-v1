@@ -13,6 +13,7 @@ import {
   InsightArticle as ApprovedInsightArticle,
   Insights as ApprovedInsights,
   Products as ApprovedProducts,
+  RussianChemicalSourcing as ApprovedRussianChemicalSourcing,
 } from "./NewSiteApp";
 import ProductDetailPage from "./ProductDetail";
 import { productSlug, type I18n, type Lang, type ProductDetailContent, type ProductSource as Product } from "./productDetails";
@@ -21,6 +22,7 @@ import { formatInquiryProduct } from "./inquiryPrefill";
 type Page =
   | "home"
   | "chemical-sourcing"
+  | "russian-sourcing"
   | "export-support"
   | "shandong-supply-base"
   | "products"
@@ -973,6 +975,7 @@ function canonicalPath(pathname: string) {
   return pathname.replace(/\/+$/, "");
 }
 function pathToPage(pathname: string): Page {
+  if (pathname.replace(/\/+$/, "") === "/ru/chemical-sourcing") return "russian-sourcing";
   if (getArticleSlug(pathname)) return "insights";
   if (getProductSlug(pathname)) return "products";
   if (pathname === "/cases") {
@@ -1015,6 +1018,7 @@ function pathToPage(pathname: string): Page {
     : "home";
 }
 function pageToPath(page: Page) {
+  if (page === "russian-sourcing") return "/ru/chemical-sourcing";
   return page === "home" ? "/" : `/${page}`;
 }
 
@@ -1259,6 +1263,7 @@ useEffect(() => {
           )
         : tx(({
             "chemical-sourcing": t("Chemical Sourcing Service China | Supplier & Price Review", "中国化工品寻源服务｜供应商与价格审核"),
+            "russian-sourcing": t("Поставка химической продукции из Китая в Россию | ChinaChemExport", "Поставка химической продукции из Китая в Россию | ChinaChemExport"),
             "export-support": t("Chemical Export Support from China | ChinaChemExport", "中国化工品出口支持｜ChinaChemExport"),
             "shandong-supply-base": t("Shandong Chemical Supply Base | ChinaChemExport", "山东化工产业带寻源｜ChinaChemExport"),
             products: t("Chemicals Sourced from China | ChinaChemExport", "中国化工品寻源目录｜ChinaChemExport"),
@@ -1280,6 +1285,7 @@ useEffect(() => {
         "了解ChinaChemExport背后的独立化工品寻源与出口协调人，为海外采购商连接山东经核验货源及合格履约资源。",
       ),
       "chemical-sourcing": t("Compare suitable Chinese chemical suppliers, specifications, current availability, batch COA, SDS, packing, prices and export feasibility before quotation.", "报价前比较合适的中国化工供应商、规格、当前供应、批次 COA、SDS、包装、价格及出口可行性。"),
+      "russian-sourcing": t("Поиск и проверка поставщиков химической продукции в Китае для российских покупателей: спецификация, SDS, COA, упаковка, коммерческие условия и возможность отгрузки.", "Поиск и проверка поставщиков химической продукции в Китае для российских покупателей: спецификация, SDS, COA, упаковка, коммерческие условия и возможность отгрузки."),
       "export-support": t("Chemical export coordination covering qualified repacking, inspection, dangerous-goods documents, customs declaration, vessel booking and port follow-up.", "化工品出口协调服务，覆盖合格分装、检验、危包单证、报关、订舱和港口交付跟进。"),
       "shandong-supply-base": t("A buyer-focused introduction to chemical sourcing from Shandong’s petrochemical supply base and its regional export-service resources.", "面向海外买家的山东石化产业带寻源介绍及区域出口服务资源说明。"),
       insights: t("Practical buyer guides for reviewing Chinese chemical suppliers, SDS, TDS, batch COA, packing, prices and export options before purchase.", "面向海外买家的中国化工供应商、SDS、TDS、批次 COA、包装、价格与出口方案实务指南。"),
@@ -1300,6 +1306,23 @@ useEffect(() => {
     if (canonical) canonical.setAttribute("href", canonicalUrl);
     const openGraphUrl = document.querySelector('meta[property="og:url"]');
     if (openGraphUrl) openGraphUrl.setAttribute("content", canonicalUrl);
+    document.documentElement.lang = page === "russian-sourcing" ? "ru" : lang === "zh" ? "zh-CN" : "en";
+    document.querySelectorAll('link[data-locale-alternate]').forEach((node) => node.remove());
+    if (page === "chemical-sourcing" || page === "russian-sourcing") {
+      const alternates = [
+        ["en", "https://chinachemexport.com/chemical-sourcing"],
+        ["ru", "https://chinachemexport.com/ru/chemical-sourcing"],
+        ["x-default", "https://chinachemexport.com/chemical-sourcing"],
+      ];
+      alternates.forEach(([hreflang, href]) => {
+        const link = document.createElement("link");
+        link.rel = "alternate";
+        link.hreflang = hreflang;
+        link.href = href;
+        link.dataset.localeAlternate = "true";
+        document.head.append(link);
+      });
+    }
     trackPageView();
   }, [page, lang, products, articles, currentArticleSlug]);
   useEffect(() => {
@@ -1329,6 +1352,7 @@ useEffect(() => {
     setMobileMenuOpen(false);
   }
   const content = useMemo(() => {
+    if (page === "russian-sourcing") return <ApprovedRussianChemicalSourcing />;
     if (page === "chemical-sourcing") return <ApprovedChemicalSourcing lang={lang} />;
     if (page === "export-support") return <ApprovedExportSupport lang={lang} />;
     if (page === "products") {
@@ -1377,6 +1401,7 @@ useEffect(() => {
     );
   }, [page, lang, products, articles, currentArticleSlug, inquiryProduct, openProductInquiry, routePath]);
   const approvedStandalone = page === "home"
+    || page === "russian-sourcing"
     || page === "chemical-sourcing"
     || page === "export-support"
     || page === "contact"

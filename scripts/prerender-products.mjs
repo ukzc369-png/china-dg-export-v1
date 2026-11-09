@@ -22,9 +22,10 @@ const replaceOrInsertHead = (html, pattern, replacement) =>
     ? html.replace(pattern, replacement)
     : html.replace("</head>", `  ${replacement}\n</head>`);
 
-function applyMetadata(shell, { title, description, path }) {
+function applyMetadata(shell, { title, description, path, lang = "en", alternates = [] }) {
   const canonical = canonicalFor(path);
-  let html = replaceOrInsertHead(shell, /<title>[\s\S]*?<\/title>/i, `<title>${escapeHtml(title)}</title>`);
+  let html = shell.replace(/<html(?:\s+lang=["'][^"']*["'])?/i, `<html lang="${escapeHtml(lang)}"`);
+  html = replaceOrInsertHead(html, /<title>[\s\S]*?<\/title>/i, `<title>${escapeHtml(title)}</title>`);
   html = replaceOrInsertHead(
     html,
     /<meta\s+name=["']description["'][^>]*>/i,
@@ -45,11 +46,16 @@ function applyMetadata(shell, { title, description, path }) {
     /<meta\s+property=["']og:description["'][^>]*>/i,
     `<meta property="og:description" content="${escapeHtml(description)}">`,
   );
-  return replaceOrInsertHead(
+  html = replaceOrInsertHead(
     html,
     /<meta\s+property=["']og:url["'][^>]*>/i,
     `<meta property="og:url" content="${escapeHtml(canonical)}">`,
   );
+  if (alternates.length) {
+    const markup = alternates.map(([hreflang, href]) => `<link rel="alternate" hreflang="${escapeHtml(hreflang)}" href="${escapeHtml(href)}">`).join("\n  ");
+    html = html.replace("</head>", `  ${markup}\n</head>`);
+  }
+  return html;
 }
 
 const schemaScript = (schema) =>
@@ -164,7 +170,7 @@ export function buildRouteHtml(shell, route) {
     );
   }
 
-  const metadata = applyMetadata(shell, { title, description: route.description, path: route.path });
+  const metadata = applyMetadata(shell, { title, description: route.description, path: route.path, lang: route.lang, alternates: route.alternates });
   return injectFallback(
     metadata,
     fallbackMarkup({ kind, heading: route.heading, description: route.description, links: route.links, schemas }),
