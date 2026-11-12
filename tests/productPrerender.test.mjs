@@ -20,6 +20,10 @@ test("product prerender creates route-specific crawlable HTML", () => {
   assert.match(html, /"@type":"Product"/);
   assert.match(html, /methylene-chloride-dcm-75-09-2-v2\.webp/);
   assert.match(html, /methylene-chloride-india-dcm-msds-china-supply-guide/);
+  assert.match(html, /What we verify before quotation/);
+  assert.match(html, /UN 1593/);
+  assert.match(html, /Importer details, destination port and route acceptance/);
+  assert.match(html, /"@type":"FAQPage"/);
   assert.match(html, /"@type":"BreadcrumbList"/);
   assert.match(html, /data-prerendered="product"/);
   assert.ok(html.indexOf('<div id="root">') < html.indexOf('data-prerendered="product"'));
@@ -38,6 +42,8 @@ test("aniline prerender targets industrial procurement and export intent", () =>
   assert.match(html, /UN 1547 documentation/);
   assert.match(html, /href="\/dangerous-goods"/);
   assert.match(html, /Request an aniline quotation/);
+  assert.match(html, /Packing Group II/);
+  assert.match(html, /MDI and polyurethane-material production/);
 });
 
 test("chloroform prerender targets product, identity and export intent", () => {
@@ -54,4 +60,18 @@ test("chloroform prerender targets product, identity and export intent", () => {
   assert.match(html, /chloroform-supplier-china-vietnam-import-guide/);
   assert.match(html, /trichloromethane-tcm-67-66-3-v2\.webp/);
   assert.match(html, /Request a chloroform quotation/);
+  assert.match(html, /Required grade, specification and stabilizer/);
+});
+
+test("DMC prerender exposes substantive buyer content without JavaScript", () => {
+  const html = buildProductHtml(shell, {
+    slug: "dimethyl-carbonate-dmc",
+    name: "Dimethyl Carbonate (DMC)",
+    cas: "616-38-6",
+    category: "Carbonates",
+  });
+  assert.match(html, /Product identity and transport reference/);
+  assert.match(html, /Supplier specification, TDS, SDS and current batch COA/);
+  assert.match(html, /DMC supply is reviewed for Russia, Vietnam/);
+  assert.match(html, /How are DMC suppliers compared/);
 });

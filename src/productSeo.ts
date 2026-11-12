@@ -29,7 +29,6 @@ export function buildProductSeo(detail: ProductDetailModel, lang: Lang): Product
     url: canonical,
     sku: detail.source.cas,
     category: detail.source.category[lang],
-    brand: { "@type": "Brand", name: "ChinaChemExport" },
     additionalProperty: detail.specifications.map((item) => ({
       "@type": "PropertyValue",
       name: item.label[lang],
