@@ -2591,8 +2591,8 @@ return (
 
       <p style={{ marginTop: "12px", color: "#4b5563", fontSize: "15px" }}>
         {lang === "zh"
-          ? "我们会在24小时内联系您。"
-          : "We will contact you within 24 hours."}
+          ? "我会完成初步审核后通过电子邮件回复。"
+          : "I will reply by email after the initial review."}
       </p>
     </div>
   </div>

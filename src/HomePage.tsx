@@ -147,7 +147,7 @@ export default function HomePage({ go, lang, products, articles, onOpenArticle }
             <span className="hp-subpage-logo" aria-hidden="true">CE</span>
             <span className="hp-logo-copy">
               <strong>ChinaChemExport</strong>
-              <small>CHEMICAL SUPPLIER &amp; EXPORTER</small>
+              <small>INDEPENDENT CHEMICAL SOURCING &amp; EXPORT COORDINATOR</small>
             </span>
           </button>
 
@@ -353,7 +353,7 @@ export default function HomePage({ go, lang, products, articles, onOpenArticle }
           <div className="hp-footer-about">
             <button className="hp-footer-logo" onClick={() => go("home")}>
               <span className="hp-subpage-logo" aria-hidden="true">CE</span>
-              <span><strong>ChinaChemExport</strong><small>CHEMICAL SUPPLIER &amp; EXPORTER</small></span>
+              <span><strong>ChinaChemExport</strong><small>INDEPENDENT CHEMICAL SOURCING &amp; EXPORT COORDINATOR</small></span>
             </button>
             <p>
               {tx(
