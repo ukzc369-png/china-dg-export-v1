@@ -40,7 +40,7 @@ export const coreRoutes = [
   { path: "/products", title: "Chemicals Sourced from China", description: "Browse chemicals that can be reviewed for supplier, specification, availability, packing and export feasibility.", heading: "Chemicals I Can Help You Source from China", links: [["/export-support", "View export support"], ["/contact", "Ask about a product"]] },
   { path: "/about", title: "Independent Chemical Sourcing Coordinator in Shandong", description: "Learn how an independent coordinator connects overseas buyers with reviewed chemical supply and qualified export-service resources.", heading: "Your Local Chemical Sourcing Coordinator in Shandong", links: [["/chemical-sourcing", "Chemical sourcing"], ["/contact", "Contact me"]] },
   { path: "/chemical-sourcing", seoTitle: "Chemical Sourcing Service China | Supplier & Price Review", title: "Chemical Sourcing in China, Coordinated from Shandong", description: "Compare suitable Chinese chemical suppliers, specifications, current availability, batch COA, SDS, packing, prices and export feasibility before quotation.", heading: "Chemical Sourcing in China, Coordinated from Shandong", alternates: [["en", "https://chinachemexport.com/chemical-sourcing"], ["ru", "https://chinachemexport.com/ru/chemical-sourcing"], ["x-default", "https://chinachemexport.com/chemical-sourcing"]], links: [["/ru/chemical-sourcing", "Русская версия"], ["/products/dimethyl-carbonate-dmc", "Review DMC sourcing"], ["/products/trichloromethane-tcm", "Review chloroform sourcing"], ["/products/methylene-chloride-dcm", "Review DCM sourcing"], ["/contact", "Send your requirement"]] },
-  { path: "/ru/chemical-sourcing", seoTitle: "Поставка химической продукции из Китая в Россию | ChinaChemExport", title: "Поставка химической продукции из Китая в Россию", description: "Поиск и проверка поставщиков химической продукции в Китае для российских покупателей: спецификация, SDS, COA, упаковка, коммерческие условия и возможность отгрузки.", heading: "Поставка химической продукции из Китая в Россию", lang: "ru", alternates: [["ru", "https://chinachemexport.com/ru/chemical-sourcing"], ["en", "https://chinachemexport.com/chemical-sourcing"], ["x-default", "https://chinachemexport.com/chemical-sourcing"]], links: [["/chemical-sourcing", "English version"], ["/products", "Каталог химической продукции"], ["/contact", "Отправить запрос"]] },
+  { path: "/ru/chemical-sourcing", seoTitle: "Поставка химической продукции из Китая в Россию | ChinaChemExport", title: "Поставка химической продукции из Китая в Россию", description: "Поиск и проверка поставщиков химической продукции в Китае для российских покупателей: спецификация, SDS, COA, упаковка, коммерческие условия и возможность отгрузки.", heading: "Поставка химической продукции из Китая в Россию", lang: "ru", alternates: [["ru", "https://chinachemexport.com/ru/chemical-sourcing"], ["en", "https://chinachemexport.com/chemical-sourcing"], ["x-default", "https://chinachemexport.com/chemical-sourcing"]], links: [["/insights/chemical-sourcing-china-russia-documents-shipping-guide", "Руководство по документам и отгрузке в Россию"], ["/chemical-sourcing", "English version"], ["/products", "Каталог химической продукции"], ["/contact", "Отправить запрос"]] },
   { path: "/export-support", title: "Chemical Export Support from China", description: "Coordinate qualified repacking, inspection, dangerous-goods documents, customs declaration, vessel booking and port follow-up.", heading: "Chemical Export Support from Preparation to Shipment", links: [["/products", "Browse products"], ["/contact", "Request an export review"]] },
   { path: "/shandong-supply-base", title: "Shandong Chemical Supply Base", description: "A buyer-focused introduction to chemical sourcing from Shandong's petrochemical supply base and regional export-service resources.", heading: "Sourcing Chemicals from Shandong's Petrochemical Supply Base", links: [["/insights", "Read buyer guides"], ["/contact", "Discuss a requirement"]] },
   { path: "/insights", seoTitle: "China Chemical Supplier Guides | Documents, Prices & Shipping", title: "China Chemical Supplier & Export Guides", description: "Practical buyer guides for reviewing Chinese chemical suppliers, SDS, TDS, batch COA, packing, prices and export options before purchase.", heading: "Practical Chemical Sourcing & Export Guides", links: [["/insights/wholesale-chemical-supplier-documents-checklist", "Review the supplier document checklist"], ["/chemical-sourcing", "Review chemical sourcing support"], ["/contact", "Contact our export team"]] },
@@ -53,6 +53,7 @@ export const coreRoutes = [
 
 export const insightRouteDetails = [
   ["wholesale-chemical-supplier-documents-checklist", "Wholesale Chemical Supplier Documents | Buyer Checklist", "Review the SDS, TDS, batch COA, supplier identity, packing documents, labels and shipment information a wholesale chemical supplier should provide before purchase."],
+  ["chemical-sourcing-china-russia-documents-shipping-guide", "Chemical Sourcing from China to Russia: Documents & Shipping Guide", "A practical checklist for Russian industrial buyers reviewing Chinese chemical suppliers, specifications, SDS, COA, packing, payment terms and shipment feasibility."],
   ["xylene-china-kenya-export-cif-mombasa-guide", "Xylene from China to Kenya: Mombasa Export Guide", "A buyer-focused guide to mixed xylene specifications, drum packing, FOB Qingdao, CIF Mombasa and Kenya import preparation."],
   ["white-oil-liquid-paraffin-durban-import-specification-guide", "White Oil Supplier China: Flexibag & Durban Import Guide", "Compare China white oil and liquid paraffin suppliers, viscosity and flash point specifications, batch documents, Flexibag packing and Durban import requirements."],
   ["chemical-export-service-china-supplier-price-document-guide", "Chemical Export Service China: Compare Suppliers, Prices and Documents", "A practical guide to comparing Chinese chemical suppliers, current pricing, TDS, SDS, COA, export packing and shipment feasibility before quotation."],
@@ -77,6 +78,12 @@ export const insightRouteDetails = [
 }));
 
 const insightLinksBySlug = {
+  "chemical-sourcing-china-russia-documents-shipping-guide": [
+    ["/ru/chemical-sourcing", "Русская версия страницы услуг"],
+    ["/products/dimethyl-carbonate-dmc", "Review DMC product details"],
+    ["/insights/wholesale-chemical-supplier-documents-checklist", "Review the supplier document checklist"],
+    ["/contact", "Send a Russia sourcing requirement"],
+  ],
   "wholesale-chemical-supplier-documents-checklist": [
     ["/chemical-sourcing", "Review chemical sourcing support"],
     ["/export-support", "Review export support"],
@@ -145,6 +152,31 @@ for (const route of insightRouteDetails) {
       ["What documents should a wholesale chemical supplier provide?", "A useful review normally starts with supplier identity, product specification or TDS, current SDS, a representative or batch COA, packing details and transaction-specific shipping information."],
       ["Is an SDS enough to approve a chemical supplier?", "No. An SDS describes safety and transport information, but it does not prove current availability, batch quality, contracting identity or shipment readiness."],
       ["Should the COA be from the actual batch?", "For final release, the buyer should request a COA tied to the supplied batch. A sample COA is useful for preliminary comparison but is not final batch evidence."],
+    ];
+  }
+  if (route.slug === "chemical-sourcing-china-russia-documents-shipping-guide") {
+    route.author = "Evan Cole";
+    route.datePublished = "2026-11-14";
+    route.image = "/blog/chemical-sourcing-china-russia-cover.jpg";
+    route.faqs = [
+      ["What should a Russian buyer send before requesting a chemical quotation from China?", "Send the chemical name and CAS, intended use, target specification, quantity, packing, destination city or terminal, preferred Incoterm, delivery window and required documents."],
+      ["Is an SDS and sample COA enough to approve a China chemical supplier?", "No. They are useful for preliminary review, but the buyer should also verify the contracting party, agreed specification, current batch evidence, packing, payment basis and shipment feasibility."],
+      ["Can every chemical be shipped from China to Russia through the same route?", "No. Product classification, packing, carrier acceptance, border or port handling and Russian import requirements must be reviewed for the actual cargo and route."],
+    ];
+    route.prerenderSections = [
+      {
+        heading: "Start with the exact product requirement",
+        paragraphs: ["A useful inquiry identifies the chemical by name and CAS, then adds the intended use and the limits that matter to the buyer's process. Trade names and headline purity values are not enough for an executable comparison."],
+        bullets: ["Product name and CAS number", "Application and target specification", "Quantity and packing", "Russian destination and delivery window"],
+      },
+      {
+        heading: "Review the supplier and batch documents",
+        paragraphs: ["Check the producer, contracting party and exporter roles. Compare the supplier specification, current SDS and batch COA against the same offered grade, and confirm which documents are preliminary and which will be tied to the shipped batch."],
+      },
+      {
+        heading: "Confirm packing, payment and route before treating a quote as final",
+        paragraphs: ["Packing compatibility, cargo classification, carrier acceptance, Incoterm, currency, payment beneficiary and destination handling can materially change the offer. These items should be aligned for the actual transaction rather than assumed from a website description."],
+      },
     ];
   }
   if (route.slug === "xylene-china-kenya-export-cif-mombasa-guide") {

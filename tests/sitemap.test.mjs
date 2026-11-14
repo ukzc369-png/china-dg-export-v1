@@ -14,6 +14,7 @@ test("sitemap includes priority and generic product detail pages", () => {
 test("sitemap preserves established insight URLs and has no duplicate locations", () => {
   const xml = buildSitemap();
   assert.match(xml, /\/insights\/how-to-export-dichloromethane-from-china<\/loc>/);
+  assert.match(xml, /\/insights\/chemical-sourcing-china-russia-documents-shipping-guide<\/loc>/);
   const locations = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
   assert.equal(new Set(locations).size, locations.length);
   assert.equal(locations.filter((url) => url.includes("/products/")).length, productRoutes.length);

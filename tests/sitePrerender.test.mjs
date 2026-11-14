@@ -59,6 +59,20 @@ test("supplier document checklist exposes buyer-intent metadata, FAQ schema and 
   assert.match(html, /href="\/contact"/);
 });
 
+test("Russia sourcing guide exposes substantive copy, FAQ schema and market links", () => {
+  const route = insightRouteDetails.find((item) => item.slug === "chemical-sourcing-china-russia-documents-shipping-guide");
+  assert.ok(route);
+  const html = buildRouteHtml(shell, route);
+  assert.match(html, /Chemical Sourcing from China to Russia/);
+  assert.match(html, /Start with the exact product requirement/);
+  assert.match(html, /Compare the supplier specification, current SDS and batch COA/);
+  assert.match(html, /"@type":"FAQPage"/);
+  assert.match(html, /"datePublished":"2026-11-14"/);
+  assert.match(html, /chemical-sourcing-china-russia-cover\.jpg/);
+  assert.match(html, /href="\/ru\/chemical-sourcing"/);
+  assert.match(html, /href="\/contact"/);
+});
+
 test("homepage prerender exposes organization and website identity", () => {
   const html = buildRouteHtml(shell, {
     kind: "home",
@@ -113,4 +127,5 @@ test("Russian sourcing route exposes Russian metadata and reciprocal language li
   assert.match(html, /hreflang="en" href="https:\/\/chinachemexport\.com\/chemical-sourcing"/);
   assert.match(html, /hreflang="x-default"/);
   assert.match(html, /href="\/chemical-sourcing">English version/);
+  assert.match(html, /href="\/insights\/chemical-sourcing-china-russia-documents-shipping-guide"/);
 });

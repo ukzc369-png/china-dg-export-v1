@@ -19,6 +19,7 @@ import ProductDetailPage from "./ProductDetail";
 import { productSlug, type I18n, type Lang, type ProductDetailContent, type ProductSource as Product } from "./productDetails";
 import { getProductSlug, productPath } from "./productRouting";
 import { formatInquiryProduct } from "./inquiryPrefill";
+import { russiaChemicalSourcingGuide } from "./russiaSourcingArticle";
 type Page =
   | "home"
   | "chemical-sourcing"
@@ -1180,7 +1181,7 @@ const newExportServiceGuide: Article = {
 };
 newExportServiceGuide.content = t(`A useful chemical export quote starts with the product specification, not only the trade name. Confirm the CAS number, grade, quantity, packing, destination port and Incoterm before comparing prices.\n\n## Start with the product requirement\n\nA trade name can cover several commercial grades. State the intended use and target specification so suppliers quote the same product.\n\n## Compare suppliers and current prices\n\nCheck the producer, contracting party, current availability, lead time, MOQ, packing, payment terms and price validity. Compare FOB and CIF offers on the same basis.\n\n## Review documents and packing\n\nConfirm the TDS, SDS, batch COA, UN number, labels, packing instruction and carrier acceptance. Packing affects loading, freight and destination handling.\n\n## What to send before quotation\n\nSend the product and CAS, specification, quantity, packing preference, destination port, delivery window, Incoterm and required documents. ChinaChemExport reviews suitable supply channels, commercial terms, documents and shipment feasibility for each inquiry.\n\n## Frequently asked questions\n\n### Can you always provide the lowest price?\n\nNo. The goal is a competitive and workable option with clear responsibilities after the specification, packing, quantity and route are confirmed.`, `一份可靠的化工出口报价应从产品规格开始，而不只是贸易名称。比较价格前，应确认 CAS、牌号、数量、包装、目的港和贸易术语。\n\n## 先明确产品需求\n\n贸易名称可能对应多个商业牌号，应说明用途和目标规格，确保供应商比较的是同一种产品。\n\n## 比较供应商和当前价格\n\n核对生产商、签约主体、当前货源、交期、起订量、包装、付款条件和价格有效期，并在同一 FOB 或 CIF 基础上比较。\n\n## 审核文件和包装\n\n确认 TDS、SDS、批次 COA、UN 编号、标签、包装指令和承运条件。包装会影响装柜、运费和目的地操作。\n\n## 报价前应提供什么\n\n请提供产品和 CAS、规格、数量、包装、目的港、交期、贸易术语和文件要求。ChinaChemExport 会针对每条询盘审核合适货源、商务条件、文件和出运可行性。\n\n## 常见问题\n\n### 能保证最低价格吗？\n\n不能。只有在规格、包装、数量和路线确认后，才能比较具有竞争力且可执行的方案。`);
 const [articles, setArticles] = useState<Article[]>(
-  [supplierDocumentGuide, chloroformVietnamArticle, newExportServiceGuide, ...fallbackArticles.map(fallbackArticleToArticle)],
+  [russiaChemicalSourcingGuide, supplierDocumentGuide, chloroformVietnamArticle, newExportServiceGuide, ...fallbackArticles.map(fallbackArticleToArticle)],
 );
 
 useEffect(() => {
@@ -1224,7 +1225,7 @@ useEffect(() => {
           content: t(`${tx(article.content, "en")}${linksEn}`, `${tx(article.content, "zh")}${linksZh}`),
         };
       });
-      const requiredArticles = [supplierDocumentGuide, chloroformVietnamArticle, newExportServiceGuide];
+      const requiredArticles = [russiaChemicalSourcingGuide, supplierDocumentGuide, chloroformVietnamArticle, newExportServiceGuide];
       const mergedArticles = [...requiredArticles, ...cmsArticles.filter((article) => !requiredArticles.some((required) => required.slug === article.slug))];
       setArticles(mergedArticles);
     }
@@ -1370,7 +1371,7 @@ useEffect(() => {
         tag: tx(article.tag, lang),
         cover: article.coverImage,
         content: tx(article.content, lang),
-        date: article.slug === supplierDocumentGuide.slug ? "Nov 06, 2026" : undefined,
+        date: article.slug === russiaChemicalSourcingGuide.slug ? "Nov 14, 2026" : article.slug === supplierDocumentGuide.slug ? "Nov 06, 2026" : undefined,
       }))} />;
       const source = articles.find((article) => article.slug === currentArticleSlug);
       return <ApprovedInsightArticle
@@ -2100,6 +2101,11 @@ function articleFallbackImage(article: Article) {
 
 function articleTopicLinks(slug: string, lang: Lang) {
   const links: Record<string, Array<{ href: string; label: I18n }>> = {
+    "chemical-sourcing-china-russia-documents-shipping-guide": [
+      { href: "/ru/chemical-sourcing", label: t("Russian chemical sourcing page", "俄罗斯化工采购服务页") },
+      { href: "/insights/wholesale-chemical-supplier-documents-checklist", label: t("Supplier document checklist", "供应商文件清单") },
+      { href: "/products/dimethyl-carbonate-dmc", label: t("Dimethyl Carbonate product details", "碳酸二甲酯产品详情") },
+    ],
     "dimethyl-carbonate-supplier-china-export-guide": [
       { href: "/products/dimethyl-carbonate-dmc", label: t("Dimethyl Carbonate product details", "碳酸二甲酯产品详情") },
       { href: "/insights/dimethyl-carbonate-vietnam-china-supplier-guide", label: t("DMC supply guide for Vietnam", "DMC 越南供应指南") },

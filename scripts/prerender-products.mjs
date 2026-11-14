@@ -80,11 +80,12 @@ function normalizeLinks(links = []) {
   );
 }
 
-function fallbackMarkup({ kind, heading, description, links, schemas }) {
+function fallbackMarkup({ kind, heading, description, links, schemas, sections = [] }) {
   const linkMarkup = normalizeLinks(links)
     .map(({ href, label }) => `<a href="${escapeHtml(href)}">${escapeHtml(label)}</a>`)
     .join(" ");
-  return `<main data-prerendered="${escapeHtml(kind)}"><nav aria-label="Related pages">${linkMarkup}</nav><article><h1>${escapeHtml(heading)}</h1><p>${escapeHtml(description)}</p></article>${schemas.map(schemaScript).join("")}</main>`;
+  const sectionMarkup = sections.map(({ heading: sectionHeading, paragraphs = [], bullets = [] }) => `<section><h2>${escapeHtml(sectionHeading)}</h2>${paragraphs.map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`).join("")}${bullets.length ? `<ul>${bullets.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>` : ""}</section>`).join("");
+  return `<main data-prerendered="${escapeHtml(kind)}"><nav aria-label="Related pages">${linkMarkup}</nav><article><h1>${escapeHtml(heading)}</h1><p>${escapeHtml(description)}</p>${sectionMarkup}</article>${schemas.map(schemaScript).join("")}</main>`;
 }
 
 const priorityProductContent = {
@@ -228,7 +229,7 @@ export function buildRouteHtml(shell, route) {
   const metadata = applyMetadata(shell, { title, description: route.description, path: route.path, lang: route.lang, alternates: route.alternates });
   return injectFallback(
     metadata,
-    fallbackMarkup({ kind, heading: route.heading, description: route.description, links: route.links, schemas }),
+    fallbackMarkup({ kind, heading: route.heading, description: route.description, links: route.links, schemas, sections: route.prerenderSections }),
   );
 }
 
