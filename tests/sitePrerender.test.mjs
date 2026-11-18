@@ -129,3 +129,17 @@ test("Russian sourcing route exposes Russian metadata and reciprocal language li
   assert.match(html, /href="\/chemical-sourcing">English version/);
   assert.match(html, /href="\/insights\/chemical-sourcing-china-russia-documents-shipping-guide"/);
 });
+
+test("Russian aniline route exposes product, transport and reciprocal language signals", () => {
+  const route = coreRoutes.find((item) => item.path === "/ru/products/aniline");
+  assert.ok(route);
+  const html = buildRouteHtml(shell, route);
+  assert.match(html, /<html lang="ru">/);
+  assert.match(html, /Поставка анилина из Китая в Россию/);
+  assert.match(html, /CAS 62-53-3/);
+  assert.match(html, /UN 1547/);
+  assert.match(html, /класс 6\.1/);
+  assert.match(html, /rel="canonical" href="https:\/\/chinachemexport\.com\/ru\/products\/aniline"/);
+  assert.match(html, /hreflang="en" href="https:\/\/chinachemexport\.com\/products\/aniline"/);
+  assert.match(html, /href="\/ru\/chemical-sourcing"/);
+});

@@ -285,9 +285,12 @@ export function buildProductHtml(shell, product) {
       })),
     });
   }
-  const metadata = applyMetadata(shell, { title, description, path });
+  const alternates = isAniline
+    ? [["en", `${SITE_URL}/products/aniline`], ["ru", `${SITE_URL}/ru/products/aniline`], ["x-default", `${SITE_URL}/products/aniline`]]
+    : [];
+  const metadata = applyMetadata(shell, { title, description, path, alternates });
   const topicLinks = product.slug === "aniline"
-    ? [["/insights", "Review chemical export guides"], ["/dangerous-goods", "Review dangerous-goods export support"], ["/contact", "Request an aniline quotation"]]
+    ? [["/ru/products/aniline", "View the Russian aniline supply page"], ["/insights", "Review chemical export guides"], ["/dangerous-goods", "Review dangerous-goods export support"], ["/contact", "Request an aniline quotation"]]
     : product.slug === "trichloromethane-tcm"
       ? [["/insights/chloroform-supplier-china-vietnam-import-guide", "Read the chloroform Vietnam import guide"], ["/dangerous-goods", "Review dangerous-goods export support"], ["/contact", "Request a chloroform quotation"]]
     : product.slug === "dimethyl-carbonate-dmc"

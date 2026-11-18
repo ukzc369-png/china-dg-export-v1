@@ -9,6 +9,7 @@ test("sitemap includes priority and generic product detail pages", () => {
   assert.match(xml, /\/products\/dimethyl-carbonate-dmc<\/loc>/);
   assert.match(xml, /\/products\/xylene<\/loc>/);
   assert.match(xml, /\/products\/methanol<\/loc>/);
+  assert.match(xml, /\/ru\/products\/aniline<\/loc>/);
 });
 
 test("sitemap preserves established insight URLs and has no duplicate locations", () => {
@@ -17,6 +18,6 @@ test("sitemap preserves established insight URLs and has no duplicate locations"
   assert.match(xml, /\/insights\/chemical-sourcing-china-russia-documents-shipping-guide<\/loc>/);
   const locations = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
   assert.equal(new Set(locations).size, locations.length);
-  assert.equal(locations.filter((url) => url.includes("/products/")).length, productRoutes.length);
+  assert.equal(locations.filter((url) => url.startsWith("https://chinachemexport.com/products/")).length, productRoutes.length);
   assert.equal(locations.filter((url) => url.includes("/insights/")).length, insightRoutes.length);
 });

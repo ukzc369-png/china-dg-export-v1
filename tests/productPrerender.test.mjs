@@ -44,6 +44,8 @@ test("aniline prerender targets industrial procurement and export intent", () =>
   assert.match(html, /Request an aniline quotation/);
   assert.match(html, /Packing Group II/);
   assert.match(html, /MDI and polyurethane-material production/);
+  assert.match(html, /hreflang="ru" href="https:\/\/chinachemexport\.com\/ru\/products\/aniline"/);
+  assert.match(html, /href="\/ru\/products\/aniline"/);
 });
 
 test("chloroform prerender targets product, identity and export intent", () => {
