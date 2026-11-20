@@ -116,6 +116,19 @@ test("core route prerender exposes route-specific crawlable copy", () => {
   assert.match(html, /href="\/contact"/);
 });
 
+test("chemical procurement service route exposes commercial intent, service copy and FAQ schema", () => {
+  const route = coreRoutes.find((item) => item.path === "/chemical-sourcing");
+  assert.ok(route);
+  const html = buildRouteHtml(shell, route);
+  assert.match(html, /Chemical Procurement Services China \| Supplier Sourcing &amp; Export Review/);
+  assert.match(html, /<h1>Chemical Procurement and Supplier Sourcing Services in China<\/h1>/);
+  assert.match(html, /Supplier identity, producer and current availability/);
+  assert.match(html, /TDS, SDS and current batch COA/);
+  assert.match(html, /"@type":"FAQPage"/);
+  assert.match(html, /What does a chemical sourcing agent in China do\?/);
+  assert.match(html, /href="\/contact"/);
+});
+
 test("Russian sourcing route exposes Russian metadata and reciprocal language links", () => {
   const route = coreRoutes.find((item) => item.path === "/ru/chemical-sourcing");
   assert.ok(route);

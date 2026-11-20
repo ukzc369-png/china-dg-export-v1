@@ -224,6 +224,17 @@ export function buildRouteHtml(shell, route) {
       },
       breadcrumbSchema(route.path, route.heading),
     );
+    if (route.faqs?.length) {
+      schemas.push({
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: route.faqs.map(([name, text]) => ({
+          "@type": "Question",
+          name,
+          acceptedAnswer: { "@type": "Answer", text },
+        })),
+      });
+    }
   }
 
   const metadata = applyMetadata(shell, { title, description: route.description, path: route.path, lang: route.lang, alternates: route.alternates });

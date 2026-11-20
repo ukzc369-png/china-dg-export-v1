@@ -1267,7 +1267,7 @@ useEffect(() => {
             lang,
           )
         : tx(({
-            "chemical-sourcing": t("Chemical Sourcing Service China | Supplier & Price Review", "中国化工品寻源服务｜供应商与价格审核"),
+            "chemical-sourcing": t("Chemical Procurement Services China | Supplier Sourcing & Export Review", "中国化工品采购服务｜供应商寻源与出口审核"),
             "russian-sourcing": t("Поставка химической продукции из Китая в Россию | ChinaChemExport", "Поставка химической продукции из Китая в Россию | ChinaChemExport"),
             "russian-aniline": t("Анилин из Китая в Россию | CAS 62-53-3", "Анилин из Китая в Россию | CAS 62-53-3"),
             "export-support": t("Chemical Export Support from China | ChinaChemExport", "中国化工品出口支持｜ChinaChemExport"),
@@ -1290,7 +1290,7 @@ useEffect(() => {
         "Meet the independent chemical sourcing and export coordinator behind ChinaChemExport, connecting overseas buyers with reviewed supply and qualified operating resources in Shandong.",
         "了解ChinaChemExport背后的独立化工品寻源与出口协调人，为海外采购商连接山东经核验货源及合格履约资源。",
       ),
-      "chemical-sourcing": t("Compare suitable Chinese chemical suppliers, specifications, current availability, batch COA, SDS, packing, prices and export feasibility before quotation.", "报价前比较合适的中国化工供应商、规格、当前供应、批次 COA、SDS、包装、价格及出口可行性。"),
+      "chemical-sourcing": t("Independent chemical procurement and supplier sourcing in China: compare supplier identity, specifications, TDS, SDS, batch COA, packing, prices and export feasibility.", "中国独立化工品采购与供应商寻源：比较供应商身份、规格、TDS、SDS、批次 COA、包装、价格及出口可行性。"),
       "russian-sourcing": t("Поиск и проверка поставщиков химической продукции в Китае для российских покупателей: спецификация, SDS, COA, упаковка, коммерческие условия и возможность отгрузки.", "Поиск и проверка поставщиков химической продукции в Китае для российских покупателей: спецификация, SDS, COA, упаковка, коммерческие условия и возможность отгрузки."),
       "russian-aniline": t("Проверка поставки анилина CAS 62-53-3 из Китая в Россию: спецификация, SDS, COA партии, упаковка, UN 1547 и возможность отгрузки.", "Проверка поставки анилина CAS 62-53-3 из Китая в Россию: спецификация, SDS, COA партии, упаковка, UN 1547 и возможность отгрузки."),
       "export-support": t("Chemical export coordination covering qualified repacking, inspection, dangerous-goods documents, customs declaration, vessel booking and port follow-up.", "化工品出口协调服务，覆盖合格分装、检验、危包单证、报关、订舱和港口交付跟进。"),
