@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { buildSitemap, priorityProductSlugs } from "../scripts/generate-sitemap.mjs";
-import { productRoutes, insightRoutes } from "../scripts/site-routes.mjs";
+import { insightRoutes } from "../scripts/site-routes.mjs";
 
 test("sitemap concentrates discovery on priority product detail pages", () => {
   const xml = buildSitemap();
@@ -20,7 +20,14 @@ test("sitemap preserves established insight URLs and has no duplicate locations"
   const locations = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
   assert.equal(new Set(locations).size, locations.length);
   assert.equal(locations.filter((url) => url.startsWith("https://chinachemexport.com/products/")).length, priorityProductSlugs.size);
-  assert.equal(locations.filter((url) => url.includes("/insights/")).length, insightRoutes.length);
+  assert.equal(locations.filter((url) => url.startsWith("https://chinachemexport.com/insights/")).length, insightRoutes.length);
+});
+
+test("sitemap includes the Russian aniline content cluster", () => {
+  const xml = buildSitemap();
+  assert.match(xml, /\/ru\/insights\/aniline-inquiry-checklist-china-russia<\/loc>/);
+  assert.match(xml, /\/ru\/insights\/aniline-sds-coa-specification-review<\/loc>/);
+  assert.match(xml, /\/ru\/insights\/aniline-packing-dangerous-goods-shipping-russia<\/loc>/);
 });
 
 test("every sitemap URL has an ISO lastmod freshness signal", () => {

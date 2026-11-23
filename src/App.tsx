@@ -20,6 +20,7 @@ import {
   Insights as ApprovedInsights,
   Products as ApprovedProducts,
   RussianAniline as ApprovedRussianAniline,
+  RussianAnilineGuide as ApprovedRussianAnilineGuide,
   RussianChemicalSourcing as ApprovedRussianChemicalSourcing,
 } from "./NewSiteApp";
 import ProductDetailPage from "./ProductDetail";
@@ -27,11 +28,13 @@ import { productSlug, type I18n, type Lang, type ProductDetailContent, type Prod
 import { getProductSlug, productPath } from "./productRouting";
 import { formatInquiryProduct } from "./inquiryPrefill";
 import { russiaChemicalSourcingGuide } from "./russiaSourcingArticle";
+import { getRussianAnilineArticle } from "./russianAnilineCluster";
 type Page =
   | "home"
   | "chemical-sourcing"
   | "russian-sourcing"
   | "russian-aniline"
+  | "russian-aniline-guide"
   | "export-support"
   | "shandong-supply-base"
   | "products"
@@ -979,11 +982,16 @@ function getArticleSlug(pathname: string) {
   const match = pathname.match(/^\/insights\/([^/]+)$/);
   return match ? decodeURIComponent(match[1]) : null;
 }
+function getRussianAnilineGuideSlug(pathname: string) {
+  const match = pathname.match(/^\/ru\/insights\/([^/]+)$/);
+  return match ? decodeURIComponent(match[1]) : null;
+}
 function canonicalPath(pathname: string) {
   if (!pathname || pathname === "/") return "/";
   return pathname.replace(/\/+$/, "");
 }
 function pathToPage(pathname: string): Page {
+  if (getRussianAnilineGuideSlug(pathname)) return "russian-aniline-guide";
   if (pathname.replace(/\/+$/, "") === "/ru/products/aniline") return "russian-aniline";
   if (pathname.replace(/\/+$/, "") === "/ru/chemical-sourcing") return "russian-sourcing";
   if (getArticleSlug(pathname)) return "insights";
@@ -1257,12 +1265,17 @@ useEffect(() => {
     const activeArticle = currentArticleSlug
       ? articles.find((article) => article.slug === currentArticleSlug)
       : undefined;
+    const activeRussianGuide = getRussianAnilineGuideSlug(window.location.pathname)
+      ? getRussianAnilineArticle(getRussianAnilineGuideSlug(window.location.pathname)!)
+      : undefined;
     if (getProductSlug(window.location.pathname)) {
       trackPageView();
       return;
     }
     document.title =
-      activeArticle
+      activeRussianGuide
+        ? `${activeRussianGuide.title} | ChinaChemExport`
+        : activeArticle
         ? tx(activeArticle.seoTitle, lang)
         : page === "home"
         ? tx(
@@ -1276,6 +1289,7 @@ useEffect(() => {
             "chemical-sourcing": t("Chemical Procurement Services China | Supplier Sourcing & Export Review", "中国化工品采购服务｜供应商寻源与出口审核"),
             "russian-sourcing": t("Поставка химической продукции из Китая в Россию | ChinaChemExport", "Поставка химической продукции из Китая в Россию | ChinaChemExport"),
             "russian-aniline": t("Анилин из Китая в Россию | CAS 62-53-3", "Анилин из Китая в Россию | CAS 62-53-3"),
+            "russian-aniline-guide": t("Практическое руководство по анилину | ChinaChemExport", "Практическое руководство по анилину | ChinaChemExport"),
             "export-support": t("Chemical Export Support from China | ChinaChemExport", "中国化工品出口支持｜ChinaChemExport"),
             "shandong-supply-base": t("Shandong Chemical Supply Base | ChinaChemExport", "山东化工产业带寻源｜ChinaChemExport"),
             products: t("Chemicals Sourced from China | ChinaChemExport", "中国化工品寻源目录｜ChinaChemExport"),
@@ -1299,6 +1313,7 @@ useEffect(() => {
       "chemical-sourcing": t("Independent chemical procurement and supplier sourcing in China: compare supplier identity, specifications, TDS, SDS, batch COA, packing, prices and export feasibility.", "中国独立化工品采购与供应商寻源：比较供应商身份、规格、TDS、SDS、批次 COA、包装、价格及出口可行性。"),
       "russian-sourcing": t("Поиск и проверка поставщиков химической продукции в Китае для российских покупателей: спецификация, SDS, COA, упаковка, коммерческие условия и возможность отгрузки.", "Поиск и проверка поставщиков химической продукции в Китае для российских покупателей: спецификация, SDS, COA, упаковка, коммерческие условия и возможность отгрузки."),
       "russian-aniline": t("Проверка поставки анилина CAS 62-53-3 из Китая в Россию: спецификация, SDS, COA партии, упаковка, UN 1547 и возможность отгрузки.", "Проверка поставки анилина CAS 62-53-3 из Китая в Россию: спецификация, SDS, COA партии, упаковка, UN 1547 и возможность отгрузки."),
+      "russian-aniline-guide": t("Практическая информация для российских покупателей анилина: запрос, спецификация, SDS, COA, упаковка и оценка отгрузки.", "Практическая информация для российских покупателей анилина: запрос, спецификация, SDS, COA, упаковка и оценка отгрузки."),
       "export-support": t("Chemical export coordination covering qualified repacking, inspection, dangerous-goods documents, customs declaration, vessel booking and port follow-up.", "化工品出口协调服务，覆盖合格分装、检验、危包单证、报关、订舱和港口交付跟进。"),
       "shandong-supply-base": t("A buyer-focused introduction to chemical sourcing from Shandong’s petrochemical supply base and its regional export-service resources.", "面向海外买家的山东石化产业带寻源介绍及区域出口服务资源说明。"),
       insights: t("Practical buyer guides for reviewing Chinese chemical suppliers, SDS, TDS, batch COA, packing, prices and export options before purchase.", "面向海外买家的中国化工供应商、SDS、TDS、批次 COA、包装、价格与出口方案实务指南。"),
@@ -1309,7 +1324,9 @@ useEffect(() => {
       ),
     };
     const meta = document.querySelector('meta[name="description"]');
-    if (meta && activeArticle) {
+    if (meta && activeRussianGuide) {
+      meta.setAttribute("content", activeRussianGuide.summary);
+    } else if (meta && activeArticle) {
       meta.setAttribute("content", tx(activeArticle.seoDescription, lang));
     } else if (meta && descriptions[page]) {
       meta.setAttribute("content", tx(descriptions[page]!, lang));
@@ -1319,7 +1336,7 @@ useEffect(() => {
     if (canonical) canonical.setAttribute("href", canonicalUrl);
     const openGraphUrl = document.querySelector('meta[property="og:url"]');
     if (openGraphUrl) openGraphUrl.setAttribute("content", canonicalUrl);
-    document.documentElement.lang = page === "russian-sourcing" || page === "russian-aniline" ? "ru" : lang === "zh" ? "zh-CN" : "en";
+    document.documentElement.lang = page === "russian-sourcing" || page === "russian-aniline" || page === "russian-aniline-guide" ? "ru" : lang === "zh" ? "zh-CN" : "en";
     document.querySelectorAll('link[data-locale-alternate]').forEach((node) => node.remove());
     if (page === "chemical-sourcing" || page === "russian-sourcing" || page === "russian-aniline") {
       const alternates = page === "russian-aniline"
@@ -1384,6 +1401,7 @@ useEffect(() => {
     setMobileMenuOpen(false);
   }
   const content = useMemo(() => {
+    if (page === "russian-aniline-guide") return <ApprovedRussianAnilineGuide slug={getRussianAnilineGuideSlug(window.location.pathname) || ""} />;
     if (page === "russian-aniline") return <ApprovedRussianAniline />;
     if (page === "russian-sourcing") return <ApprovedRussianChemicalSourcing />;
     if (page === "chemical-sourcing") return <ApprovedChemicalSourcing lang={lang} />;
@@ -1435,6 +1453,8 @@ useEffect(() => {
   }, [page, lang, products, articles, currentArticleSlug, inquiryProduct, openProductInquiry, routePath]);
   const approvedStandalone = page === "home"
     || page === "russian-sourcing"
+    || page === "russian-aniline"
+    || page === "russian-aniline-guide"
     || page === "chemical-sourcing"
     || page === "export-support"
     || page === "contact"

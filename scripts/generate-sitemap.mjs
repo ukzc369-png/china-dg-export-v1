@@ -1,6 +1,6 @@
 import { writeFile } from "node:fs/promises";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { insightRouteDetails, productRoutes } from "./site-routes.mjs";
+import { insightRouteDetails, productRoutes, russianAnilineClusterRoutes } from "./site-routes.mjs";
 
 const siteUrl = "https://chinachemexport.com";
 
@@ -42,6 +42,7 @@ export function buildSitemap() {
       .map(({ slug }) => urlEntry(`/products/${slug}`, "monthly", "0.8", slug === "aniline" ? "2026-11-18" : "2026-11-12")),
     ...staticPages.slice(2, 6).map((args) => urlEntry(...args)),
     ...insightRouteDetails.map(({ slug, datePublished }) => urlEntry(`/insights/${slug}`, "monthly", slug === "how-to-export-dichloromethane-from-china" || slug.startsWith("dimethyl-carbonate") || slug.startsWith("methylene-chloride") || slug.startsWith("chloroform") ? "0.8" : "0.7", datePublished ?? "2026-10-24")),
+    ...russianAnilineClusterRoutes.map(({ path, datePublished }) => urlEntry(path, "monthly", "0.8", datePublished)),
     ...staticPages.slice(6).map((args) => urlEntry(...args)),
   ];
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${entries.join("\n")}\n</urlset>\n`;

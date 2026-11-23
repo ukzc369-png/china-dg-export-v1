@@ -1,7 +1,7 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { coreRoutes, insightRouteDetails, productRoutes } from "./site-routes.mjs";
+import { coreRoutes, insightRouteDetails, productRoutes, russianAnilineClusterRoutes } from "./site-routes.mjs";
 
 const SITE_URL = "https://chinachemexport.com";
 
@@ -65,7 +65,7 @@ function breadcrumbSchema(path, title) {
   const items = [{ "@type": "ListItem", position: 1, name: "Home", item: `${SITE_URL}/` }];
   if (path.startsWith("/products/")) {
     items.push({ "@type": "ListItem", position: 2, name: "Products", item: `${SITE_URL}/products` });
-  } else if (path.startsWith("/insights/")) {
+  } else if (path.startsWith("/insights/") || path.startsWith("/ru/insights/")) {
     items.push({ "@type": "ListItem", position: 2, name: "Insights", item: `${SITE_URL}/insights` });
   }
   if (path !== "/") {
@@ -338,6 +338,7 @@ export async function prerenderProducts(distDir = fileURLToPath(new URL("../dist
   const tasks = [
     ...coreRoutes.map((route) => writeRoute(distDir, route.path, buildRouteHtml(shell, route))),
     ...insightRouteDetails.map((route) => writeRoute(distDir, route.path, buildRouteHtml(shell, route))),
+    ...russianAnilineClusterRoutes.map((route) => writeRoute(distDir, route.path, buildRouteHtml(shell, route))),
     ...productRoutes.map((product) => writeRoute(distDir, `/products/${product.slug}`, buildProductHtml(shell, product))),
   ];
   await Promise.all(tasks);

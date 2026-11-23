@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { buildRouteHtml } from "../scripts/prerender-products.mjs";
-import { coreRoutes, insightRouteDetails } from "../scripts/site-routes.mjs";
+import { coreRoutes, insightRouteDetails, russianAnilineClusterRoutes } from "../scripts/site-routes.mjs";
 
 const shell = `<!doctype html><html><head><title>ChinaChemExport</title><meta name="description" content="default"><link rel="canonical" href="https://chinachemexport.com/"><meta property="og:title" content="default"><meta property="og:description" content="default"><meta property="og:url" content="https://chinachemexport.com/"></head><body><div id="root"></div><script type="module" src="/assets/index.js"></script></body></html>`;
 
@@ -155,4 +155,18 @@ test("Russian aniline route exposes product, transport and reciprocal language s
   assert.match(html, /rel="canonical" href="https:\/\/chinachemexport\.com\/ru\/products\/aniline"/);
   assert.match(html, /hreflang="en" href="https:\/\/chinachemexport\.com\/products\/aniline"/);
   assert.match(html, /href="\/ru\/chemical-sourcing"/);
+});
+
+test("Russian aniline cluster exposes three crawlable buyer guides with commercial links", () => {
+  assert.equal(russianAnilineClusterRoutes.length, 3);
+  for (const route of russianAnilineClusterRoutes) {
+    const html = buildRouteHtml(shell, route);
+    assert.match(html, /<html lang="ru">/);
+    assert.match(html, /rel="canonical" href="https:\/\/chinachemexport\.com\/ru\/insights\//);
+    assert.match(html, /"@type":"Article"/);
+    assert.match(html, /"@type":"FAQPage"/);
+    assert.match(html, /"datePublished":"2026-11-23"/);
+    assert.match(html, /href="\/ru\/products\/aniline"/);
+    assert.match(html, /href="\/contact\?product=Aniline%20CAS%2062-53-3"/);
+  }
 });
