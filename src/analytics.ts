@@ -49,9 +49,40 @@ export function trackPageView(force = false) {
   });
 }
 
-export function trackInquirySubmission(product: string) {
-  window.gtag?.("event", "generate_lead", {
+function trackEvent(name: string, parameters: Record<string, string | number | boolean> = {}) {
+  if (!window.gtag || window.location.pathname.startsWith("/admin")) return;
+  window.gtag("event", name, {
+    page_path: `${window.location.pathname}${window.location.search}`,
+    ...parameters,
+  });
+}
+
+export function trackInquiryStart(formName: string, product = "") {
+  trackEvent("form_start", {
+    form_name: formName,
+    product_name: product || "Unspecified product",
+  });
+}
+
+export function trackInquiryCta(source: string, product = "") {
+  trackEvent("inquiry_cta_click", {
+    link_location: source,
+    product_name: product || "Unspecified product",
+  });
+}
+
+export function trackEmailClick(source: string) {
+  trackEvent("email_click", { link_location: source });
+}
+
+export function trackInquiryFailure(formName: string) {
+  trackEvent("form_submit_error", { form_name: formName });
+}
+
+export function trackInquirySubmission(product: string, formName = "sourcing_requirement") {
+  trackEvent("generate_lead", {
     currency: "USD",
+    form_name: formName,
     product_name: product || "Unspecified product",
   });
 }

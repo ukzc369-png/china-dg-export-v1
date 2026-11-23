@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
 import type { Article, Lang, Page, Product } from "./HomePage";
 import { productSlug } from "./productDetails";
 import BrandLogo from "./components/BrandLogo";
+import { trackInquiryFailure, trackInquiryStart, trackInquirySubmission } from "./analytics";
 import "./HomePageApproved.css";
 
 type Props={go:(page:Page)=>void;lang:Lang;setLang:(lang:Lang)=>void;products:Product[];articles:Article[];onOpenArticle:(slug:string)=>void};
@@ -27,7 +28,8 @@ export default function HomePageApproved({go,lang,setLang,products,articles,onOp
  const [menu,setMenu]=useState(false);const [status,setStatus]=useState("");const c=copy[lang];
  const guides=articles.slice(0,3);
  const bi=(en:string,zh:string)=>lang==="zh"?zh:en;
- async function submit(e:FormEvent<HTMLFormElement>){e.preventDefault();setStatus(lang==="zh"?"正在提交…":"Sending…");const form=e.currentTarget;const data=Object.fromEntries(new FormData(form).entries());try{const r=await fetch("/api/inquiry",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)});if(!r.ok)throw new Error();setStatus(lang==="zh"?"已收到需求，我会直接回复。":"Requirement received. I will reply directly.");form.reset()}catch{setStatus(lang==="zh"?"暂时无法提交，请发送电子邮件。":"Unable to send. Please contact me by email.")}}
+ useEffect(()=>{const form=document.querySelector<HTMLFormElement>(".ah-contact form");if(!form)return;const start=()=>{if(form.dataset.analyticsStarted==="true")return;form.dataset.analyticsStarted="true";trackInquiryStart("homepage_requirement_form",new FormData(form).get("product")?.toString()||"")};form.addEventListener("focusin",start);return()=>form.removeEventListener("focusin",start)},[]);
+ async function submit(e:FormEvent<HTMLFormElement>){e.preventDefault();setStatus(lang==="zh"?"正在提交…":"Sending…");const form=e.currentTarget;const data=Object.fromEntries(new FormData(form).entries());try{const r=await fetch("/api/inquiry",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)});if(!r.ok)throw new Error();setStatus(lang==="zh"?"已收到需求，我会直接回复。":"Requirement received. I will reply directly.");trackInquirySubmission(String(data.product||""),"homepage_requirement_form");form.reset()}catch{trackInquiryFailure("homepage_requirement_form");setStatus(lang==="zh"?"暂时无法提交，请发送电子邮件。":"Unable to send. Please contact me by email.")}}
  return <main className="approved-home">
   <header className="ah-header"><div className="ah-shell ah-header-inner"><button className="ah-brand" onClick={()=>go("home")}><BrandLogo subtitle={bi("Independent Chemical Sourcing & Export Coordinator","独立化工品寻源与出口协调服务")}/></button><nav className={menu?"open":""}>{c.nav.map((n,i)=><button className={i===0?"active":""} key={`${n}-${i}`} onClick={()=>go(routes[i])}>{n}</button>)}</nav><div className="ah-header-actions"><button className="ah-lang" aria-label={bi("Switch to Chinese","切换到英文")} onClick={()=>setLang(lang==="en"?"zh":"en")}>◉ {lang==="en"?"EN | 中文":"中文 | EN"}</button><button className="ah-top-cta" onClick={()=>go("contact")}>{lang==="zh"?"沟通采购需求":"Discuss Your Requirement"} →</button><button className="ah-menu" onClick={()=>setMenu(!menu)} aria-label={bi("Open menu","打开菜单")}>☰</button></div></div></header>
   <section className="ah-hero"><div className="ah-hero-bg"/><div className="ah-shell ah-hero-content"><div><h1>{c.hero}</h1><p>{c.intro}</p><strong>{c.based}</strong><div className="ah-actions"><button className="primary" onClick={()=>go("contact")}>{lang==="zh"?"沟通采购需求":"Discuss Your Requirement"} →</button><button className="secondary" onClick={()=>go("export-support")}>{lang==="zh"?"了解寻源流程":"How Sourcing Works"}</button></div></div><div className="ah-hero-route" aria-hidden="true"><span>▧<small>Repacking<br/>&amp; Inspection</small></span><i>›</i><span>▤<small>DG Documents</small></span><i>›</i><span>♟<small>Customs<br/>Declaration</small></span><i>›</i><span>▰<small>Vessel Booking<br/>&amp; Shipping</small></span></div></div></section>

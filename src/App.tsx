@@ -1,7 +1,13 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { MouseEvent, ReactNode } from "react";
 import "./App.css";
-import { openAnalyticsSettings, trackInquirySubmission, trackPageView } from "./analytics";
+import {
+  openAnalyticsSettings,
+  trackEmailClick,
+  trackInquiryCta,
+  trackInquirySubmission,
+  trackPageView,
+} from "./analytics";
 import { legalDocuments, type LegalPageKey } from "./legalContent";
 import { articleTranslations } from "./articleTranslations";
 import { translateProductCategoryZh, translateProductNameZh } from "./productTranslations";
@@ -1342,8 +1348,19 @@ useEffect(() => {
     localStorage.setItem("chinadg-lang", lang);
     setMobileMenuOpen(false);
   }, [lang]);
+  useEffect(() => {
+    const handleMailtoClick = (event: globalThis.MouseEvent) => {
+      const target = event.target instanceof Element ? event.target.closest<HTMLAnchorElement>('a[href^="mailto:"]') : null;
+      if (target) trackEmailClick(target.dataset.analyticsSource || window.location.pathname);
+    };
+    document.addEventListener("click", handleMailtoClick);
+    return () => document.removeEventListener("click", handleMailtoClick);
+  }, []);
   function go(next: Page) {
-    if (next === "contact") setInquiryProduct("");
+    if (next === "contact") {
+      trackInquiryCta("site_navigation");
+      setInquiryProduct("");
+    }
     window.history.pushState({}, "", pageToPath(next));
     setPage(next);
     setCurrentArticleSlug(null);
@@ -1351,7 +1368,9 @@ useEffect(() => {
   }
 
   const openProductInquiry = useCallback((product: Product) => {
-    setInquiryProduct(formatInquiryProduct(product, lang));
+    const inquiryName = formatInquiryProduct(product, lang);
+    trackInquiryCta("product_detail", inquiryName);
+    setInquiryProduct(inquiryName);
     window.history.pushState({}, "", "/contact");
     setPage("contact");
     setCurrentArticleSlug(null);
