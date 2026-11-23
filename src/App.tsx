@@ -2959,6 +2959,8 @@ function Footer({ go, lang }: { go: (page: Page) => void; lang: Lang }) {
           ))}
         </div>
         <div className="footer-legal-links">
+          <a href="mailto:18678695200@163.com">{tx(t("Email Evan", "发送邮件"), lang)}</a>
+          <button onClick={() => go("contact")}>{tx(t("Send Requirement", "提交需求"), lang)}</button>
           <button onClick={() => go("privacy")}>{tx(t("Privacy", "隐私政策"), lang)}</button>
           <button onClick={() => go("terms")}>{tx(t("Terms", "使用条款"), lang)}</button>
           <button onClick={() => go("cookies")}>{tx(t("Cookies", "Cookie 政策"), lang)}</button>
