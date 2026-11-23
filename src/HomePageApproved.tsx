@@ -8,7 +8,7 @@ import "./HomePageApproved.css";
 
 type Props={go:(page:Page)=>void;lang:Lang;setLang:(lang:Lang)=>void;products:Product[];articles:Article[];onOpenArticle:(slug:string)=>void};
 const copy={
-  en:{nav:["Home","Products","Chemical Sourcing","Export Support","Insights","Contact"],hero:"China Chemical Sourcing & Export Support",intro:"Work directly with an independent coordinator connected to Shandong’s petrochemical supply base and qualified resources for repacking, inspection, DG documentation, customs and shipping.",based:"Based in Shandong, China · Supporting international industrial buyers"},
+  en:{nav:["Home","Products","Chemical Sourcing","Export Support","Insights","Contact"],hero:"China Chemical Sourcing Agent and Export Coordinator",intro:"Work directly with an independent coordinator to compare Chinese chemical suppliers, specifications, SDS, COA, packing, commercial terms and export feasibility before quotation.",based:"Based in Shandong, China · Supporting international industrial buyers"},
   zh:{nav:["首页","产品","化工品寻源","出口支持","行业洞察","联系"],hero:"中国化工品寻源与出口支持",intro:"直接对接立足山东的独立协调人，连接石化产业带货源，以及分装、检验、危包单证、报关和订舱等合格服务资源。",based:"立足中国山东 · 服务国际工业采购商"}
 };
 const routes:Page[]=["home","products","chemical-sourcing","export-support","insights","contact"];

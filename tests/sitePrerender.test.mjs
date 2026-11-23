@@ -120,13 +120,37 @@ test("chemical procurement service route exposes commercial intent, service copy
   const route = coreRoutes.find((item) => item.path === "/chemical-sourcing");
   assert.ok(route);
   const html = buildRouteHtml(shell, route);
-  assert.match(html, /Chemical Procurement Services China \| Supplier Sourcing &amp; Export Review/);
-  assert.match(html, /<h1>Chemical Procurement and Supplier Sourcing Services in China<\/h1>/);
+  assert.match(html, /Chemical Sourcing Agent China \| Supplier &amp; Document Review/);
+  assert.match(html, /<h1>Chemical Sourcing Agent and Supplier Review in China<\/h1>/);
   assert.match(html, /Supplier identity, producer and current availability/);
   assert.match(html, /TDS, SDS and current batch COA/);
   assert.match(html, /"@type":"FAQPage"/);
   assert.match(html, /What does a chemical sourcing agent in China do\?/);
   assert.match(html, /href="\/contact"/);
+});
+
+test("high-impression routes expose focused search titles without changing their URLs", () => {
+  const homepage = coreRoutes.find((item) => item.path === "/");
+  const insights = coreRoutes.find((item) => item.path === "/insights");
+  const dmc = insightRouteDetails.find((item) => item.slug === "dimethyl-carbonate-supplier-china-export-guide");
+  assert.ok(homepage);
+  assert.ok(insights);
+  assert.ok(dmc);
+
+  const homepageHtml = buildRouteHtml(shell, homepage);
+  assert.match(homepageHtml, /China Chemical Sourcing Agent \| Supplier &amp; Export Review/);
+  assert.match(homepageHtml, /<h1>China Chemical Sourcing Agent and Export Coordinator<\/h1>/);
+  assert.match(homepageHtml, /rel="canonical" href="https:\/\/chinachemexport\.com\/"/);
+
+  const insightsHtml = buildRouteHtml(shell, insights);
+  assert.match(insightsHtml, /Chemical Sourcing Guides \| Supplier Documents &amp; Shipping/);
+  assert.match(insightsHtml, /<h1>Chemical Sourcing Guides for Industrial Buyers<\/h1>/);
+  assert.match(insightsHtml, /href="\/insights\/dimethyl-carbonate-supplier-china-export-guide"/);
+
+  const dmcHtml = buildRouteHtml(shell, dmc);
+  assert.match(dmcHtml, /Dimethyl Carbonate Supplier China \| DMC COA &amp; Packing/);
+  assert.match(dmcHtml, /CAS 616-38-6/);
+  assert.match(dmcHtml, /rel="canonical" href="https:\/\/chinachemexport\.com\/insights\/dimethyl-carbonate-supplier-china-export-guide"/);
 });
 
 test("Russian sourcing route exposes Russian metadata and reciprocal language links", () => {

@@ -105,8 +105,8 @@ const t = (en: string, zh: string): I18n => ({ en, zh });
 
 const ctrArticleMetadata: Record<string, { title: I18n; description: I18n }> = {
   "dimethyl-carbonate-supplier-china-export-guide": {
-    title: t("DMC Supplier China | Price, COA, Packing & Export Guide", "中国 DMC 供应商 | 价格、COA、包装与出口指南"),
-    description: t("Compare dimethyl carbonate suppliers in China by grade, current price basis, batch COA, SDS, packing, lead time and export feasibility.", "按牌号、当前价格口径、批次 COA、SDS、包装、交期和出口可行性比较中国碳酸二甲酯供应商。"),
+    title: t("Dimethyl Carbonate Supplier China | DMC COA & Packing", "中国碳酸二甲酯供应商 | DMC COA 与包装"),
+    description: t("Review China dimethyl carbonate (DMC) suppliers by grade, CAS 616-38-6, current price basis, batch COA, SDS, packing, lead time and export feasibility.", "按牌号、CAS 616-38-6、当前价格口径、批次 COA、SDS、包装、交期和出口可行性审核中国碳酸二甲酯供应商。"),
   },
   "dimethyl-carbonate-vietnam-china-supplier-guide": {
     title: t("DMC Supplier China to Vietnam | Packing & Import Guide", "中国 DMC 供应至越南 | 包装与进口指南"),
@@ -1280,26 +1280,26 @@ useEffect(() => {
         : page === "home"
         ? tx(
             t(
-              "Chemical Export Service China | Sourcing & Shipping",
+              "China Chemical Sourcing Agent | Supplier & Export Review",
               "中国化工品寻源与出口支持 | ChinaChemExport",
             ),
             lang,
           )
         : tx(({
-            "chemical-sourcing": t("Chemical Procurement Services China | Supplier Sourcing & Export Review", "中国化工品采购服务｜供应商寻源与出口审核"),
+            "chemical-sourcing": t("Chemical Sourcing Agent China | Supplier & Document Review", "中国化工品寻源协调人｜供应商与文件审核"),
             "russian-sourcing": t("Поставка химической продукции из Китая в Россию | ChinaChemExport", "Поставка химической продукции из Китая в Россию | ChinaChemExport"),
             "russian-aniline": t("Анилин из Китая в Россию | CAS 62-53-3", "Анилин из Китая в Россию | CAS 62-53-3"),
             "russian-aniline-guide": t("Практическое руководство по анилину | ChinaChemExport", "Практическое руководство по анилину | ChinaChemExport"),
             "export-support": t("Chemical Export Support from China | ChinaChemExport", "中国化工品出口支持｜ChinaChemExport"),
             "shandong-supply-base": t("Shandong Chemical Supply Base | ChinaChemExport", "山东化工产业带寻源｜ChinaChemExport"),
             products: t("Chemicals Sourced from China | ChinaChemExport", "中国化工品寻源目录｜ChinaChemExport"),
-            insights: t("China Chemical Supplier Guides | Documents, Prices & Shipping", "中国化工供应商指南｜文件、价格与运输"),
+            insights: t("Chemical Sourcing Guides | Supplier Documents & Shipping", "化工品寻源指南｜供应商文件与运输"),
             about: t("Independent Chemical Sourcing Coordinator in Shandong | ChinaChemExport", "山东独立化工品寻源协调人｜ChinaChemExport"),
             contact: t("Submit a Chemical Sourcing Requirement | ChinaChemExport", "提交化工品采购需求｜ChinaChemExport"),
           } as Partial<Record<Page, I18n>>)[page] || t(`${page} | ChinaChemExport`, `${page} | ChinaChemExport`), lang);
     const descriptions: Partial<Record<Page, I18n>> = {
       home: t(
-        "Compare qualified Chinese chemical suppliers, specifications, SDS, COA, packing and shipment options with an independent coordinator based in Shandong.",
+        "Independent chemical sourcing support in China. Compare suppliers, specifications, SDS, COA, packing and export feasibility before requesting a quote.",
         "ChinaChemExport提供立足中国山东的独立化工品寻源与出口协调服务，为国际买家连接经核验的供应选择，以及合格分装、检验、危包单证、报关和运输资源。",
       ),
       products: t(
@@ -1310,13 +1310,13 @@ useEffect(() => {
         "Meet the independent chemical sourcing and export coordinator behind ChinaChemExport, connecting overseas buyers with reviewed supply and qualified operating resources in Shandong.",
         "了解ChinaChemExport背后的独立化工品寻源与出口协调人，为海外采购商连接山东经核验货源及合格履约资源。",
       ),
-      "chemical-sourcing": t("Independent chemical procurement and supplier sourcing in China: compare supplier identity, specifications, TDS, SDS, batch COA, packing, prices and export feasibility.", "中国独立化工品采购与供应商寻源：比较供应商身份、规格、TDS、SDS、批次 COA、包装、价格及出口可行性。"),
+      "chemical-sourcing": t("Find and compare chemical suppliers in China with independent review of supplier identity, specifications, SDS, COA, packing, prices and export feasibility.", "在中国寻找并比较化工供应商，独立审核供应商身份、规格、SDS、COA、包装、价格及出口可行性。"),
       "russian-sourcing": t("Поиск и проверка поставщиков химической продукции в Китае для российских покупателей: спецификация, SDS, COA, упаковка, коммерческие условия и возможность отгрузки.", "Поиск и проверка поставщиков химической продукции в Китае для российских покупателей: спецификация, SDS, COA, упаковка, коммерческие условия и возможность отгрузки."),
       "russian-aniline": t("Проверка поставки анилина CAS 62-53-3 из Китая в Россию: спецификация, SDS, COA партии, упаковка, UN 1547 и возможность отгрузки.", "Проверка поставки анилина CAS 62-53-3 из Китая в Россию: спецификация, SDS, COA партии, упаковка, UN 1547 и возможность отгрузки."),
       "russian-aniline-guide": t("Практическая информация для российских покупателей анилина: запрос, спецификация, SDS, COA, упаковка и оценка отгрузки.", "Практическая информация для российских покупателей анилина: запрос, спецификация, SDS, COA, упаковка и оценка отгрузки."),
       "export-support": t("Chemical export coordination covering qualified repacking, inspection, dangerous-goods documents, customs declaration, vessel booking and port follow-up.", "化工品出口协调服务，覆盖合格分装、检验、危包单证、报关、订舱和港口交付跟进。"),
       "shandong-supply-base": t("A buyer-focused introduction to chemical sourcing from Shandong’s petrochemical supply base and its regional export-service resources.", "面向海外买家的山东石化产业带寻源介绍及区域出口服务资源说明。"),
-      insights: t("Practical buyer guides for reviewing Chinese chemical suppliers, SDS, TDS, batch COA, packing, prices and export options before purchase.", "面向海外买家的中国化工供应商、SDS、TDS、批次 COA、包装、价格与出口方案实务指南。"),
+      insights: t("Buyer guides for sourcing chemicals from China: supplier checks, SDS, COA, specifications, packing, prices, dangerous-goods documents and shipping preparation.", "面向海外买家的中国化工品寻源指南，覆盖供应商审核、SDS、COA、规格、包装、价格、危险品文件和出运准备。"),
       contact: t("Submit your product, specification, quantity, packing and destination for a transaction-specific chemical sourcing and export review.", "提交产品、规格、数量、包装和目的地，获取针对具体交易的化工品寻源与出口评估。"),
       services: t(
         "Export support for chemical orders from China, including quality control, documentation, packaging, customs and dangerous-goods logistics.",
